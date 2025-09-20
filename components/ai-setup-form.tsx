@@ -31,6 +31,7 @@ export function AISetupForm() {
   let backgroundColor = useThemeColor({}, "background");
   let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
   let placeholderColor = useThemeColor({ light: "#999", dark: "#666" }, "text");
+  let tintColor = useThemeColor({}, "tint");
   let {
     control,
     handleSubmit,
@@ -152,7 +153,10 @@ export function AISetupForm() {
                   style={[
                     styles.providerOption,
                     { borderColor },
-                    value === provider && styles.providerOptionSelected,
+                    value === provider && [
+                      styles.providerOptionSelected,
+                      { backgroundColor: tintColor, borderColor: tintColor },
+                    ],
                   ]}
                   onPress={() => onChange(provider)}
                 >
@@ -178,7 +182,10 @@ export function AISetupForm() {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[styles.button, styles.submitButton]}
+          style={[
+            styles.button,
+            [styles.submitButton, { backgroundColor: tintColor }],
+          ]}
           onPress={handleSubmit(onSubmit)}
         >
           <ThemedText style={styles.buttonText}>Save Settings</ThemedText>
@@ -233,8 +240,7 @@ let styles = StyleSheet.create({
     alignItems: "center",
   },
   providerOptionSelected: {
-    backgroundColor: "#007AFF",
-    borderColor: "#007AFF",
+    // backgroundColor and borderColor set dynamically via tintColor
   },
   providerOptionText: {
     fontSize: 16,
@@ -253,7 +259,7 @@ let styles = StyleSheet.create({
     alignItems: "center",
   },
   submitButton: {
-    backgroundColor: "#007AFF",
+    // backgroundColor set dynamically via tintColor
   },
   resetButton: {
     borderWidth: 1,

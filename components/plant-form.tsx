@@ -33,6 +33,7 @@ export function PlantForm() {
   let backgroundColor = useThemeColor({}, "background");
   let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
   let placeholderColor = useThemeColor({ light: "#999", dark: "#666" }, "text");
+  let tintColor = useThemeColor({}, "tint");
   let [isGenerating, setIsGenerating] = useState(false);
 
   let {
@@ -202,7 +203,10 @@ export function PlantForm() {
                   style={[
                     styles.sizeOption,
                     { borderColor },
-                    value === size && styles.sizeOptionSelected,
+                    value === size && [
+                      styles.sizeOptionSelected,
+                      { backgroundColor: tintColor, borderColor: tintColor },
+                    ],
                   ]}
                   onPress={() => onChange(size)}
                 >
@@ -229,7 +233,7 @@ export function PlantForm() {
         <TouchableOpacity
           style={[
             styles.button,
-            styles.submitButton,
+            [styles.submitButton, { backgroundColor: tintColor }],
             isGenerating && styles.buttonDisabled,
           ]}
           onPress={handleSubmit(onSubmit)}
@@ -304,8 +308,7 @@ let styles = StyleSheet.create({
     alignItems: "center",
   },
   sizeOptionSelected: {
-    backgroundColor: "#007AFF",
-    borderColor: "#007AFF",
+    // backgroundColor and borderColor set dynamically via tintColor
   },
   sizeOptionText: {
     fontSize: 16,
@@ -324,7 +327,7 @@ let styles = StyleSheet.create({
     alignItems: "center",
   },
   submitButton: {
-    backgroundColor: "#007AFF",
+    // backgroundColor set dynamically via tintColor
   },
   resetButton: {
     borderWidth: 1,

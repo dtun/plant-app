@@ -10,6 +10,7 @@ import { useThemeColor } from "@/hooks/use-theme-color";
 
 export default function SettingsScreen() {
   let borderColor = useThemeColor({ light: "#e0e0e0", dark: "#333" }, "icon");
+  let tintColor = useThemeColor({}, "tint");
 
   return (
     <ParallaxScrollView
@@ -32,7 +33,7 @@ export default function SettingsScreen() {
             style={[styles.settingItem, { borderBottomColor: borderColor }]}
           >
             <ThemedView style={styles.settingContent}>
-              <IconSymbol size={24} name="brain" color="#007AFF" />
+              <IconSymbol size={24} name="brain" color={tintColor} />
               <ThemedView style={styles.settingTextContainer}>
                 <ThemedText type="defaultSemiBold" style={styles.settingTitle}>
                   AI Setup
