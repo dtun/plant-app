@@ -1,8 +1,10 @@
 import { useThemeColor } from "@/hooks/use-theme-color";
+import { generatePlantName, type PlantData } from "@/utils/ai-service";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  ActivityIndicator,
   Alert,
   StyleSheet,
   TextInput,
@@ -31,6 +33,8 @@ export function PlantForm() {
   let backgroundColor = useThemeColor({}, "background");
   let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
   let placeholderColor = useThemeColor({ light: "#999", dark: "#666" }, "text");
+  let [isGenerating, setIsGenerating] = useState(false);
+
   let {
     control,
     handleSubmit,
@@ -46,9 +50,48 @@ export function PlantForm() {
     },
   });
 
-  function onSubmit(data: PlantFormData) {
-    console.log("Plant form data:", data);
-    Alert.alert("Form Submitted", "Check console for form data");
+  async function onSubmit(data: PlantFormData) {
+    setIsGenerating(true);
+
+    try {
+      let plantData: PlantData = {
+        plantType: data.plantType,
+        appearance: data.appearance,
+        personality: data.personality || undefined,
+        size: data.size,
+      };
+
+      let plantName = await generatePlantName(plantData);
+
+      Alert.alert("Your Plant's Name", `Meet "${plantName}"!`, [
+        { text: "Perfect!", style: "default" },
+      ]);
+
+      console.log("Generated plant name:", plantName);
+      console.log("Plant data:", plantData);
+    } catch (error) {
+      console.error("Error generating plant name:", error);
+
+      let errorMessage = "Failed to generate plant name. Please try again.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      if (errorMessage.includes("configuration not found")) {
+        Alert.alert(
+          "AI Setup Required",
+          "Please configure your AI settings first.",
+          [
+            { text: "Cancel", style: "cancel" },
+            { text: "Go to Settings", style: "default" },
+          ]
+        );
+      } else {
+        Alert.alert("Error", errorMessage);
+      }
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   function handleReset() {
@@ -184,10 +227,28 @@ export function PlantForm() {
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[styles.button, styles.submitButton]}
+          style={[
+            styles.button,
+            styles.submitButton,
+            isGenerating && styles.buttonDisabled,
+          ]}
           onPress={handleSubmit(onSubmit)}
+          disabled={isGenerating}
         >
-          <ThemedText style={styles.buttonText}>Submit</ThemedText>
+          {isGenerating ? (
+            <View style={styles.buttonContent}>
+              <ActivityIndicator size="small" color="#fff" />
+              <ThemedText
+                style={[styles.buttonText, styles.buttonTextWithIcon]}
+              >
+                Generating Name...
+              </ThemedText>
+            </View>
+          ) : (
+            <ThemedText style={styles.buttonText}>
+              Generate Plant Name
+            </ThemedText>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -273,6 +334,17 @@ let styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+  },
+  buttonDisabled: {
+    opacity: 0.7,
+  },
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  buttonTextWithIcon: {
+    marginLeft: 0,
   },
   resetButtonText: {
     fontSize: 16,
