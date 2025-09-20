@@ -1,17 +1,22 @@
-import { Image } from "expo-image";
 import { StyleSheet } from "react-native";
 
 import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { PlantForm } from "@/components/plant-form";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { useThemeColor } from "@/hooks/use-theme-color";
 
 export default function HomeScreen() {
+  let tintColor = useThemeColor({}, "tint");
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
       headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
+        <IconSymbol
+          size={310}
+          color={tintColor}
+          name="leaf"
+          style={styles.headerIcon}
         />
       }
     >
@@ -21,11 +26,9 @@ export default function HomeScreen() {
 }
 
 let styles = StyleSheet.create({
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+  headerIcon: {
+    bottom: -90,
+    left: -35,
     position: "absolute",
   },
 });
