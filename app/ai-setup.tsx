@@ -16,7 +16,7 @@ export default function AISetupScreen() {
         }}
       />
       <ParallaxScrollView
-        headerBackgroundColor={{ light: "#f0f0f0", dark: "#2c2c2c" }}
+        headerBackgroundColor={{ light: "#f0f7f0", dark: "#1a2e1a" }}
         headerImage={
           <IconSymbol
             size={310}

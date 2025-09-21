@@ -14,7 +14,7 @@ export default function SettingsScreen() {
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: "#f0f0f0", dark: "#2c2c2c" }}
+      headerBackgroundColor={{ light: "#f0f7f0", dark: "#1a2e1a" }}
       headerImage={
         <IconSymbol
           size={310}
@@ -42,7 +42,11 @@ export default function SettingsScreen() {
                   Configure your AI provider and API key
                 </ThemedText>
               </ThemedView>
-              <IconSymbol size={20} name="chevron.right" color="#999" />
+              <IconSymbol
+                size={20}
+                name="chevron.right"
+                color={useThemeColor({ light: "#999", dark: "#666" }, "icon")}
+              />
             </ThemedView>
           </TouchableOpacity>
         </Link>
