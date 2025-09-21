@@ -267,7 +267,9 @@ export function PlantForm() {
 }
 
 let styles = StyleSheet.create({
-  container: {},
+  container: {
+    paddingBottom: 24,
+  },
   title: {
     marginBottom: 24,
     textAlign: "center",
