@@ -203,9 +203,7 @@ export function AISetupForm() {
 }
 
 let styles = StyleSheet.create({
-  container: {
-    paddingBottom: 24,
-  },
+  container: {},
   title: {
     marginBottom: 24,
     textAlign: "center",

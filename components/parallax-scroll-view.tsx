@@ -81,5 +81,6 @@ let styles = StyleSheet.create({
     padding: 16,
     gap: 16,
     overflow: "hidden",
+    paddingBottom: 48,
   },
 });
