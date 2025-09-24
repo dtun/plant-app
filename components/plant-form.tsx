@@ -102,7 +102,7 @@ export function PlantForm() {
   return (
     <ThemedView style={styles.container}>
       <ThemedText type="title" style={styles.title}>
-        Name Your Plant
+        Describe Your Plant
       </ThemedText>
       <View style={styles.fieldContainer}>
         <ThemedText type="defaultSemiBold" style={styles.label}>
