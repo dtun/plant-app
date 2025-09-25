@@ -94,7 +94,7 @@ function handleAIError(error: unknown, operation: string): never {
 }
 
 function createPrompt(plantData: PlantData): string {
-  let prompt = `Generate a creative and meaningful name for a plant based on these details:
+  let prompt = `Generate a cute, gentle, and endearing name for a plant with the following characteristics:
 
 Plant Type: ${plantData.plantType}
 Appearance: ${plantData.appearance}
@@ -108,7 +108,12 @@ Size: ${plantData.size}`;
     prompt += `\nPhoto Analysis: ${plantData.photoDescription}`;
   }
 
-  prompt += `\n\nPlease provide just the plant name, nothing else. The name should be creative, memorable, and reflect the plant's characteristics.`;
+  prompt += `\nThe name should be sweet, adorable, and friendly - the kind of cute names a plant parent would lovingly call their plant. 
+Think of names that are charming, whimsical, and bring a smile to people's faces.
+Avoid anything too dramatic or intense - focus on gentle, cute, and heartwarming names.
+The name should be creative, memorable, and reflect the plant's characteristics.
+
+Please provide just the plant name, nothing else.`;
 
   return prompt;
 }
