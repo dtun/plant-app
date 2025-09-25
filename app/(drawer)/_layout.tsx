@@ -28,6 +28,7 @@ export default function DrawerLayout() {
           headerShown: true,
           headerTintColor: tintColor,
           headerTransparent: true,
+          headerLeft: () => null,
         }}
       />
       <Drawer.Screen
