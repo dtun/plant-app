@@ -9,6 +9,7 @@ export interface PlantData {
   plantType: string;
   appearance: string;
   personality?: string;
+  photoDescription?: string;
   size: "Small" | "Medium" | "Large";
 }
 
@@ -51,9 +52,120 @@ Size: ${plantData.size}`;
     prompt += `\nPersonality: ${plantData.personality}`;
   }
 
+  if (plantData.photoDescription) {
+    prompt += `\nPhoto Analysis: ${plantData.photoDescription}`;
+  }
+
   prompt += `\n\nPlease provide just the plant name, nothing else. The name should be creative, memorable, and reflect the plant's characteristics.`;
 
   return prompt;
+}
+
+export async function analyzePhotoAndSetDescription(
+  imageUri: string,
+  setIsAnalyzing: (analyzing: boolean) => void,
+  setDescription: (description: string) => void,
+  onError?: (error: string) => void
+): Promise<void> {
+  setIsAnalyzing(true);
+  try {
+    let description = await generatePhotoDescription(imageUri);
+    setDescription(description);
+  } catch (error) {
+    console.error("Error analyzing photo:", error);
+    let errorMessage = "Failed to analyze photo. Please try again.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    if (onError) {
+      onError(errorMessage);
+    }
+  } finally {
+    setIsAnalyzing(false);
+  }
+}
+
+export async function generatePhotoDescription(
+  imageUri: string
+): Promise<string> {
+  let config = getAIConfig();
+
+  if (!config) {
+    throw new Error(
+      "AI configuration not found. Please set up your API key and provider in Settings."
+    );
+  }
+
+  try {
+    let model;
+    let provider;
+    let options = {
+      apiKey: config.apiKey,
+    };
+
+    if (config.provider === "OpenAI") {
+      provider = createOpenAI(options);
+      model = provider("gpt-4o");
+    } else if (config.provider === "Anthropic") {
+      provider = createAnthropic(options);
+      model = provider("claude-3-5-sonnet-20241022");
+    } else {
+      throw new Error("Unsupported AI provider");
+    }
+
+    let result = await generateText({
+      model,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: "Analyze this plant photo and provide a detailed description of its appearance, including leaf shape, color, texture, size, and any notable characteristics. Focus on botanical features that would help identify or describe the plant.",
+            },
+            {
+              type: "image",
+              image: imageUri,
+            },
+          ],
+        },
+      ],
+    });
+
+    let description = result.text.trim();
+
+    if (!description) {
+      throw new Error("No description generated");
+    }
+
+    return description;
+  } catch (error) {
+    console.error("Error generating photo description:", error);
+
+    if (error instanceof Error) {
+      if (error.message.includes("API key")) {
+        throw new Error("Invalid API key. Please check your AI settings.");
+      }
+      if (
+        error.message.includes("quota") ||
+        error.message.includes("billing")
+      ) {
+        throw new Error(
+          "API quota exceeded. Please check your account billing."
+        );
+      }
+      if (
+        error.message.includes("network") ||
+        error.message.includes("fetch")
+      ) {
+        throw new Error(
+          "Network error. Please check your internet connection."
+        );
+      }
+    }
+
+    throw new Error("Failed to analyze photo. Please try again.");
+  }
 }
 
 export async function generatePlantName(plantData: PlantData): Promise<string> {
