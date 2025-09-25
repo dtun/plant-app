@@ -20,10 +20,6 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="ai-setup"
-          options={{ headerShown: true, presentation: "modal" }}
-        />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

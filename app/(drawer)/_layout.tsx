@@ -35,6 +35,14 @@ export default function DrawerLayout() {
           ),
         }}
       />
+      <Drawer.Screen
+        name="ai-setup"
+        options={{
+          drawerLabel: "AI Setup",
+          title: "AI Setup",
+          drawerItemStyle: { display: "none" },
+        }}
+      />
     </Drawer>
   );
 }
