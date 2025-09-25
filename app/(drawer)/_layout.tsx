@@ -25,6 +25,7 @@ export default function DrawerLayout() {
           ),
           headerTitle: "",
           headerShown: true,
+          headerTintColor: Colors[colorScheme ?? "light"].tint,
         }}
       />
       <Drawer.Screen
