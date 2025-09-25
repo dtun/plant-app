@@ -19,7 +19,6 @@ import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   Alert,
-  Image,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -40,7 +39,11 @@ type PlantFormData = z.infer<typeof plantSchema>;
 
 let sizeOptions = ["Small", "Medium", "Large"] as const;
 
-export function PlantForm() {
+export function PlantForm({
+  onImageChange,
+}: {
+  onImageChange?: (imageUri: string | null) => void;
+}) {
   let navigation = useNavigation();
   let textColor = useThemeColor({}, "text");
   let backgroundColor = useThemeColor({}, "background");
@@ -81,6 +84,7 @@ export function PlantForm() {
     let result = await pickImageFromLibrary();
     if (!result.cancelled) {
       setSelectedImage(result.uri);
+      onImageChange?.(result.uri);
       await analyzePhotoAndSetDescription(
         result.uri,
         setIsAnalyzing,
@@ -94,6 +98,7 @@ export function PlantForm() {
     let result = await takePhotoWithCamera();
     if (!result.cancelled) {
       setSelectedImage(result.uri);
+      onImageChange?.(result.uri);
       await analyzePhotoAndSetDescription(
         result.uri,
         setIsAnalyzing,
@@ -110,6 +115,7 @@ export function PlantForm() {
   function removePhoto() {
     setSelectedImage(null);
     setValue("photoDescription", "");
+    onImageChange?.(null);
   }
 
   async function onSubmit(data: PlantFormData) {
@@ -159,7 +165,8 @@ export function PlantForm() {
   let handleReset = useCallback(() => {
     reset();
     setSelectedImage(null);
-  }, [reset, setSelectedImage]);
+    onImageChange?.(null);
+  }, [reset, setSelectedImage, onImageChange]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -184,31 +191,7 @@ export function PlantForm() {
 
   return (
     <ThemedView style={styles.container}>
-      {selectedImage ? (
-        <View style={styles.photoContainer}>
-          <Image
-            source={{ uri: selectedImage }}
-            style={styles.photoPreview}
-            accessible={true}
-            accessibilityRole="image"
-            accessibilityLabel="Selected plant photo"
-          />
-          <TouchableOpacity
-            style={[styles.photoButton, styles.removePhotoButton]}
-            onPress={removePhoto}
-            accessible={true}
-            accessibilityRole="button"
-            accessibilityLabel="Remove photo"
-            accessibilityHint="Remove the selected plant photo"
-          >
-            <ThemedText
-              style={[styles.photoButtonText, styles.removePhotoButtonText]}
-            >
-              Remove Photo
-            </ThemedText>
-          </TouchableOpacity>
-        </View>
-      ) : (
+      {!selectedImage && (
         <TouchableOpacity
           style={[
             styles.primaryPhotoButton,
@@ -233,6 +216,9 @@ export function PlantForm() {
       {isAnalyzing && (
         <View style={styles.analyzingContainer}>
           <ActivityIndicator size="small" color={tintColor} />
+          <ThemedText style={styles.analyzingText}>
+            Analyzing photo...
+          </ThemedText>
         </View>
       )}
 
@@ -241,9 +227,28 @@ export function PlantForm() {
         name="photoDescription"
         render={({ field: { onChange, onBlur, value } }) => (
           <View style={[styles.fieldContainer, !value && styles.hiddenField]}>
-            <ThemedText type="defaultSemiBold" style={styles.label}>
-              Photo Analysis
-            </ThemedText>
+            <View style={styles.labelRow}>
+              <ThemedText type="defaultSemiBold" style={styles.label}>
+                Photo Analysis
+              </ThemedText>
+              {selectedImage && (
+                <TouchableOpacity
+                  onPress={removePhoto}
+                  accessible={true}
+                  accessibilityRole="button"
+                  accessibilityLabel="Remove photo"
+                  accessibilityHint="Remove the selected plant photo"
+                  style={styles.removePhotoButton}
+                >
+                  <IconSymbol name="trash" size={16} color={tintColor} />
+                  <ThemedText
+                    style={[styles.removePhotoText, { color: tintColor }]}
+                  >
+                    Remove Photo
+                  </ThemedText>
+                </TouchableOpacity>
+              )}
+            </View>
             <TextInput
               style={[
                 styles.input,
@@ -421,6 +426,12 @@ let styles = StyleSheet.create({
   label: {
     marginBottom: 8,
   },
+  labelRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
   input: {
     borderWidth: 1,
     borderRadius: 8,
@@ -496,22 +507,31 @@ let styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  photoContainer: {
+  photoCard: {
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 16,
+    marginBottom: 16,
+  },
+  imageContainer: {
+    position: "relative",
     alignItems: "center",
-    gap: 12,
   },
   photoPreview: {
-    width: 200,
-    height: 200,
+    width: 240,
+    height: 240,
     borderRadius: 8,
   },
-  photoButton: {
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 16,
+  removePhotoOverlay: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    borderRadius: 16,
+    width: 32,
+    height: 32,
     alignItems: "center",
-    marginVertical: 8,
-    borderStyle: "dashed",
+    justifyContent: "center",
   },
   primaryPhotoButton: {
     borderWidth: 2,
@@ -534,19 +554,13 @@ let styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
   },
-  removePhotoButton: {
-    backgroundColor: "#ff4444",
-    borderColor: "#ff4444",
-  },
-  removePhotoButtonText: {
-    color: "#fff",
-  },
   analyzingContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    marginTop: 8,
+    marginTop: 12,
+    paddingVertical: 8,
   },
   analyzingText: {
     fontSize: 14,
@@ -560,5 +574,16 @@ let styles = StyleSheet.create({
     marginTop: 4,
     fontStyle: "italic",
     opacity: 0.7,
+  },
+  removePhotoButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+  },
+  removePhotoText: {
+    fontSize: 14,
+    fontWeight: "500",
   },
 });
