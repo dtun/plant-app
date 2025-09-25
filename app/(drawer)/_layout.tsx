@@ -7,11 +7,12 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 
 export default function DrawerLayout() {
   let colorScheme = useColorScheme();
+  let tintColor = Colors[colorScheme ?? "light"].tint;
 
   return (
     <Drawer
       screenOptions={{
-        drawerActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        drawerActiveTintColor: tintColor,
         headerShown: false,
       }}
     >
@@ -25,7 +26,8 @@ export default function DrawerLayout() {
           ),
           headerTitle: "",
           headerShown: true,
-          headerTintColor: Colors[colorScheme ?? "light"].tint,
+          headerTintColor: tintColor,
+          headerTransparent: true,
         }}
       />
       <Drawer.Screen
