@@ -430,24 +430,6 @@ let styles = StyleSheet.create({
   fieldContainer: {
     marginBottom: 20,
   },
-  photoFieldContainer: {
-    marginBottom: 32,
-    padding: 20,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.1)",
-  },
-  photoFieldLabel: {
-    marginBottom: 4,
-    fontSize: 18,
-    textAlign: "center",
-  },
-  photoFieldSubtext: {
-    fontSize: 14,
-    opacity: 0.7,
-    textAlign: "center",
-    marginBottom: 16,
-  },
   label: {
     marginBottom: 8,
   },
@@ -559,16 +541,6 @@ let styles = StyleSheet.create({
   primaryPhotoButtonText: {
     fontSize: 18,
     fontWeight: "600",
-  },
-  primaryPhotoButtonSubtext: {
-    fontSize: 14,
-    opacity: 0.7,
-    textAlign: "center",
-  },
-  photoButtonContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
   },
   photoButtonText: {
     fontSize: 16,
