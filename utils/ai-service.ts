@@ -7,8 +7,7 @@ import "expo-sqlite/localStorage/install";
 
 export interface PlantData {
   plantType: string;
-  appearance: string;
-  personality?: string;
+  description: string;
   photoDescription?: string;
   size: "Small" | "Medium" | "Large";
 }
@@ -97,18 +96,14 @@ function createPrompt(plantData: PlantData): string {
   let prompt = `Generate a cute, gentle, and endearing name for a plant with the following characteristics:
 
 Plant Type: ${plantData.plantType}
-Appearance: ${plantData.appearance}
+Description: ${plantData.description}
 Size: ${plantData.size}`;
-
-  if (plantData.personality) {
-    prompt += `\nPersonality: ${plantData.personality}`;
-  }
 
   if (plantData.photoDescription) {
     prompt += `\nPhoto Analysis: ${plantData.photoDescription}`;
   }
 
-  prompt += `\nThe name should be sweet, adorable, and friendly - the kind of cute names a plant parent would lovingly call their plant. 
+  prompt += `\nThe name should be sweet, adorable, and friendly - the kind of cute names a plant parent would lovingly call their plant.
 Think of names that are charming, whimsical, and bring a smile to people's faces.
 Avoid anything too dramatic or intense - focus on gentle, cute, and heartwarming names.
 The name should be creative, memorable, and reflect the plant's characteristics.

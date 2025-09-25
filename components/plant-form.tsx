@@ -28,8 +28,7 @@ import { z } from "zod";
 
 let plantSchema = z.object({
   plantType: z.string().min(1, "Plant type is required"),
-  appearance: z.string().min(1, "Appearance is required"),
-  personality: z.string().optional(),
+  description: z.string().min(1, "Plant description is required"),
   photoDescription: z.string().optional(),
   size: z.enum(["Small", "Medium", "Large"], {
     required_error: "Size is required",
@@ -60,8 +59,7 @@ export function PlantForm() {
     resolver: zodResolver(plantSchema),
     defaultValues: {
       plantType: "",
-      appearance: "",
-      personality: "",
+      description: "",
       photoDescription: "",
       size: undefined,
     },
@@ -108,8 +106,7 @@ export function PlantForm() {
     try {
       let plantData: PlantData = {
         plantType: data.plantType,
-        appearance: data.appearance,
-        personality: data.personality || undefined,
+        description: data.description,
         photoDescription: data.photoDescription || undefined,
         size: data.size,
       };
@@ -272,59 +269,34 @@ export function PlantForm() {
       </View>
       <View style={styles.fieldContainer}>
         <ThemedText type="defaultSemiBold" style={styles.label}>
-          Appearance *
+          Plant Description *
         </ThemedText>
         <Controller
           control={control}
-          name="appearance"
+          name="description"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               style={[
                 styles.input,
                 styles.textArea,
                 { color: textColor, borderColor, backgroundColor },
-                errors.appearance && styles.inputError,
+                errors.description && styles.inputError,
               ]}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              placeholder="Describe how your plant looks"
+              placeholder="Describe your plant's appearance and personality"
               placeholderTextColor={placeholderColor}
               multiline
-              numberOfLines={3}
+              numberOfLines={5}
             />
           )}
         />
-        {errors.appearance && (
+        {errors.description && (
           <ThemedText style={styles.errorText}>
-            {errors.appearance.message}
+            {errors.description.message}
           </ThemedText>
         )}
-      </View>
-      <View style={styles.fieldContainer}>
-        <ThemedText type="defaultSemiBold" style={styles.label}>
-          Personality (Optional)
-        </ThemedText>
-        <Controller
-          control={control}
-          name="personality"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={[
-                styles.input,
-                styles.textArea,
-                { color: textColor, borderColor, backgroundColor },
-              ]}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value || ""}
-              placeholder="Describe your plant's personality"
-              placeholderTextColor={placeholderColor}
-              multiline
-              numberOfLines={2}
-            />
-          )}
-        />
       </View>
 
       <View style={styles.fieldContainer}>
