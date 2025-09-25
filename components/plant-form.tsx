@@ -421,9 +421,10 @@ export function PlantForm() {
 }
 
 let styles = StyleSheet.create({
-  container: {},
+  container: {
+    gap: 12,
+  },
   title: {
-    marginBottom: 24,
     textAlign: "center",
   },
   fieldContainer: {
