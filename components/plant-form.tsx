@@ -1,24 +1,36 @@
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useThemeColor } from "@/hooks/use-theme-color";
-import { generatePlantName, type PlantData } from "@/utils/ai-service";
+import {
+  analyzePhotoAndSetDescription,
+  generatePlantName,
+  type PlantData,
+} from "@/utils/ai-service";
+import {
+  pickImageFromLibrary,
+  showPhotoPickerAlert,
+  takePhotoWithCamera,
+} from "@/utils/photo-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   Alert,
+  Image,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { z } from "zod";
-import { ThemedText } from "./themed-text";
-import { ThemedView } from "./themed-view";
 
 let plantSchema = z.object({
   plantType: z.string().min(1, "Plant type is required"),
   appearance: z.string().min(1, "Appearance is required"),
   personality: z.string().optional(),
+  photoDescription: z.string().optional(),
   size: z.enum(["Small", "Medium", "Large"], {
     required_error: "Size is required",
   }),
@@ -35,11 +47,14 @@ export function PlantForm() {
   let placeholderColor = useThemeColor({ light: "#999", dark: "#666" }, "text");
   let tintColor = useThemeColor({}, "tint");
   let [isGenerating, setIsGenerating] = useState(false);
+  let [selectedImage, setSelectedImage] = useState<string | null>(null);
+  let [isAnalyzing, setIsAnalyzing] = useState(false);
 
   let {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<PlantFormData>({
     resolver: zodResolver(plantSchema),
@@ -47,9 +62,45 @@ export function PlantForm() {
       plantType: "",
       appearance: "",
       personality: "",
+      photoDescription: "",
       size: undefined,
     },
   });
+
+  async function handlePickImage() {
+    let result = await pickImageFromLibrary();
+    if (!result.cancelled) {
+      setSelectedImage(result.uri);
+      await analyzePhotoAndSetDescription(
+        result.uri,
+        setIsAnalyzing,
+        (description) => setValue("photoDescription", description),
+        (error) => Alert.alert("Photo Analysis Error", error)
+      );
+    }
+  }
+
+  async function handleTakePhoto() {
+    let result = await takePhotoWithCamera();
+    if (!result.cancelled) {
+      setSelectedImage(result.uri);
+      await analyzePhotoAndSetDescription(
+        result.uri,
+        setIsAnalyzing,
+        (description) => setValue("photoDescription", description),
+        (error) => Alert.alert("Photo Analysis Error", error)
+      );
+    }
+  }
+
+  function handleShowImagePicker() {
+    showPhotoPickerAlert(handleTakePhoto, handlePickImage);
+  }
+
+  function removePhoto() {
+    setSelectedImage(null);
+    setValue("photoDescription", "");
+  }
 
   async function onSubmit(data: PlantFormData) {
     setIsGenerating(true);
@@ -59,6 +110,7 @@ export function PlantForm() {
         plantType: data.plantType,
         appearance: data.appearance,
         personality: data.personality || undefined,
+        photoDescription: data.photoDescription || undefined,
         size: data.size,
       };
 
@@ -104,6 +156,92 @@ export function PlantForm() {
       <ThemedText type="title" style={styles.title}>
         Describe Your Plant
       </ThemedText>
+
+      {selectedImage ? (
+        <View style={styles.photoContainer}>
+          <Image
+            source={{ uri: selectedImage }}
+            style={styles.photoPreview}
+            accessible={true}
+            accessibilityRole="image"
+            accessibilityLabel="Selected plant photo"
+          />
+          <TouchableOpacity
+            style={[styles.photoButton, styles.removePhotoButton]}
+            onPress={removePhoto}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Remove photo"
+            accessibilityHint="Remove the selected plant photo"
+          >
+            <ThemedText
+              style={[styles.photoButtonText, styles.removePhotoButtonText]}
+            >
+              Remove Photo
+            </ThemedText>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <TouchableOpacity
+          style={[
+            styles.primaryPhotoButton,
+            { borderColor: tintColor, backgroundColor: `${tintColor}15` },
+          ]}
+          onPress={handleShowImagePicker}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Add plant photo"
+          accessibilityHint="Take a photo or select from library to help identify your plant"
+        >
+          <View style={styles.primaryPhotoButtonContent}>
+            <IconSymbol name="camera.fill" size={32} color={tintColor} />
+            <ThemedText
+              style={[styles.primaryPhotoButtonText, { color: tintColor }]}
+            >
+              Add Plant Photo
+            </ThemedText>
+          </View>
+        </TouchableOpacity>
+      )}
+      {isAnalyzing && (
+        <View style={styles.analyzingContainer}>
+          <ActivityIndicator size="small" color={tintColor} />
+          <ThemedText style={styles.analyzingText}>
+            Analyzing photo...
+          </ThemedText>
+        </View>
+      )}
+
+      <Controller
+        control={control}
+        name="photoDescription"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <View style={[styles.fieldContainer, !value && styles.hiddenField]}>
+            <ThemedText type="defaultSemiBold" style={styles.label}>
+              AI Photo Analysis
+            </ThemedText>
+            <TextInput
+              style={[
+                styles.input,
+                styles.textArea,
+                { color: textColor, borderColor, backgroundColor },
+              ]}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value || ""}
+              placeholder="AI-generated description will appear here"
+              placeholderTextColor={placeholderColor}
+              multiline
+              numberOfLines={4}
+              editable={true}
+            />
+            <ThemedText style={styles.helpText}>
+              You can edit the AI-generated description if needed
+            </ThemedText>
+          </View>
+        )}
+      />
+
       <View style={styles.fieldContainer}>
         <ThemedText type="defaultSemiBold" style={styles.label}>
           Plant Type *
@@ -188,6 +326,7 @@ export function PlantForm() {
           )}
         />
       </View>
+
       <View style={styles.fieldContainer}>
         <ThemedText type="defaultSemiBold" style={styles.label}>
           Size *
@@ -209,6 +348,10 @@ export function PlantForm() {
                     ],
                   ]}
                   onPress={() => onChange(size)}
+                  accessible={true}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Select ${size.toLowerCase()} size`}
+                  accessibilityState={{ selected: value === size }}
                 >
                   <ThemedText
                     style={[
@@ -238,6 +381,13 @@ export function PlantForm() {
           ]}
           onPress={handleSubmit(onSubmit)}
           disabled={isGenerating}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel={
+            isGenerating ? "Generating plant name" : "Generate plant name"
+          }
+          accessibilityHint="Create a unique name for your plant based on the provided details"
+          accessibilityState={{ disabled: isGenerating }}
         >
           {isGenerating ? (
             <View style={styles.buttonContent}>
@@ -258,6 +408,10 @@ export function PlantForm() {
         <TouchableOpacity
           style={[styles.button, styles.resetButton, { borderColor }]}
           onPress={handleReset}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Reset form"
+          accessibilityHint="Clear all form fields and start over"
         >
           <ThemedText style={styles.resetButtonText}>Reset</ThemedText>
         </TouchableOpacity>
@@ -274,6 +428,24 @@ let styles = StyleSheet.create({
   },
   fieldContainer: {
     marginBottom: 20,
+  },
+  photoFieldContainer: {
+    marginBottom: 32,
+    padding: 20,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.1)",
+  },
+  photoFieldLabel: {
+    marginBottom: 4,
+    fontSize: 18,
+    textAlign: "center",
+  },
+  photoFieldSubtext: {
+    fontSize: 14,
+    opacity: 0.7,
+    textAlign: "center",
+    marginBottom: 16,
   },
   label: {
     marginBottom: 8,
@@ -352,5 +524,80 @@ let styles = StyleSheet.create({
   resetButtonText: {
     fontSize: 16,
     fontWeight: "600",
+  },
+  photoContainer: {
+    alignItems: "center",
+    gap: 12,
+  },
+  photoPreview: {
+    width: 200,
+    height: 200,
+    borderRadius: 8,
+  },
+  photoButton: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 16,
+    alignItems: "center",
+    marginVertical: 8,
+    borderStyle: "dashed",
+  },
+  primaryPhotoButton: {
+    borderWidth: 2,
+    borderRadius: 12,
+    padding: 24,
+    alignItems: "center",
+    marginVertical: 8,
+    minHeight: 120,
+    justifyContent: "center",
+  },
+  primaryPhotoButtonContent: {
+    alignItems: "center",
+    gap: 12,
+  },
+  primaryPhotoButtonText: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  primaryPhotoButtonSubtext: {
+    fontSize: 14,
+    opacity: 0.7,
+    textAlign: "center",
+  },
+  photoButtonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  photoButtonText: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  removePhotoButton: {
+    backgroundColor: "#ff4444",
+    borderColor: "#ff4444",
+  },
+  removePhotoButtonText: {
+    color: "#fff",
+  },
+  analyzingContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    marginTop: 8,
+  },
+  analyzingText: {
+    fontSize: 14,
+    fontStyle: "italic",
+  },
+  hiddenField: {
+    display: "none",
+  },
+  helpText: {
+    fontSize: 12,
+    marginTop: 4,
+    fontStyle: "italic",
+    opacity: 0.7,
   },
 });
