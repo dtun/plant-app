@@ -41,6 +41,58 @@ function getAIConfig(): AIConfig | null {
   }
 }
 
+type ModelType = "vision" | "text";
+
+let modelMappings = {
+  OpenAI: {
+    vision: "gpt-4o",
+    text: "gpt-4o-mini",
+  },
+  Anthropic: {
+    vision: "claude-3-5-sonnet-20241022",
+    text: "claude-3-haiku-20240307",
+  },
+} as const;
+
+function createAIModel(config: AIConfig, modelType: ModelType) {
+  let options = {
+    apiKey: config.apiKey,
+  };
+
+  let provider;
+  let modelName;
+
+  if (config.provider === "OpenAI") {
+    provider = createOpenAI(options);
+    modelName = modelMappings.OpenAI[modelType];
+  } else if (config.provider === "Anthropic") {
+    provider = createAnthropic(options);
+    modelName = modelMappings.Anthropic[modelType];
+  } else {
+    throw new Error("Unsupported AI provider");
+  }
+
+  return provider(modelName);
+}
+
+function handleAIError(error: unknown, operation: string): never {
+  console.error(`Error ${operation}:`, error);
+
+  if (error instanceof Error) {
+    if (error.message.includes("API key")) {
+      throw new Error("Invalid API key. Please check your AI settings.");
+    }
+    if (error.message.includes("quota") || error.message.includes("billing")) {
+      throw new Error("API quota exceeded. Please check your account billing.");
+    }
+    if (error.message.includes("network") || error.message.includes("fetch")) {
+      throw new Error("Network error. Please check your internet connection.");
+    }
+  }
+
+  throw new Error(`Failed to ${operation}. Please try again.`);
+}
+
 function createPrompt(plantData: PlantData): string {
   let prompt = `Generate a creative and meaningful name for a plant based on these details:
 
@@ -97,21 +149,7 @@ export async function generatePhotoDescription(
   }
 
   try {
-    let model;
-    let provider;
-    let options = {
-      apiKey: config.apiKey,
-    };
-
-    if (config.provider === "OpenAI") {
-      provider = createOpenAI(options);
-      model = provider("gpt-4o");
-    } else if (config.provider === "Anthropic") {
-      provider = createAnthropic(options);
-      model = provider("claude-3-5-sonnet-20241022");
-    } else {
-      throw new Error("Unsupported AI provider");
-    }
+    let model = createAIModel(config, "vision");
 
     let result = await generateText({
       model,
@@ -140,31 +178,7 @@ export async function generatePhotoDescription(
 
     return description;
   } catch (error) {
-    console.error("Error generating photo description:", error);
-
-    if (error instanceof Error) {
-      if (error.message.includes("API key")) {
-        throw new Error("Invalid API key. Please check your AI settings.");
-      }
-      if (
-        error.message.includes("quota") ||
-        error.message.includes("billing")
-      ) {
-        throw new Error(
-          "API quota exceeded. Please check your account billing."
-        );
-      }
-      if (
-        error.message.includes("network") ||
-        error.message.includes("fetch")
-      ) {
-        throw new Error(
-          "Network error. Please check your internet connection."
-        );
-      }
-    }
-
-    throw new Error("Failed to analyze photo. Please try again.");
+    handleAIError(error, "analyze photo");
   }
 }
 
@@ -178,23 +192,9 @@ export async function generatePlantName(plantData: PlantData): Promise<string> {
   }
 
   let prompt = createPrompt(plantData);
-  let provider;
 
   try {
-    let model;
-    let options = {
-      apiKey: config.apiKey,
-    };
-
-    if (config.provider === "OpenAI") {
-      provider = createOpenAI(options);
-      model = provider("gpt-4o-mini");
-    } else if (config.provider === "Anthropic") {
-      provider = createAnthropic(options);
-      model = provider("claude-3-haiku-20240307");
-    } else {
-      throw new Error("Unsupported AI provider");
-    }
+    let model = createAIModel(config, "text");
 
     let result = await generateText({
       model,
@@ -209,30 +209,6 @@ export async function generatePlantName(plantData: PlantData): Promise<string> {
 
     return plantName;
   } catch (error) {
-    console.error("Error generating plant name:", error);
-
-    if (error instanceof Error) {
-      if (error.message.includes("API key")) {
-        throw new Error("Invalid API key. Please check your AI settings.");
-      }
-      if (
-        error.message.includes("quota") ||
-        error.message.includes("billing")
-      ) {
-        throw new Error(
-          "API quota exceeded. Please check your account billing."
-        );
-      }
-      if (
-        error.message.includes("network") ||
-        error.message.includes("fetch")
-      ) {
-        throw new Error(
-          "Network error. Please check your internet connection."
-        );
-      }
-    }
-
-    throw new Error("Failed to generate plant name. Please try again.");
+    handleAIError(error, "generate plant name");
   }
 }
