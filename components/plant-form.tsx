@@ -26,14 +26,23 @@ import {
 } from "react-native";
 import { z } from "zod";
 
-let plantSchema = z.object({
-  plantType: z.string().optional(),
-  description: z.string().optional(),
-  photoDescription: z.string().optional(),
-  size: z.enum(["Small", "Medium", "Large"], {
-    required_error: "Size is required",
-  }),
-});
+let plantSchema = z
+  .object({
+    plantType: z.string().optional(),
+    description: z.string().optional(),
+    photoDescription: z.string().optional(),
+    size: z.enum(["Small", "Medium", "Large"]).optional(),
+  })
+  .refine(
+    (data) => {
+      // Description is required only if photoDescription is not provided
+      return !!(data.description || data.photoDescription);
+    },
+    {
+      message: "Either plant description or photo analysis is required",
+      path: ["description"], // Error shows on description field
+    }
+  );
 
 type PlantFormData = z.infer<typeof plantSchema>;
 
@@ -124,9 +133,9 @@ export function PlantForm({
     try {
       let plantData: PlantData = {
         plantType: data.plantType || "Unknown",
-        description: data.description || "Unknown",
+        description: data.description || data.photoDescription || "Unknown",
         photoDescription: data.photoDescription || undefined,
-        size: data.size,
+        size: data.size || undefined,
       };
 
       let plantName = await generatePlantName(plantData);

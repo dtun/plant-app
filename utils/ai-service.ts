@@ -9,7 +9,7 @@ export interface PlantData {
   plantType: string;
   description: string;
   photoDescription?: string;
-  size: "Small" | "Medium" | "Large";
+  size?: "Small" | "Medium" | "Large";
 }
 
 let aiConfigSchema = z.object({
@@ -96,8 +96,11 @@ function createPrompt(plantData: PlantData): string {
   let prompt = `Generate a cute, gentle, and endearing name for a plant with the following characteristics:
 
 Plant Type: ${plantData.plantType}
-Description: ${plantData.description}
-Size: ${plantData.size}`;
+Description: ${plantData.description}`;
+
+  if (plantData.size) {
+    prompt += `\nSize: ${plantData.size}`;
+  }
 
   if (plantData.photoDescription) {
     prompt += `\nPhoto Analysis: ${plantData.photoDescription}`;
