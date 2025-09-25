@@ -73,3 +73,57 @@ let calculateTotal = function (items) {
 1. **For variables:** Ask "Will this value ever change?" If yes → `let`, If no and it's a true constant → `const`
 2. **For functions:** Use `function` declaration unless there's a specific technical exception that requires explanation
 3. **When in doubt:** Default to `let` for variables and `function` for functions
+
+## AI Integration Architecture
+
+### Provider Abstraction Pattern
+
+- Use AI SDK with createOpenAI() and createAnthropic() for provider abstraction
+- Support multiple AI providers (OpenAI, Anthropic) with unified interface
+- Store provider choice and API keys in localStorage using expo-sqlite polyfill
+
+### Model Selection Strategy
+
+- **Photo Analysis**: Use vision-capable models (GPT-4o, Claude-3.5-Sonnet)
+- **Name Generation**: Use lighter models (GPT-4o-mini, Claude-3-Haiku) for cost efficiency
+- Structured error handling with user-friendly messages for common API issues
+
+## Form & Validation Strategy
+
+### React Hook Form + Zod Pattern
+
+- Use `useForm` with `zodResolver` for type-safe validation
+- Controller components for controlled form inputs
+- Schema-first validation with TypeScript inference using `z.infer`
+
+## State Management Philosophy
+
+### Local State Only
+
+- Use React hooks (`useState`, `useCallback`) for component state
+- localStorage for persistent settings only
+
+### State Patterns
+
+- Loading states for async operations (`isGenerating`, `isAnalyzing`)
+- Error boundaries handled at component level
+- Form state managed by React Hook Form
+
+## UI/UX Patterns
+
+### Theme System
+
+- `useThemeColor` hook for consistent theming
+- Support light/dark modes with automatic switching
+- Dynamic color application for borders, text, and backgrounds
+
+### Navigation Structure
+
+- Drawer navigation for main app structure
+- File-based routing with Expo Router
+
+### Accessibility
+
+- Proper `accessibilityRole`, `accessibilityLabel`, and `accessibilityHint`
+- Screen reader support for all interactive elements
+- High contrast support through theme system
