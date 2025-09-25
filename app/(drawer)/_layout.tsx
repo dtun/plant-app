@@ -23,6 +23,8 @@ export default function DrawerLayout() {
           drawerIcon: ({ color }) => (
             <IconSymbol size={28} name="house.fill" color={color} />
           ),
+          headerTitle: "",
+          headerShown: true,
         }}
       />
       <Drawer.Screen

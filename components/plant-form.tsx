@@ -13,7 +13,8 @@ import {
   takePhotoWithCamera,
 } from "@/utils/photo-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import React, { useCallback, useLayoutEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -40,6 +41,7 @@ type PlantFormData = z.infer<typeof plantSchema>;
 let sizeOptions = ["Small", "Medium", "Large"] as const;
 
 export function PlantForm() {
+  let navigation = useNavigation();
   let textColor = useThemeColor({}, "text");
   let backgroundColor = useThemeColor({}, "background");
   let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
@@ -54,6 +56,7 @@ export function PlantForm() {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<PlantFormData>({
     resolver: zodResolver(plantSchema),
@@ -63,6 +66,21 @@ export function PlantForm() {
       photoDescription: "",
       size: undefined,
     },
+  });
+
+  let watchedFields = watch();
+  let hasFieldsWithValues = !!(
+    watchedFields.plantType ||
+    watchedFields.description ||
+    watchedFields.photoDescription ||
+    watchedFields.size ||
+    selectedImage
+  );
+
+  console.log("Form values:", {
+    watchedFields,
+    hasFieldsWithValues,
+    selectedImage,
   });
 
   async function handlePickImage() {
@@ -144,9 +162,31 @@ export function PlantForm() {
     }
   }
 
-  function handleReset() {
+  let handleReset = useCallback(() => {
     reset();
-  }
+    setSelectedImage(null);
+  }, [reset, setSelectedImage]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: hasFieldsWithValues
+        ? () => (
+            <TouchableOpacity
+              onPress={handleReset}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Reset form"
+              accessibilityHint="Clear all form fields and start over"
+              style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+            >
+              <ThemedText style={{ color: tintColor, fontSize: 16 }}>
+                Reset
+              </ThemedText>
+            </TouchableOpacity>
+          )
+        : undefined,
+    });
+  }, [hasFieldsWithValues, navigation, handleReset, tintColor]);
 
   return (
     <ThemedView style={styles.container}>
@@ -375,17 +415,6 @@ export function PlantForm() {
               Generate Plant Name
             </ThemedText>
           )}
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.resetButton, { borderColor }]}
-          onPress={handleReset}
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Reset form"
-          accessibilityHint="Clear all form fields and start over"
-        >
-          <ThemedText style={styles.resetButtonText}>Reset</ThemedText>
         </TouchableOpacity>
       </View>
     </ThemedView>
