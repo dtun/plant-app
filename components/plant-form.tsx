@@ -400,7 +400,7 @@ let styles = StyleSheet.create({
     textAlign: "center",
   },
   fieldContainer: {
-    marginBottom: 20,
+    marginBottom: 8,
   },
   label: {
     marginBottom: 8,
@@ -445,7 +445,7 @@ let styles = StyleSheet.create({
     fontWeight: "600",
   },
   buttonContainer: {
-    marginTop: 32,
+    marginTop: 16,
     gap: 12,
   },
   button: {
