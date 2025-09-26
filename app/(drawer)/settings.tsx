@@ -64,12 +64,14 @@ let styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: "row",
-    alignItems: "center",
+    alignSelf: "center",
     gap: 8,
     marginBottom: 32,
+    padding: 16,
   },
   settingsContainer: {
     flex: 1,
+    padding: 16,
   },
   settingItem: {
     borderBottomWidth: 1,

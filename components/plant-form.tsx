@@ -396,6 +396,7 @@ export function PlantForm({
 let styles = StyleSheet.create({
   container: {
     gap: 12,
+    padding: 16,
   },
   title: {
     textAlign: "center",
