@@ -28,19 +28,18 @@ import { z } from "zod";
 
 let plantSchema = z
   .object({
-    plantType: z.string().optional(),
-    description: z.string().optional(),
+    plantInput: z.string().optional(),
     photoDescription: z.string().optional(),
     size: z.enum(["Small", "Medium", "Large"]).optional(),
   })
   .refine(
     (data) => {
-      // Description is required only if photoDescription is not provided
-      return !!(data.description || data.photoDescription);
+      // Plant input is required only if photoDescription is not provided
+      return !!(data.plantInput || data.photoDescription);
     },
     {
-      message: "Either plant description or photo analysis is required",
-      path: ["description"], // Error shows on description field
+      message: "Please describe your plant or add a photo",
+      path: ["plantInput"], // Error shows on plant input field
     }
   );
 
@@ -73,8 +72,7 @@ export function PlantForm({
   } = useForm<PlantFormData>({
     resolver: zodResolver(plantSchema),
     defaultValues: {
-      plantType: "",
-      description: "",
+      plantInput: "",
       photoDescription: "",
       size: undefined,
     },
@@ -82,8 +80,7 @@ export function PlantForm({
 
   let watchedFields = watch();
   let hasFieldsWithValues = !!(
-    watchedFields.plantType ||
-    watchedFields.description ||
+    watchedFields.plantInput ||
     watchedFields.photoDescription ||
     watchedFields.size ||
     selectedImage
@@ -132,8 +129,8 @@ export function PlantForm({
 
     try {
       let plantData: PlantData = {
-        plantType: data.plantType || "Unknown",
-        description: data.description || data.photoDescription || "Unknown",
+        plantType: "Plant", // We'll let AI determine from the combined input
+        description: data.plantInput || data.photoDescription || "Unknown",
         photoDescription: data.photoDescription || undefined,
         size: data.size || undefined,
       };
@@ -200,28 +197,6 @@ export function PlantForm({
 
   return (
     <ThemedView style={styles.container}>
-      {!selectedImage && (
-        <TouchableOpacity
-          style={[
-            styles.primaryPhotoButton,
-            { borderColor: tintColor, backgroundColor: `${tintColor}15` },
-          ]}
-          onPress={handleShowImagePicker}
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Add plant photo"
-          accessibilityHint="Take a photo or select from library to help identify your plant"
-        >
-          <View style={styles.primaryPhotoButtonContent}>
-            <IconSymbol name="camera.fill" size={32} color={tintColor} />
-            <ThemedText
-              style={[styles.primaryPhotoButtonText, { color: tintColor }]}
-            >
-              Snap a Photo of Your Plant
-            </ThemedText>
-          </View>
-        </TouchableOpacity>
-      )}
       {isAnalyzing && (
         <View style={styles.analyzingContainer}>
           <ActivityIndicator size="small" color={tintColor} />
@@ -230,6 +205,28 @@ export function PlantForm({
           </ThemedText>
         </View>
       )}
+
+      {!selectedImage ? (
+        <TouchableOpacity
+          style={styles.chatPhotoButton}
+          onPress={handleShowImagePicker}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityLabel="Add plant photo"
+          accessibilityHint="Take a photo or select from library"
+        >
+          <View style={styles.labelRow}>
+            <ThemedText type="defaultSemiBold" style={styles.label}>
+              Add Photo
+            </ThemedText>
+            <IconSymbol
+              name={"camera.fill"}
+              size={20}
+              color={selectedImage ? "#4CAF50" : tintColor}
+            />
+          </View>
+        </TouchableOpacity>
+      ) : null}
 
       <Controller
         control={control}
@@ -282,66 +279,6 @@ export function PlantForm({
 
       <View style={styles.fieldContainer}>
         <ThemedText type="defaultSemiBold" style={styles.label}>
-          Plant Type
-        </ThemedText>
-        <Controller
-          control={control}
-          name="plantType"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={[
-                styles.input,
-                { color: textColor, borderColor, backgroundColor },
-                errors.plantType && styles.inputError,
-              ]}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              placeholder="e.g., Fiddle Leaf Fig"
-              placeholderTextColor={placeholderColor}
-            />
-          )}
-        />
-        {errors.plantType && (
-          <ThemedText style={styles.errorText}>
-            {errors.plantType.message}
-          </ThemedText>
-        )}
-      </View>
-      <View style={styles.fieldContainer}>
-        <ThemedText type="defaultSemiBold" style={styles.label}>
-          Plant Description
-        </ThemedText>
-        <Controller
-          control={control}
-          name="description"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <TextInput
-              style={[
-                styles.input,
-                styles.textArea,
-                { color: textColor, borderColor, backgroundColor },
-                errors.description && styles.inputError,
-              ]}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              placeholder="Describe your plant's appearance and personality"
-              placeholderTextColor={placeholderColor}
-              multiline
-              numberOfLines={5}
-            />
-          )}
-        />
-        {errors.description && (
-          <ThemedText style={styles.errorText}>
-            {errors.description.message}
-          </ThemedText>
-        )}
-      </View>
-
-      <View style={styles.fieldContainer}>
-        <ThemedText type="defaultSemiBold" style={styles.label}>
           Size
         </ThemedText>
         <Controller
@@ -385,6 +322,44 @@ export function PlantForm({
           </ThemedText>
         )}
       </View>
+
+      <View style={styles.chatInputContainer}>
+        <Controller
+          control={control}
+          name="plantInput"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <>
+              <View
+                style={[
+                  styles.chatInputWrapper,
+                  { borderColor, backgroundColor },
+                ]}
+              >
+                <TextInput
+                  style={[
+                    styles.chatInput,
+                    { color: textColor },
+                    errors.plantInput && styles.inputError,
+                  ]}
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  placeholder="Describe your plant type and appearance..."
+                  placeholderTextColor={placeholderColor}
+                  multiline
+                  textAlignVertical="top"
+                />
+              </View>
+              {errors.plantInput && (
+                <ThemedText style={styles.chatInputError}>
+                  {errors.plantInput.message}
+                </ThemedText>
+              )}
+            </>
+          )}
+        />
+      </View>
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[
@@ -430,16 +405,13 @@ let styles = StyleSheet.create({
     textAlign: "center",
   },
   fieldContainer: {
-    marginBottom: 8,
+    gap: 8,
   },
-  label: {
-    marginBottom: 8,
-  },
+  label: {},
   labelRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 8,
   },
   input: {
     borderWidth: 1,
@@ -461,7 +433,7 @@ let styles = StyleSheet.create({
   },
   sizeContainer: {
     flexDirection: "row",
-    gap: 12,
+    gap: 8,
   },
   sizeOption: {
     flex: 1,
@@ -481,7 +453,10 @@ let styles = StyleSheet.create({
     fontWeight: "600",
   },
   buttonContainer: {
-    marginTop: 16,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginTop: 8,
     gap: 12,
   },
   button: {
@@ -490,6 +465,7 @@ let styles = StyleSheet.create({
     alignItems: "center",
   },
   submitButton: {
+    flex: 1,
     // backgroundColor set dynamically via tintColor
   },
   resetButton: {
@@ -520,7 +496,7 @@ let styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     padding: 16,
-    marginBottom: 16,
+    marginBottom: 8,
   },
   imageContainer: {
     position: "relative",
@@ -553,7 +529,7 @@ let styles = StyleSheet.create({
   },
   primaryPhotoButtonContent: {
     alignItems: "center",
-    gap: 12,
+    gap: 4,
   },
   primaryPhotoButtonText: {
     fontSize: 18,
@@ -567,7 +543,7 @@ let styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
+    gap: 4,
     marginTop: 12,
     paddingVertical: 8,
   },
@@ -594,5 +570,31 @@ let styles = StyleSheet.create({
   removePhotoText: {
     fontSize: 14,
     fontWeight: "500",
+  },
+  chatInputContainer: {
+    marginTop: 8,
+  },
+  chatInputWrapper: {
+    flexDirection: "row",
+    borderWidth: 1,
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    minHeight: 120,
+  },
+  chatInput: {
+    flex: 1,
+    fontSize: 16,
+    maxHeight: 120,
+    paddingRight: 12,
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+  chatPhotoButton: {},
+  chatInputError: {
+    color: "#ff4444",
+    fontSize: 14,
+    marginTop: 8,
+    marginLeft: 16,
   },
 });
