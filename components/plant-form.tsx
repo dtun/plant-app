@@ -208,7 +208,7 @@ export function PlantForm({
 
       {!selectedImage ? (
         <TouchableOpacity
-          style={styles.chatPhotoButton}
+          style={[styles.chatPhotoButton, { borderColor }]}
           onPress={handleShowImagePicker}
           accessible={true}
           accessibilityRole="button"
@@ -219,11 +219,7 @@ export function PlantForm({
             <ThemedText type="defaultSemiBold" style={styles.label}>
               Add Photo
             </ThemedText>
-            <IconSymbol
-              name={"camera.fill"}
-              size={20}
-              color={selectedImage ? "#4CAF50" : tintColor}
-            />
+            <IconSymbol name="camera.fill" size={24} color={textColor} />
           </View>
         </TouchableOpacity>
       ) : null}
@@ -412,6 +408,7 @@ let styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    gap: 8,
   },
   input: {
     borderWidth: 1,
@@ -590,7 +587,14 @@ let styles = StyleSheet.create({
     paddingTop: 0,
     paddingBottom: 0,
   },
-  chatPhotoButton: {},
+  chatPhotoButton: {
+    paddingVertical: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
   chatInputError: {
     color: "#ff4444",
     fontSize: 14,
