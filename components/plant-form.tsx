@@ -14,6 +14,7 @@ import {
 } from "@/utils/photo-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigation } from "@react-navigation/native";
+import { Image } from "expo-image";
 import React, { useCallback, useLayoutEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -47,9 +48,7 @@ type PlantFormData = z.infer<typeof plantSchema>;
 
 let sizeOptions = ["Small", "Medium", "Large"] as const;
 
-export function PlantForm({
-  onImageChange,
-}: {
+export function PlantForm(_props: {
   onImageChange?: (imageUri: string | null) => void;
 }) {
   let navigation = useNavigation();
@@ -90,7 +89,6 @@ export function PlantForm({
     let result = await pickImageFromLibrary();
     if (!result.cancelled) {
       setSelectedImage(result.uri);
-      onImageChange?.(result.uri);
       await analyzePhotoAndSetDescription(
         result.uri,
         setIsAnalyzing,
@@ -104,7 +102,6 @@ export function PlantForm({
     let result = await takePhotoWithCamera();
     if (!result.cancelled) {
       setSelectedImage(result.uri);
-      onImageChange?.(result.uri);
       await analyzePhotoAndSetDescription(
         result.uri,
         setIsAnalyzing,
@@ -121,7 +118,6 @@ export function PlantForm({
   function removePhoto() {
     setSelectedImage(null);
     setValue("photoDescription", "");
-    onImageChange?.(null);
   }
 
   async function onSubmit(data: PlantFormData) {
@@ -171,8 +167,7 @@ export function PlantForm({
   let handleReset = useCallback(() => {
     reset();
     setSelectedImage(null);
-    onImageChange?.(null);
-  }, [reset, setSelectedImage, onImageChange]);
+  }, [reset, setSelectedImage]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -224,6 +219,7 @@ export function PlantForm({
               <ThemedText type="defaultSemiBold" style={styles.label}>
                 Photo Analysis
               </ThemedText>
+
               {selectedImage && (
                 <TouchableOpacity
                   onPress={removePhoto}
@@ -340,16 +336,26 @@ export function PlantForm({
           )}
         />
         <View style={styles.chatInputButtons}>
-          <TouchableOpacity
-            style={[styles.chatPhotoButton, { borderColor }]}
-            onPress={handleShowImagePicker}
-            accessible={true}
-            accessibilityRole="button"
-            accessibilityLabel="Add plant photo"
-            accessibilityHint="Take a photo or select from library"
-          >
-            <IconSymbol name="camera.fill" size={24} color={textColor} />
-          </TouchableOpacity>
+          <View style={styles.chatPhotoButtonContainer}>
+            <TouchableOpacity
+              style={[styles.chatPhotoButton, { borderColor }]}
+              onPress={handleShowImagePicker}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityLabel="Add plant photo"
+              accessibilityHint="Take a photo or select from library"
+            >
+              <IconSymbol name="camera.fill" size={24} color={textColor} />
+            </TouchableOpacity>
+            {selectedImage ? (
+              <Image
+                source={{ uri: selectedImage }}
+                style={styles.chatPhotoButtonImage}
+              />
+            ) : (
+              <></>
+            )}
+          </View>
           <TouchableOpacity
             style={[
               styles.button,
@@ -475,7 +481,6 @@ let styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 4,
-    marginTop: 12,
     paddingVertical: 8,
   },
   analyzingText: {
@@ -546,5 +551,16 @@ let styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     paddingVertical: 4,
+  },
+  chatPhotoButtonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  chatPhotoButtonImage: {
+    height: 48,
+    width: 48,
+    alignSelf: "center",
+    borderRadius: 8,
   },
 });
