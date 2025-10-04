@@ -322,7 +322,9 @@ export function PlantForm({
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  placeholder="Describe your plant..."
+                  placeholder={
+                    selectedImage ? "Anything else?" : "Describe your plant..."
+                  }
                   placeholderTextColor={placeholderColor}
                   multiline
                   textAlignVertical="top"
