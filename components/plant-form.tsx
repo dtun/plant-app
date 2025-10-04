@@ -74,7 +74,7 @@ export function PlantForm({
     defaultValues: {
       plantInput: "",
       photoDescription: "",
-      size: undefined,
+      size: "Small",
     },
   });
 
@@ -184,16 +184,25 @@ export function PlantForm({
               accessibilityRole="button"
               accessibilityLabel="Reset form"
               accessibilityHint="Clear all form fields and start over"
-              style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+              style={[styles.resetButton, { backgroundColor: backgroundColor }]}
             >
-              <ThemedText style={{ color: tintColor, fontSize: 16 }}>
+              <ThemedText
+                style={[styles.resetButtonText, { color: textColor }]}
+              >
                 Reset
               </ThemedText>
             </TouchableOpacity>
           )
-        : undefined,
+        : null,
     });
-  }, [hasFieldsWithValues, navigation, handleReset, tintColor]);
+  }, [
+    hasFieldsWithValues,
+    navigation,
+    handleReset,
+    tintColor,
+    textColor,
+    backgroundColor,
+  ]);
 
   return (
     <ThemedView style={styles.container}>
@@ -205,24 +214,6 @@ export function PlantForm({
           </ThemedText>
         </View>
       )}
-
-      {!selectedImage ? (
-        <TouchableOpacity
-          style={[styles.chatPhotoButton, { borderColor }]}
-          onPress={handleShowImagePicker}
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel="Add plant photo"
-          accessibilityHint="Take a photo or select from library"
-        >
-          <View style={styles.labelRow}>
-            <ThemedText type="defaultSemiBold" style={styles.label}>
-              Add Photo
-            </ThemedText>
-            <IconSymbol name="camera.fill" size={24} color={textColor} />
-          </View>
-        </TouchableOpacity>
-      ) : null}
 
       <Controller
         control={control}
@@ -242,12 +233,7 @@ export function PlantForm({
                   accessibilityHint="Remove the selected plant photo"
                   style={styles.removePhotoButton}
                 >
-                  <IconSymbol name="trash" size={16} color={tintColor} />
-                  <ThemedText
-                    style={[styles.removePhotoText, { color: tintColor }]}
-                  >
-                    Remove Photo
-                  </ThemedText>
+                  <IconSymbol name="trash" size={20} color={textColor} />
                 </TouchableOpacity>
               )}
             </View>
@@ -275,7 +261,7 @@ export function PlantForm({
 
       <View style={styles.fieldContainer}>
         <ThemedText type="defaultSemiBold" style={styles.label}>
-          Size
+          How big is your plant?
         </ThemedText>
         <Controller
           control={control}
@@ -287,10 +273,9 @@ export function PlantForm({
                   key={size}
                   style={[
                     styles.sizeOption,
-                    { borderColor },
                     value === size && [
                       styles.sizeOptionSelected,
-                      { backgroundColor: tintColor, borderColor: tintColor },
+                      { borderColor: borderColor },
                     ],
                   ]}
                   onPress={() => onChange(size)}
@@ -319,18 +304,15 @@ export function PlantForm({
         )}
       </View>
 
-      <View style={styles.chatInputContainer}>
+      <View
+        style={[styles.chatInputContainer, { borderColor, backgroundColor }]}
+      >
         <Controller
           control={control}
           name="plantInput"
           render={({ field: { onChange, onBlur, value } }) => (
             <>
-              <View
-                style={[
-                  styles.chatInputWrapper,
-                  { borderColor, backgroundColor },
-                ]}
-              >
+              <View style={[styles.chatInputWrapper]}>
                 <TextInput
                   style={[
                     styles.chatInput,
@@ -340,10 +322,11 @@ export function PlantForm({
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  placeholder="Describe your plant type and appearance..."
+                  placeholder="Describe your plant..."
                   placeholderTextColor={placeholderColor}
                   multiline
                   textAlignVertical="top"
+                  returnKeyType="done"
                 />
               </View>
               {errors.plantInput && (
@@ -354,40 +337,44 @@ export function PlantForm({
             </>
           )}
         />
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[
-            styles.button,
-            [styles.submitButton, { backgroundColor: tintColor }],
-            isGenerating && styles.buttonDisabled,
-          ]}
-          onPress={handleSubmit(onSubmit)}
-          disabled={isGenerating}
-          accessible={true}
-          accessibilityRole="button"
-          accessibilityLabel={
-            isGenerating ? "Generating plant name" : "Generate plant name"
-          }
-          accessibilityHint="Create a unique name for your plant based on the provided details"
-          accessibilityState={{ disabled: isGenerating }}
-        >
-          {isGenerating ? (
-            <View style={styles.buttonContent}>
-              <ActivityIndicator size="small" color="#fff" />
-              <ThemedText
-                style={[styles.buttonText, styles.buttonTextWithIcon]}
-              >
-                Generating Name...
+        <View style={styles.chatInputButtons}>
+          <TouchableOpacity
+            style={[styles.chatPhotoButton, { borderColor }]}
+            onPress={handleShowImagePicker}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel="Add plant photo"
+            accessibilityHint="Take a photo or select from library"
+          >
+            <IconSymbol name="camera.fill" size={24} color={textColor} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              [styles.submitButton, { backgroundColor: tintColor }],
+              isGenerating && styles.buttonDisabled,
+            ]}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isGenerating}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={
+              isGenerating ? "Generating plant name" : "Generate plant name"
+            }
+            accessibilityHint="Create a unique name for your plant based on the provided details"
+            accessibilityState={{ disabled: isGenerating }}
+          >
+            {isGenerating ? (
+              <View style={styles.buttonContent}>
+                <ActivityIndicator size="small" color="#fff" />
+              </View>
+            ) : (
+              <ThemedText style={styles.buttonText}>
+                <IconSymbol name="arrow.up" size={24} color="#fff" />
               </ThemedText>
-            </View>
-          ) : (
-            <ThemedText style={styles.buttonText}>
-              Generate Plant Name
-            </ThemedText>
-          )}
-        </TouchableOpacity>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
     </ThemedView>
   );
@@ -396,7 +383,8 @@ export function PlantForm({
 let styles = StyleSheet.create({
   container: {
     gap: 12,
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   title: {
     textAlign: "center",
@@ -413,7 +401,7 @@ let styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 12,
     padding: 12,
     fontSize: 16,
   },
@@ -435,40 +423,37 @@ let styles = StyleSheet.create({
   },
   sizeOption: {
     flex: 1,
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 12,
+    padding: 8,
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: "transparent",
   },
   sizeOptionSelected: {
+    borderWidth: 1,
+    borderRadius: 12,
     // backgroundColor and borderColor set dynamically via tintColor
   },
   sizeOptionText: {
     fontSize: 16,
   },
   sizeOptionTextSelected: {
-    color: "#fff",
     fontWeight: "600",
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "flex-end",
     alignItems: "center",
-    marginTop: 8,
     gap: 12,
   },
   button: {
     borderRadius: 8,
-    padding: 16,
+    justifyContent: "center",
     alignItems: "center",
   },
   submitButton: {
-    flex: 1,
+    height: 48,
+    width: 48,
     // backgroundColor set dynamically via tintColor
-  },
-  resetButton: {
-    borderWidth: 1,
-    backgroundColor: "transparent",
   },
   buttonText: {
     color: "#fff",
@@ -482,60 +467,6 @@ let styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-  },
-  buttonTextWithIcon: {
-    marginLeft: 0,
-  },
-  resetButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  photoCard: {
-    borderRadius: 12,
-    borderWidth: 1,
-    padding: 16,
-    marginBottom: 8,
-  },
-  imageContainer: {
-    position: "relative",
-    alignItems: "center",
-  },
-  photoPreview: {
-    width: 240,
-    height: 240,
-    borderRadius: 8,
-  },
-  removePhotoOverlay: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    borderRadius: 16,
-    width: 32,
-    height: 32,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  primaryPhotoButton: {
-    borderWidth: 2,
-    borderRadius: 12,
-    padding: 24,
-    alignItems: "center",
-    marginVertical: 8,
-    minHeight: 120,
-    justifyContent: "center",
-  },
-  primaryPhotoButtonContent: {
-    alignItems: "center",
-    gap: 4,
-  },
-  primaryPhotoButtonText: {
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  photoButtonText: {
-    fontSize: 16,
-    fontWeight: "500",
   },
   analyzingContainer: {
     flexDirection: "row",
@@ -554,7 +485,6 @@ let styles = StyleSheet.create({
   },
   helpText: {
     fontSize: 12,
-    marginTop: 4,
     fontStyle: "italic",
     opacity: 0.7,
   },
@@ -565,19 +495,14 @@ let styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 8,
   },
-  removePhotoText: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
   chatInputContainer: {
-    marginTop: 8,
+    borderWidth: 1,
+    borderRadius: 12,
+    gap: 8,
+    padding: 12,
   },
   chatInputWrapper: {
     flexDirection: "row",
-    borderWidth: 1,
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingTop: 12,
     minHeight: 120,
   },
   chatInput: {
@@ -595,11 +520,27 @@ let styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
+    width: 48,
+    height: 48,
   },
   chatInputError: {
     color: "#ff4444",
     fontSize: 14,
     marginTop: 8,
     marginLeft: 16,
+  },
+  chatInputButtons: {
+    flexDirection: "row",
+    gap: 8,
+    justifyContent: "space-between",
+  },
+  resetButton: {
+    padding: 8,
+    borderRadius: 8,
+    marginRight: 16,
+  },
+  resetButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
   },
 });
