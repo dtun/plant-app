@@ -48,9 +48,7 @@ type PlantFormData = z.infer<typeof plantSchema>;
 
 let sizeOptions = ["Small", "Medium", "Large"] as const;
 
-export function PlantForm(_props: {
-  onImageChange?: (imageUri: string | null) => void;
-}) {
+export function PlantForm() {
   let navigation = useNavigation();
   let textColor = useThemeColor({}, "text");
   let backgroundColor = useThemeColor({}, "background");

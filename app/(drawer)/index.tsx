@@ -9,7 +9,7 @@ import { useThemeColor } from "@/hooks/use-theme-color";
 
 export default function HomeScreen() {
   let tintColor = useThemeColor({}, "tint");
-  let [headerImage, setHeaderImage] = useState<string | null>(null);
+  let [headerImage] = useState<string | null>(null);
 
   return (
     <ParallaxScrollView
@@ -40,7 +40,7 @@ export default function HomeScreen() {
         )
       }
     >
-      <PlantForm onImageChange={setHeaderImage} />
+      <PlantForm />
     </ParallaxScrollView>
   );
 }
