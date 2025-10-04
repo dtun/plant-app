@@ -537,12 +537,14 @@ let styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   resetButton: {
-    padding: 8,
     borderRadius: 8,
     marginRight: 16,
+    paddingHorizontal: 8,
+    height: 32,
   },
   resetButtonText: {
     fontSize: 16,
     fontWeight: "600",
+    paddingVertical: 4,
   },
 });
