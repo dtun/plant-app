@@ -257,7 +257,7 @@ export function PlantForm(_props: {
 
       <View style={styles.fieldContainer}>
         <ThemedText type="defaultSemiBold" style={styles.label}>
-          How big is your plant?
+          What size is your plant?
         </ThemedText>
         <Controller
           control={control}
