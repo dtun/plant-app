@@ -26,6 +26,7 @@ import {
   Alert,
   Keyboard,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -35,6 +36,7 @@ let plantSchema = z
   .object({
     plantInput: z.string().optional(),
     photoDescription: z.string().optional(),
+    plantType: z.string().optional(),
     size: z.enum(["Small", "Medium", "Large"]).optional(),
   })
   .refine(
@@ -55,6 +57,9 @@ let sizeOptions = ["Small", "Medium", "Large"] as const;
 export function PlantForm() {
   let navigation = useNavigation();
   let textColor = useThemeColor({}, "text");
+  let backgroundColor = useThemeColor({}, "background");
+  let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
+  let placeholderColor = useThemeColor({ light: "#999", dark: "#666" }, "text");
   let tintColor = useThemeColor({}, "tint");
   let [isGenerating, setIsGenerating] = useState(false);
   let [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -72,6 +77,7 @@ export function PlantForm() {
     defaultValues: {
       plantInput: "",
       photoDescription: "",
+      plantType: "",
       size: undefined,
     },
   });
@@ -80,6 +86,7 @@ export function PlantForm() {
   let hasFieldsWithValues = !!(
     watchedFields.plantInput ||
     watchedFields.photoDescription ||
+    watchedFields.plantType ||
     watchedFields.size ||
     selectedImage
   );
@@ -125,7 +132,7 @@ export function PlantForm() {
 
     try {
       let plantData: PlantData = {
-        plantType: "Plant", // We'll let AI determine from the combined input
+        plantType: data.plantType || "Plant", // Use provided type or default
         description: data.plantInput || data.photoDescription || "Unknown",
         photoDescription: data.photoDescription || undefined,
         size: data.size || undefined,
@@ -197,6 +204,34 @@ export function PlantForm() {
       <ThemedText type="title" style={styles.title}>
         About your plant
       </ThemedText>
+
+      <FormField
+        label="What type of plant is it?"
+        error={errors.plantType?.message}
+      >
+        <Controller
+          control={control}
+          name="plantType"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  color: textColor,
+                  borderColor,
+                  backgroundColor,
+                },
+              ]}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value || ""}
+              placeholder="e.g., Succulent, Fern, Flowering Plant..."
+              placeholderTextColor={placeholderColor}
+            />
+          )}
+        />
+      </FormField>
+
       <FormField label="What size is your plant?" error={errors.size?.message}>
         <Controller
           control={control}
@@ -299,6 +334,12 @@ let styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "300",
     marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    fontSize: 16,
   },
   labelRow: {
     flexDirection: "row",
