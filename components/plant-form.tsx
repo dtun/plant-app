@@ -1,6 +1,11 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
+import { ChatInput } from "@/components/ui/chat-input";
+import { FormField } from "@/components/ui/form-field";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { PhotoUpload } from "@/components/ui/photo-upload";
+import { SizeSelector } from "@/components/ui/size-selector";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import {
   analyzePhotoAndSetDescription,
@@ -14,7 +19,6 @@ import {
 } from "@/utils/photo-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigation } from "@react-navigation/native";
-import { Image } from "expo-image";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -22,7 +26,6 @@ import {
   Alert,
   Keyboard,
   StyleSheet,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -52,9 +55,6 @@ let sizeOptions = ["Small", "Medium", "Large"] as const;
 export function PlantForm() {
   let navigation = useNavigation();
   let textColor = useThemeColor({}, "text");
-  let backgroundColor = useThemeColor({}, "background");
-  let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
-  let placeholderColor = useThemeColor({ light: "#999", dark: "#666" }, "text");
   let tintColor = useThemeColor({}, "tint");
   let [isGenerating, setIsGenerating] = useState(false);
   let [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -190,64 +190,26 @@ export function PlantForm() {
           )
         : null,
     });
-  }, [
-    hasFieldsWithValues,
-    navigation,
-    handleReset,
-    tintColor,
-    textColor,
-    backgroundColor,
-  ]);
+  }, [hasFieldsWithValues, navigation, handleReset, tintColor, textColor]);
 
   return (
     <ThemedView style={styles.container}>
       <ThemedText type="title" style={styles.title}>
         About your plant
       </ThemedText>
-      <View style={styles.fieldContainer}>
-        <ThemedText type="defaultSemiBold" style={styles.label}>
-          What size is your plant?
-        </ThemedText>
+      <FormField label="What size is your plant?" error={errors.size?.message}>
         <Controller
           control={control}
           name="size"
           render={({ field: { onChange, value } }) => (
-            <View style={styles.sizeContainer}>
-              {sizeOptions.map((size) => (
-                <TouchableOpacity
-                  key={size}
-                  style={[
-                    styles.sizeOption,
-                    value === size && [
-                      styles.sizeOptionSelected,
-                      { borderColor: borderColor },
-                    ],
-                  ]}
-                  onPress={() => onChange(size)}
-                  accessible={true}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Select ${size.toLowerCase()} size`}
-                  accessibilityState={{ selected: value === size }}
-                >
-                  <ThemedText
-                    style={[
-                      styles.sizeOptionText,
-                      value === size && styles.sizeOptionTextSelected,
-                    ]}
-                  >
-                    {size}
-                  </ThemedText>
-                </TouchableOpacity>
-              ))}
-            </View>
+            <SizeSelector
+              options={sizeOptions}
+              value={value}
+              onChange={onChange}
+            />
           )}
         />
-        {errors.size && (
-          <ThemedText style={styles.errorText}>
-            {errors.size.message}
-          </ThemedText>
-        )}
-      </View>
+      </FormField>
 
       {isAnalyzing && (
         <View style={styles.analyzingContainer}>
@@ -258,133 +220,70 @@ export function PlantForm() {
         </View>
       )}
 
-      <Controller
-        control={control}
-        name="photoDescription"
-        render={({ field: { onChange, onBlur, value } }) => (
-          <View style={[styles.fieldContainer, !value && styles.hiddenField]}>
-            <View style={styles.labelRow}>
-              <ThemedText type="defaultSemiBold" style={styles.label}>
-                Photo Analysis
-              </ThemedText>
-
-              {selectedImage && (
-                <TouchableOpacity
-                  onPress={removePhoto}
-                  accessible={true}
-                  accessibilityRole="button"
-                  accessibilityLabel="Remove photo"
-                  accessibilityHint="Remove the selected plant photo"
-                  style={styles.removePhotoButton}
-                >
-                  <IconSymbol name="trash" size={20} color={textColor} />
-                </TouchableOpacity>
-              )}
-            </View>
-            <TextInput
-              style={[
-                styles.input,
-                styles.textArea,
-                { color: textColor, borderColor, backgroundColor },
-              ]}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value || ""}
-              placeholder="Autogenerated description will appear here"
-              placeholderTextColor={placeholderColor}
-              multiline
-              numberOfLines={4}
-            />
-            <ThemedText style={styles.helpText}>
-              You can edit the autogenerated description if needed
-            </ThemedText>
-          </View>
-        )}
-      />
-
-      <View
-        style={[styles.chatInputContainer, { borderColor, backgroundColor }]}
-      >
+      {watchedFields.photoDescription && (
         <Controller
           control={control}
-          name="plantInput"
+          name="photoDescription"
           render={({ field: { onChange, onBlur, value } }) => (
-            <>
-              <View style={[styles.chatInputWrapper]}>
-                <TextInput
-                  style={[
-                    styles.chatInput,
-                    { color: textColor },
-                    errors.plantInput && styles.inputError,
-                  ]}
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  placeholder={
-                    selectedImage ? "Anything else?" : "Describe your plant..."
-                  }
-                  placeholderTextColor={placeholderColor}
-                  multiline
-                  numberOfLines={4}
-                />
+            <FormField label="Photo Analysis">
+              <View style={styles.labelRow}>
+                <View style={{ flex: 1 }}>
+                  <ChatInput
+                    value={value || ""}
+                    onChangeText={onChange}
+                    onBlur={onBlur}
+                    placeholder="Autogenerated description will appear here"
+                    numberOfLines={4}
+                  />
+                </View>
+                {selectedImage && (
+                  <TouchableOpacity
+                    onPress={removePhoto}
+                    accessible={true}
+                    accessibilityRole="button"
+                    accessibilityLabel="Remove photo"
+                    accessibilityHint="Remove the selected plant photo"
+                    style={styles.removePhotoButton}
+                  >
+                    <IconSymbol name="trash" size={20} color={textColor} />
+                  </TouchableOpacity>
+                )}
               </View>
-            </>
+              <ThemedText style={styles.helpText}>
+                You can edit the autogenerated description if needed
+              </ThemedText>
+            </FormField>
           )}
         />
-        <View style={styles.chatInputButtons}>
-          <View style={styles.chatPhotoButtonContainer}>
-            <TouchableOpacity
-              style={[styles.chatPhotoButton, { borderColor }]}
-              onPress={handleShowImagePicker}
-              accessible={true}
-              accessibilityRole="button"
-              accessibilityLabel="Add plant photo"
-              accessibilityHint="Take a photo or select from library"
-            >
-              <IconSymbol name="camera.fill" size={24} color={textColor} />
-            </TouchableOpacity>
-            {selectedImage ? (
-              <Image
-                source={{ uri: selectedImage }}
-                style={styles.chatPhotoButtonImage}
-              />
-            ) : (
-              <></>
-            )}
-          </View>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              [styles.submitButton, { backgroundColor: tintColor }],
-              isGenerating && styles.buttonDisabled,
-            ]}
-            onPress={handleSubmit(onSubmit)}
-            disabled={isGenerating}
-            accessible={true}
-            accessibilityRole="button"
-            accessibilityLabel={
-              isGenerating ? "Generating plant name" : "Generate plant name"
-            }
-            accessibilityHint="Create a unique name for your plant based on the provided details"
-            accessibilityState={{ disabled: isGenerating }}
-          >
-            {isGenerating ? (
-              <View style={styles.buttonContent}>
-                <ActivityIndicator size="small" color="#fff" />
-              </View>
-            ) : (
-              <ThemedText style={styles.buttonText}>
-                <IconSymbol name="arrow.up" size={24} color="#fff" />
-              </ThemedText>
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
-      {errors.plantInput && (
-        <ThemedText style={styles.chatInputError}>
-          {errors.plantInput.message}
-        </ThemedText>
       )}
+
+      <Controller
+        control={control}
+        name="plantInput"
+        render={({ field: { onChange, onBlur, value } }) => (
+          <ChatInput
+            value={value}
+            onChangeText={onChange}
+            onBlur={onBlur}
+            placeholder={
+              selectedImage ? "Anything else?" : "Describe your plant..."
+            }
+            error={errors.plantInput?.message}
+            leftButton={
+              <PhotoUpload
+                selectedImage={selectedImage}
+                onImageSelect={handleShowImagePicker}
+              />
+            }
+            rightButton={
+              <SubmitButton
+                onPress={handleSubmit(onSubmit)}
+                isLoading={isGenerating}
+              />
+            }
+          />
+        )}
+      />
     </ThemedView>
   );
 }
@@ -401,82 +300,9 @@ let styles = StyleSheet.create({
     fontWeight: "300",
     marginBottom: 8,
   },
-  fieldContainer: {
-    gap: 8,
-  },
-  label: {},
   labelRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    gap: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
-    fontSize: 16,
-  },
-  textArea: {
-    minHeight: 80,
-    textAlignVertical: "top",
-  },
-  inputError: {
-    borderColor: "#ff4444",
-  },
-  errorText: {
-    color: "#ff4444",
-    fontSize: 14,
-    marginTop: 4,
-  },
-  sizeContainer: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  sizeOption: {
-    flex: 1,
-    padding: 8,
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "transparent",
-  },
-  sizeOptionSelected: {
-    borderWidth: 1,
-    borderRadius: 12,
-    // backgroundColor and borderColor set dynamically via tintColor
-  },
-  sizeOptionText: {
-    fontSize: 16,
-  },
-  sizeOptionTextSelected: {
-    fontWeight: "600",
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    gap: 12,
-  },
-  button: {
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  submitButton: {
-    height: 48,
-    width: 48,
-    // backgroundColor set dynamically via tintColor
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
-  buttonContent: {
-    flexDirection: "row",
     alignItems: "center",
     gap: 8,
   },
@@ -491,9 +317,6 @@ let styles = StyleSheet.create({
     fontSize: 14,
     fontStyle: "italic",
   },
-  hiddenField: {
-    display: "none",
-  },
   helpText: {
     fontSize: 12,
     fontStyle: "italic",
@@ -506,61 +329,11 @@ let styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 8,
   },
-  chatInputContainer: {
-    borderWidth: 1,
-    borderRadius: 12,
-    gap: 8,
-    padding: 12,
-  },
-  chatInputWrapper: {
-    flexDirection: "row",
-    minHeight: 120,
-  },
-  chatInput: {
-    flex: 1,
-    fontSize: 16,
-    maxHeight: 120,
-    paddingRight: 12,
-    paddingTop: 0,
-    paddingBottom: 0,
-  },
-  chatPhotoButton: {
-    paddingVertical: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    width: 48,
-    height: 48,
-  },
-  chatInputError: {
-    color: "#ff4444",
-    fontSize: 14,
-    marginTop: 8,
-    marginLeft: 16,
-  },
-  chatInputButtons: {
-    flexDirection: "row",
-    gap: 8,
-    justifyContent: "space-between",
-  },
   resetButton: {
     marginRight: 16,
   },
   resetButtonText: {
     fontSize: 16,
     paddingVertical: 4,
-  },
-  chatPhotoButtonContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  chatPhotoButtonImage: {
-    height: 48,
-    width: 48,
-    alignSelf: "center",
-    borderRadius: 8,
   },
 });
