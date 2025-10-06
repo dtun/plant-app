@@ -35,25 +35,4 @@ let styles = StyleSheet.create({
     flex: 1,
     height: "100%",
   },
-  headerImageContainer: {
-    width: "100%",
-    height: "100%",
-    position: "relative",
-  },
-  headerIcon: {
-    bottom: -90,
-    left: -35,
-    position: "absolute",
-  },
-  headerPlantImage: {
-    width: "100%",
-    height: "100%",
-  },
-  headerGradient: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 140,
-  },
 });
