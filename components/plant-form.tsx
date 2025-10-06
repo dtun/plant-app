@@ -248,7 +248,7 @@ export function PlantForm() {
 
       {isAnalyzing && (
         <View style={styles.analyzingContainer}>
-          <ActivityIndicator size="small" color="#fff" />
+          <ActivityIndicator size="small" color={textColor} />
           <ThemedText style={styles.analyzingText}>
             Analyzing photo...
           </ThemedText>
