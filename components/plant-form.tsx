@@ -15,7 +15,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
-import React, { useCallback, useLayoutEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -26,6 +26,8 @@ import {
   View,
 } from "react-native";
 import { z } from "zod";
+
+let leafImage = require("@/assets/images/KeepTend-Leaf.png");
 
 let plantSchema = z
   .object({
@@ -199,6 +201,53 @@ export function PlantForm() {
 
   return (
     <ThemedView style={styles.container}>
+      <Image source={leafImage} style={styles.leafImage} />
+
+      <View style={styles.fieldContainer}>
+        <ThemedText type="defaultSemiBold" style={styles.label}>
+          What size is your plant?
+        </ThemedText>
+        <Controller
+          control={control}
+          name="size"
+          render={({ field: { onChange, value } }) => (
+            <View style={styles.sizeContainer}>
+              {sizeOptions.map((size) => (
+                <TouchableOpacity
+                  key={size}
+                  style={[
+                    styles.sizeOption,
+                    value === size && [
+                      styles.sizeOptionSelected,
+                      { borderColor: borderColor },
+                    ],
+                  ]}
+                  onPress={() => onChange(size)}
+                  accessible={true}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Select ${size.toLowerCase()} size`}
+                  accessibilityState={{ selected: value === size }}
+                >
+                  <ThemedText
+                    style={[
+                      styles.sizeOptionText,
+                      value === size && styles.sizeOptionTextSelected,
+                    ]}
+                  >
+                    {size}
+                  </ThemedText>
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        />
+        {errors.size && (
+          <ThemedText style={styles.errorText}>
+            {errors.size.message}
+          </ThemedText>
+        )}
+      </View>
+
       {isAnalyzing && (
         <View style={styles.analyzingContainer}>
           <ActivityIndicator size="small" color="#fff" />
@@ -253,51 +302,6 @@ export function PlantForm() {
         )}
       />
 
-      <View style={styles.fieldContainer}>
-        <ThemedText type="defaultSemiBold" style={styles.label}>
-          What size is your plant?
-        </ThemedText>
-        <Controller
-          control={control}
-          name="size"
-          render={({ field: { onChange, value } }) => (
-            <View style={styles.sizeContainer}>
-              {sizeOptions.map((size) => (
-                <TouchableOpacity
-                  key={size}
-                  style={[
-                    styles.sizeOption,
-                    value === size && [
-                      styles.sizeOptionSelected,
-                      { borderColor: borderColor },
-                    ],
-                  ]}
-                  onPress={() => onChange(size)}
-                  accessible={true}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Select ${size.toLowerCase()} size`}
-                  accessibilityState={{ selected: value === size }}
-                >
-                  <ThemedText
-                    style={[
-                      styles.sizeOptionText,
-                      value === size && styles.sizeOptionTextSelected,
-                    ]}
-                  >
-                    {size}
-                  </ThemedText>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-        />
-        {errors.size && (
-          <ThemedText style={styles.errorText}>
-            {errors.size.message}
-          </ThemedText>
-        )}
-      </View>
-
       <View
         style={[styles.chatInputContainer, { borderColor, backgroundColor }]}
       >
@@ -322,14 +326,9 @@ export function PlantForm() {
                   placeholderTextColor={placeholderColor}
                   multiline
                   textAlignVertical="top"
-                  returnKeyType="done"
+                  onSubmitEditing={handleSubmit(onSubmit)}
                 />
               </View>
-              {errors.plantInput && (
-                <ThemedText style={styles.chatInputError}>
-                  {errors.plantInput.message}
-                </ThemedText>
-              )}
             </>
           )}
         />
@@ -382,6 +381,11 @@ export function PlantForm() {
           </TouchableOpacity>
         </View>
       </View>
+      {errors.plantInput && (
+        <ThemedText style={styles.chatInputError}>
+          {errors.plantInput.message}
+        </ThemedText>
+      )}
     </ThemedView>
   );
 }
@@ -391,6 +395,10 @@ let styles = StyleSheet.create({
     gap: 12,
     paddingHorizontal: 16,
     paddingVertical: 8,
+
+    flex: 1,
+
+    justifyContent: "flex-end",
   },
   title: {
     textAlign: "center",
@@ -560,5 +568,11 @@ let styles = StyleSheet.create({
     width: 48,
     alignSelf: "center",
     borderRadius: 8,
+  },
+  leafImage: {
+    height: 64,
+    width: 64,
+    alignSelf: "center",
+    marginVertical: 4,
   },
 });

@@ -1,51 +1,37 @@
-import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
-
-import ParallaxScrollView from "@/components/parallax-scroll-view";
 import { PlantForm } from "@/components/plant-form";
-import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useThemeColor } from "@/hooks/use-theme-color";
+import { ThemedView } from "@/components/themed-view";
+import { KeyboardAvoidingView, StyleSheet } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  let tintColor = useThemeColor({}, "tint");
-  let [headerImage] = useState<string | null>(null);
-
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#f0f7f0", dark: "#1a2e1a" }}
-      headerImage={
-        headerImage ? (
-          <View style={styles.headerImageContainer}>
-            <Image
-              source={{ uri: headerImage }}
-              style={styles.headerPlantImage}
-              resizeMode="cover"
-            />
-            <LinearGradient
-              colors={["rgba(0,0,0,0.7)", "rgba(0,0,0,0.4)", "transparent"]}
-              locations={[0, 0.4, 1]}
-              style={styles.headerGradient}
-            />
-          </View>
-        ) : (
-          <View style={styles.headerImageContainer}>
-            <IconSymbol
-              size={310}
-              color={tintColor}
-              name="leaf"
-              style={styles.headerIcon}
-            />
-          </View>
-        )
-      }
-    >
-      <PlantForm />
-    </ParallaxScrollView>
+    <ThemedView style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView
+          behavior="padding"
+          style={styles.keyboardAvoidingView}
+        >
+          <ScrollView contentContainerStyle={styles.container}>
+            <PlantForm />
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </ThemedView>
   );
 }
 
 let styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    height: "100%",
+  },
   headerImageContainer: {
     width: "100%",
     height: "100%",
