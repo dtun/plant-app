@@ -12,7 +12,10 @@ export default function HomeScreen() {
           behavior="padding"
           style={styles.keyboardAvoidingView}
         >
-          <ScrollView contentContainerStyle={styles.container}>
+          <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps="handled"
+          >
             <PlantForm />
           </ScrollView>
         </KeyboardAvoidingView>
