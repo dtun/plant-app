@@ -16,6 +16,7 @@ export function SizeSelector<T extends string>({
   value,
 }: SizeSelectorProps<T>) {
   let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
+  let textColor = useThemeColor({}, "text");
 
   return (
     <View style={styles.container}>
@@ -24,7 +25,11 @@ export function SizeSelector<T extends string>({
           key={option}
           style={[
             styles.option,
-            value === option && [styles.optionSelected, { borderColor }],
+            { borderColor },
+            value === option && [
+              styles.optionSelected,
+              { borderColor: textColor },
+            ],
           ]}
           onPress={() => onChange(option)}
           accessible={true}
@@ -57,10 +62,10 @@ let styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "transparent",
+    borderRadius: 12,
   },
   optionSelected: {
     borderWidth: 1,
-    borderRadius: 12,
   },
   optionText: {
     fontSize: 16,
