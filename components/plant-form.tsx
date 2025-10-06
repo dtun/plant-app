@@ -27,8 +27,6 @@ import {
 } from "react-native";
 import { z } from "zod";
 
-let leafImage = require("@/assets/images/KeepTend-Leaf.png");
-
 let plantSchema = z
   .object({
     plantInput: z.string().optional(),
@@ -179,7 +177,7 @@ export function PlantForm() {
               accessibilityRole="button"
               accessibilityLabel="Reset form"
               accessibilityHint="Clear all form fields and start over"
-              style={[styles.resetButton, { backgroundColor: backgroundColor }]}
+              style={[styles.resetButton]}
             >
               <ThemedText
                 style={[styles.resetButtonText, { color: textColor }]}
@@ -189,7 +187,6 @@ export function PlantForm() {
             </TouchableOpacity>
           )
         : null,
-      headerTitle: () => <Image source={leafImage} style={styles.leafImage} />,
     });
   }, [
     hasFieldsWithValues,
@@ -554,14 +551,10 @@ let styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   resetButton: {
-    borderRadius: 8,
     marginRight: 16,
-    paddingHorizontal: 8,
-    height: 32,
   },
   resetButtonText: {
     fontSize: 16,
-    fontWeight: "600",
     paddingVertical: 4,
   },
   chatPhotoButtonContainer: {

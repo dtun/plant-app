@@ -1,9 +1,12 @@
-import { Drawer } from "expo-router/drawer";
-import React from "react";
-
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { Image } from "expo-image";
+import { Drawer } from "expo-router/drawer";
+import React from "react";
+import { StyleSheet } from "react-native";
+
+let leafImage = require("@/assets/images/KeepTend-Leaf.png");
 
 export default function DrawerLayout() {
   let colorScheme = useColorScheme();
@@ -24,11 +27,11 @@ export default function DrawerLayout() {
           drawerIcon: ({ color }) => (
             <IconSymbol size={28} name="house.fill" color={color} />
           ),
-          headerTitle: "",
+          headerTitle: () => (
+            <Image source={leafImage} style={styles.leafImage} />
+          ),
           headerShown: true,
           headerTintColor: tintColor,
-          headerTransparent: true,
-          headerLeft: () => null,
         }}
       />
       <Drawer.Screen
@@ -52,3 +55,12 @@ export default function DrawerLayout() {
     </Drawer>
   );
 }
+
+let styles = StyleSheet.create({
+  leafImage: {
+    height: 32,
+    width: 32,
+    alignSelf: "center",
+    marginVertical: 4,
+  },
+});
