@@ -202,6 +202,11 @@ export function PlantForm() {
 
   return (
     <ThemedView style={styles.container}>
+      <ThemedView style={styles.titleContainer}>
+        <ThemedText type="title" style={styles.title}>
+          About your plant
+        </ThemedText>
+      </ThemedView>
       <View style={styles.fieldContainer}>
         <ThemedText type="defaultSemiBold" style={styles.label}>
           What size is your plant?
@@ -401,6 +406,8 @@ let styles = StyleSheet.create({
   },
   title: {
     textAlign: "center",
+    fontSize: 32,
+    fontWeight: "300",
   },
   fieldContainer: {
     gap: 8,
@@ -573,5 +580,10 @@ let styles = StyleSheet.create({
     width: 32,
     alignSelf: "center",
     marginVertical: 4,
+  },
+  titleContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    paddingVertical: 24,
   },
 });
