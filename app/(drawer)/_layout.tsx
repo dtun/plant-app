@@ -25,11 +25,12 @@ export default function DrawerLayout() {
           drawerLabel: "Home",
           title: "Home",
           drawerIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <IconSymbol size={28} name="leaf" color={color} />
           ),
           headerTitle: () => (
             <Image source={leafImage} style={styles.leafImage} />
           ),
+          headerLeft: () => null,
           headerShown: true,
           headerTintColor: tintColor,
         }}
