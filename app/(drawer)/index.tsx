@@ -13,7 +13,7 @@ export default function HomeScreen() {
           style={styles.keyboardAvoidingView}
         >
           <ScrollView
-            contentContainerStyle={styles.container}
+            contentContainerStyle={styles.scrollView}
             keyboardShouldPersistTaps="handled"
           >
             <PlantForm />
@@ -31,8 +31,10 @@ let styles = StyleSheet.create({
   keyboardAvoidingView: {
     flex: 1,
   },
+  scrollView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    height: "100%",
   },
 });
