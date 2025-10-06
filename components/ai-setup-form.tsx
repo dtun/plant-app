@@ -14,6 +14,7 @@ import { z } from "zod";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { ThemedText } from "./themed-text";
 import { ThemedView } from "./themed-view";
+import { FormField } from "./ui/form-field";
 
 let aiSetupSchema = z.object({
   apiKey: z.string().min(1, "API key is required"),
@@ -102,14 +103,7 @@ export function AISetupForm() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>
-        AI Configuration
-      </ThemedText>
-
-      <View style={styles.fieldContainer}>
-        <ThemedText type="defaultSemiBold" style={styles.label}>
-          API Key *
-        </ThemedText>
+      <FormField label="API Key" required error={errors.apiKey?.message}>
         <Controller
           control={control}
           name="apiKey"
@@ -118,7 +112,6 @@ export function AISetupForm() {
               style={[
                 styles.input,
                 { color: textColor, borderColor, backgroundColor },
-                errors.apiKey && styles.inputError,
               ]}
               onBlur={onBlur}
               onChangeText={onChange}
@@ -131,17 +124,9 @@ export function AISetupForm() {
             />
           )}
         />
-        {errors.apiKey && (
-          <ThemedText style={styles.errorText}>
-            {errors.apiKey.message}
-          </ThemedText>
-        )}
-      </View>
+      </FormField>
 
-      <View style={styles.fieldContainer}>
-        <ThemedText type="defaultSemiBold" style={styles.label}>
-          Provider *
-        </ThemedText>
+      <FormField label="Provider" required error={errors.provider?.message}>
         <Controller
           control={control}
           name="provider"
@@ -173,19 +158,11 @@ export function AISetupForm() {
             </View>
           )}
         />
-        {errors.provider && (
-          <ThemedText style={styles.errorText}>
-            {errors.provider.message}
-          </ThemedText>
-        )}
-      </View>
+      </FormField>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[
-            styles.button,
-            [styles.submitButton, { backgroundColor: tintColor }],
-          ]}
+          style={[styles.button, { backgroundColor: tintColor }]}
           onPress={handleSubmit(onSubmit)}
         >
           <ThemedText style={styles.buttonText}>Save Settings</ThemedText>
@@ -204,32 +181,20 @@ export function AISetupForm() {
 
 let styles = StyleSheet.create({
   container: {
-    padding: 16,
+    flex: 1,
     gap: 16,
   },
   title: {
-    marginBottom: 24,
     textAlign: "center",
-  },
-  fieldContainer: {
-    marginBottom: 20,
-  },
-  label: {
+    fontSize: 32,
+    fontWeight: "300",
     marginBottom: 8,
   },
   input: {
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 12,
     padding: 12,
     fontSize: 16,
-  },
-  inputError: {
-    borderColor: "#ff4444",
-  },
-  errorText: {
-    color: "#ff4444",
-    fontSize: 14,
-    marginTop: 4,
   },
   providerContainer: {
     flexDirection: "row",
@@ -238,7 +203,7 @@ let styles = StyleSheet.create({
   providerOption: {
     flex: 1,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 12,
     padding: 12,
     alignItems: "center",
   },
@@ -257,12 +222,9 @@ let styles = StyleSheet.create({
     gap: 12,
   },
   button: {
-    borderRadius: 8,
+    borderRadius: 12,
     padding: 16,
     alignItems: "center",
-  },
-  submitButton: {
-    // backgroundColor set dynamically via tintColor
   },
   resetButton: {
     borderWidth: 1,

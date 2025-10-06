@@ -51,6 +51,8 @@ export default function DrawerLayout() {
           drawerLabel: "AI Setup",
           title: "AI Setup",
           drawerItemStyle: { display: "none" },
+          headerShown: true,
+          headerTintColor: tintColor,
         }}
       />
     </Drawer>
