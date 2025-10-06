@@ -189,6 +189,7 @@ export function PlantForm() {
             </TouchableOpacity>
           )
         : null,
+      headerTitle: () => <Image source={leafImage} style={styles.leafImage} />,
     });
   }, [
     hasFieldsWithValues,
@@ -201,8 +202,6 @@ export function PlantForm() {
 
   return (
     <ThemedView style={styles.container}>
-      <Image source={leafImage} style={styles.leafImage} />
-
       <View style={styles.fieldContainer}>
         <ThemedText type="defaultSemiBold" style={styles.label}>
           What size is your plant?
@@ -570,8 +569,8 @@ let styles = StyleSheet.create({
     borderRadius: 8,
   },
   leafImage: {
-    height: 64,
-    width: 64,
+    height: 32,
+    width: 32,
     alignSelf: "center",
     marginVertical: 4,
   },
