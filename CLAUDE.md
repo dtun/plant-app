@@ -1,4 +1,4 @@
-# Plant App Development Guide
+# KeepTend Development Guide
 
 ## JavaScript Variable and Function Declaration Rules
 
