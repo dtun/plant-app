@@ -393,12 +393,13 @@ let styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "flex-end",
-    gap: 8,
+    gap: 16,
   },
   title: {
     textAlign: "center",
     fontSize: 32,
     fontWeight: "300",
+    marginBottom: 8,
   },
   fieldContainer: {
     gap: 8,
