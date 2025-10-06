@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "dev.tunney.keeptend"
+      "bundleIdentifier": "com.paperstreetapp.keeptend",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -40,7 +43,8 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
@@ -52,6 +56,12 @@
         "projectId": "45fcc294-041e-4bae-98a3-36c66ae8a403"
       }
     },
-    "owner": "paperstreetappllc"
+    "owner": "paperstreetappllc",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/45fcc294-041e-4bae-98a3-36c66ae8a403"
+    }
   }
 }
