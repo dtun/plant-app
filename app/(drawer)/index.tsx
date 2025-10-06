@@ -6,26 +6,33 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.select({ default: "height", ios: "padding" })}
-      keyboardVerticalOffset={Platform.select({ default: 20, ios: 0 })}
-      style={styles.flex1}
-    >
-      <ThemedView style={styles.flex1}>
+    <ThemedView style={styles.flex1}>
+      <KeyboardAvoidingView
+        behavior={Platform.select({ default: "height", ios: "padding" })}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 72 : 0}
+        style={styles.flex1}
+      >
         <ScrollView
-          contentContainerStyle={styles.flex1}
+          contentContainerStyle={styles.contentContainerStyle}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
           <PlantForm />
         </ScrollView>
         <SafeAreaView edges={["bottom"]} />
-      </ThemedView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </ThemedView>
   );
 }
 
 let styles = StyleSheet.create({
   flex1: {
     flex: 1,
+  },
+  contentContainerStyle: {
+    flexGrow: 1,
+    justifyContent: "flex-end",
+    paddingHorizontal: 8,
+    paddingTop: 16,
   },
 });
