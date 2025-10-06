@@ -73,7 +73,7 @@ export function PlantForm() {
     defaultValues: {
       plantInput: "",
       photoDescription: "",
-      size: "Small",
+      size: undefined,
     },
   });
 
