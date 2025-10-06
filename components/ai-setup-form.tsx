@@ -169,7 +169,7 @@ export function AISetupForm() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.button, styles.resetButton, { borderColor }]}
+          style={[styles.button, styles.resetButton]}
           onPress={handleReset}
         >
           <ThemedText style={styles.resetButtonText}>Reset All</ThemedText>
@@ -227,7 +227,6 @@ let styles = StyleSheet.create({
     alignItems: "center",
   },
   resetButton: {
-    borderWidth: 1,
     backgroundColor: "transparent",
   },
   buttonText: {
