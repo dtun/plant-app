@@ -20,6 +20,7 @@ import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   Alert,
+  Keyboard,
   StyleSheet,
   TextInput,
   TouchableOpacity,
@@ -110,6 +111,7 @@ export function PlantForm() {
   }
 
   function handleShowImagePicker() {
+    Keyboard.dismiss();
     showPhotoPickerAlert(handleTakePhoto, handlePickImage);
   }
 
