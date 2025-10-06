@@ -396,9 +396,7 @@ let styles = StyleSheet.create({
     gap: 12,
     paddingHorizontal: 16,
     paddingVertical: 8,
-
     flex: 1,
-
     justifyContent: "flex-end",
   },
   title: {
