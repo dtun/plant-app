@@ -16,6 +16,8 @@ export default function HomeScreen() {
           contentContainerStyle={styles.contentContainerStyle}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
+          style={styles.containerStyle}
+          automaticallyAdjustKeyboardInsets
         >
           <PlantForm />
         </ScrollView>
@@ -33,6 +35,7 @@ let styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "flex-end",
     paddingHorizontal: 8,
-    paddingTop: 16,
+    gap: 16,
   },
+  containerStyle: {},
 });
