@@ -21,8 +21,12 @@ export type AIConfig = z.infer<typeof aiConfigSchema>;
 
 function getAIConfig(): AIConfig | null {
   try {
-    let storedApiKey = globalThis.localStorage.getItem("ai_api_key");
-    let storedProvider = globalThis.localStorage.getItem("ai_provider");
+    let storedApiKey =
+      globalThis.localStorage.getItem("ai_api_key") ||
+      process.env.EXPO_PUBLIC_DEFAULT_AI_API_KEY;
+    let storedProvider =
+      globalThis.localStorage.getItem("ai_provider") ||
+      process.env.EXPO_PUBLIC_DEFAULT_AI_PROVIDER;
     let validationResult = aiConfigSchema.safeParse({
       apiKey: storedApiKey,
       provider: storedProvider,
