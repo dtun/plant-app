@@ -131,6 +131,8 @@ export function PlantForm() {
   async function onSubmit(data: PlantFormData) {
     setIsGenerating(true);
 
+    Keyboard.dismiss();
+
     try {
       let plantData: PlantData = {
         plantType: data.plantType || "Plant", // Use provided type or default
