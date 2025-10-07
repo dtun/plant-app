@@ -1,26 +1,17 @@
 import { PlantForm } from "@/components/plant-form";
 import { ThemedView } from "@/components/themed-view";
 import { KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.flex1}>
+    <ThemedView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.select({ default: "height", ios: "padding" })}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 72 : 0}
-        style={styles.flex1}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+        style={styles.keyboardAvoidingView}
       >
-        <ScrollView
-          contentContainerStyle={styles.contentContainerStyle}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          style={styles.containerStyle}
-          automaticallyAdjustKeyboardInsets
-        >
-          <PlantForm />
-        </ScrollView>
+        <PlantForm />
         <SafeAreaView edges={["bottom"]} />
       </KeyboardAvoidingView>
     </ThemedView>
@@ -28,14 +19,12 @@ export default function HomeScreen() {
 }
 
 let styles = StyleSheet.create({
-  flex1: {
+  container: {
     flex: 1,
   },
-  contentContainerStyle: {
-    flexGrow: 1,
-    justifyContent: "flex-end",
+  keyboardAvoidingView: {
+    flex: 1,
     paddingHorizontal: 8,
-    gap: 16,
+    backgroundColor: "transparent",
   },
-  containerStyle: {},
 });
