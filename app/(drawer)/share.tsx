@@ -1,7 +1,7 @@
+import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { StyleSheet } from "react-native";
-import QRCodeStyled from "react-native-qrcode-styled";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 let testFlightUrl = "https://testflight.apple.com/join/DQcdaT9a";
@@ -13,13 +13,14 @@ export default function ShareScreen() {
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.container}>
-        <QRCodeStyled
+        {/* <QRCodeStyled
           data={testFlightUrl}
           style={{ backgroundColor: backgroundColor }}
           color={textColor}
           pieceScale={1.04}
           pieceBorderRadius="50%"
-        />
+        /> */}
+        <ThemedText>Coming soon</ThemedText>
       </SafeAreaView>
     </ThemedView>
   );
