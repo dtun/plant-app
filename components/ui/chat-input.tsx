@@ -55,7 +55,7 @@ export function ChatInput({
           {rightButton}
         </View>
       </View>
-      {error && <ThemedText style={styles.errorText}>{error}</ThemedText>}
+      {error ? <ThemedText style={styles.errorText}>{error}</ThemedText> : null}
     </>
   );
 }

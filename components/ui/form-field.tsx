@@ -19,14 +19,14 @@ export function FormField({
 }: FormFieldProps) {
   return (
     <View style={[styles.container, style]}>
-      {label && (
+      {label ? (
         <ThemedText type="defaultSemiBold" style={styles.label}>
           {label}
-          {required && <ThemedText style={styles.required}>*</ThemedText>}
+          {required ? <ThemedText style={styles.required}>*</ThemedText> : null}
         </ThemedText>
-      )}
+      ) : null}
       {children}
-      {error && <ThemedText style={styles.errorText}>{error}</ThemedText>}
+      {error ? <ThemedText style={styles.errorText}>{error}</ThemedText> : null}
     </View>
   );
 }

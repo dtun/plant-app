@@ -31,12 +31,12 @@ export function PhotoUpload({
       >
         <IconSymbol name="camera.fill" size={24} color={textColor} />
       </TouchableOpacity>
-      {selectedImage && (
+      {selectedImage ? (
         <Image
           source={{ uri: selectedImage }}
           style={[styles.image, { width: size, height: size }]}
         />
-      )}
+      ) : null}
     </View>
   );
 }
