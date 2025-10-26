@@ -1,4 +1,3 @@
-import { ThemedText } from "@/components/themed-text";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { ReactNode } from "react";
@@ -33,48 +32,48 @@ export function SubmitButton({
   let isDisabled = disabled || isLoading;
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.button,
-        {
-          backgroundColor,
-          width: size,
-          height: size,
-        },
-        isDisabled && styles.buttonDisabled,
-      ]}
-      onPress={onPress}
-      disabled={isDisabled}
-      accessible={true}
-      accessibilityRole="button"
-      accessibilityLabel={isLoading ? "Loading" : "Submit"}
-      accessibilityState={{ disabled: isDisabled }}
-    >
-      {isLoading ? (
-        <View style={styles.buttonContent}>
-          <ActivityIndicator size="small" color="#fff" />
-        </View>
-      ) : children ? (
-        children
-      ) : (
-        <ThemedText style={styles.buttonText}>
-          <IconSymbol name={icon} size={24} color="#fff" />
-        </ThemedText>
-      )}
-    </TouchableOpacity>
+    <View style={styles.container}>
+      <TouchableOpacity
+        style={[
+          styles.button,
+          {
+            backgroundColor,
+            width: size,
+            height: size,
+          },
+          isDisabled && styles.buttonDisabled,
+        ]}
+        onPress={onPress}
+        disabled={isDisabled}
+        accessible={true}
+        accessibilityRole="button"
+        accessibilityLabel={isLoading ? "Loading" : "Submit"}
+        accessibilityState={{ disabled: isDisabled }}
+      >
+        {isLoading ? (
+          <View style={styles.buttonContent}>
+            <ActivityIndicator size="small" color="#fff" />
+          </View>
+        ) : children ? (
+          children
+        ) : (
+          <IconSymbol name={icon} size={20} color="#fff" />
+        )}
+      </TouchableOpacity>
+    </View>
   );
 }
 
 let styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
   button: {
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
   },
   buttonDisabled: {
     opacity: 0.7,

@@ -69,12 +69,12 @@ let styles = StyleSheet.create({
   },
   inputWrapper: {
     flexDirection: "row",
-    minHeight: 64,
+    minHeight: 48,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    maxHeight: 64,
+    maxHeight: 48,
     paddingRight: 12,
     paddingTop: 0,
     paddingBottom: 0,

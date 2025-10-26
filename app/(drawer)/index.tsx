@@ -8,7 +8,7 @@ export default function HomeScreen() {
     <ThemedView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.select({ default: "height", ios: "padding" })}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
         style={styles.keyboardAvoidingView}
       >
         <PlantForm />

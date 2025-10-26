@@ -29,7 +29,7 @@ export function PhotoUpload({
         accessibilityLabel="Add plant photo"
         accessibilityHint="Take a photo or select from library"
       >
-        <IconSymbol name="camera.fill" size={24} color={textColor} />
+        <IconSymbol name="camera.fill" size={20} color={textColor} />
       </TouchableOpacity>
       {selectedImage ? (
         <Image
@@ -48,7 +48,6 @@ let styles = StyleSheet.create({
     gap: 8,
   },
   button: {
-    paddingVertical: 16,
     borderRadius: 8,
     borderWidth: 1,
     alignItems: "center",
