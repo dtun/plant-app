@@ -1,4 +1,3 @@
-import { ThemedText } from "@/components/themed-text";
 import { ChatInput } from "@/components/ui/chat-input";
 import { FormField } from "@/components/ui/form-field";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -26,7 +25,7 @@ import {
   Alert,
   FlatList,
   Keyboard,
-  StyleSheet,
+  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -193,13 +192,9 @@ export function PlantForm() {
               accessibilityRole="button"
               accessibilityLabel="Reset form"
               accessibilityHint="Clear all form fields and start over"
-              style={[styles.resetButton]}
+              className="mr-4"
             >
-              <ThemedText
-                style={[styles.resetButtonText, { color: textColor }]}
-              >
-                Reset
-              </ThemedText>
+              <Text className="text-base py-1 text-color">Reset</Text>
             </TouchableOpacity>
           )
         : null,
@@ -208,7 +203,11 @@ export function PlantForm() {
 
   return (
     <FlatList
-      contentContainerStyle={styles.container}
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: "flex-end",
+        gap: 16,
+      }}
       data={[
         {
           render: (
@@ -221,14 +220,12 @@ export function PlantForm() {
                 name="plantType"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    style={[
-                      styles.input,
-                      {
-                        color: textColor,
-                        borderColor,
-                        backgroundColor,
-                      },
-                    ]}
+                    className="border rounded-xl p-3 text-base"
+                    style={{
+                      color: textColor,
+                      borderColor,
+                      backgroundColor,
+                    }}
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value || ""}
@@ -262,18 +259,20 @@ export function PlantForm() {
         },
         {
           render: isAnalyzing ? (
-            <View style={styles.analyzingContainer}>
+            <View className="flex-row items-center justify-center gap-1 py-2">
               <ActivityIndicator size="small" color={textColor} />
-              <ThemedText style={styles.analyzingText}>
+              <Text className="text-sm italic text-color">
                 Analyzing photo...
-              </ThemedText>
+              </Text>
             </View>
           ) : null,
         },
         {
           render: watchedFields.photoDescription ? (
-            <View style={styles.labelRow}>
-              <ThemedText type="defaultSemiBold">Photo Analysis</ThemedText>
+            <View className="flex-row justify-between items-center">
+              <Text className="text-base font-semibold text-color">
+                Photo Analysis
+              </Text>
               {selectedImage ? (
                 <TouchableOpacity
                   onPress={removePhoto}
@@ -281,7 +280,7 @@ export function PlantForm() {
                   accessibilityRole="button"
                   accessibilityLabel="Remove photo"
                   accessibilityHint="Remove the selected plant photo"
-                  style={styles.removePhotoButton}
+                  className="flex-row items-center gap-1 py-1 px-2"
                 >
                   <IconSymbol name="trash" size={20} color={textColor} />
                 </TouchableOpacity>
@@ -324,64 +323,12 @@ export function PlantForm() {
       keyboardDismissMode="interactive"
       keyboardShouldPersistTaps="handled"
       ListHeaderComponent={
-        <ThemedText type="title" style={styles.title}>
+        <Text className="text-center text-2xl font-light text-color">
           About your plant
-        </ThemedText>
+        </Text>
       }
       renderItem={({ item: { render } }) => render}
-      style={styles.flex1}
+      className="flex-1"
     />
   );
 }
-
-let styles = StyleSheet.create({
-  flex1: {
-    flexGrow: 1,
-  },
-  container: {
-    flexGrow: 1,
-    justifyContent: "flex-end",
-    gap: 16,
-  },
-  title: {
-    textAlign: "center",
-    fontSize: 24,
-    fontWeight: "300",
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
-    fontSize: 16,
-  },
-  labelRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  analyzingContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 4,
-    paddingVertical: 8,
-  },
-  analyzingText: {
-    fontSize: 14,
-    fontStyle: "italic",
-  },
-  removePhotoButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-  },
-  resetButton: {
-    marginRight: 16,
-  },
-  resetButtonText: {
-    fontSize: 16,
-    paddingVertical: 4,
-  },
-});
