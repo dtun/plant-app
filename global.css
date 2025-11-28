@@ -1,7 +1,6 @@
 @import 'tailwindcss';
 @import 'uniwind';
 
-/* Custom utilities using light-dark() function directly */
 @layer utilities {
   .text-color {
     color: light-dark(#11181C, #ECEDEE);
@@ -31,19 +30,11 @@
     border-color: light-dark(#ccc, #555);
   }
 
-  .border-color {
+  .border-text {
     border-color: light-dark(#11181C, #ECEDEE);
   }
 
   .text-error {
     color: #ff4444;
-  }
-
-  .text-placeholder {
-    color: light-dark(#999, #666);
-  }
-
-  .accent-color {
-    accent-color: light-dark(#11181C, #ECEDEE);
   }
 }

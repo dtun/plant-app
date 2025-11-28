@@ -21,7 +21,7 @@ export function SizeSelector<T extends string>({
           key={option}
           className={
             value === option
-              ? "flex-1 p-1.25 items-center border-1 border-color rounded-xl"
+              ? "flex-1 p-1.25 items-center border border-text rounded-xl"
               : "flex-1 p-1.25 items-center border border-icon rounded-xl"
           }
           onPress={() => onChange(option)}
