@@ -22,5 +22,8 @@ jobs:
       - name: 📦 Install dependencies
         run: npm ci
 
+      - name: 🎨 Generate uniwind types
+        run: npx expo export --platform ios --output-dir .expo-export --clear
+
       - name: 🧪 Run typecheck
         run: npm run typecheck
