@@ -50,7 +50,7 @@ export function SubmitButton({
         ) : children ? (
           children
         ) : (
-          <IconSymbol name={icon} size={20} color="#fff" />
+          <IconSymbol name={icon} size={16} color="#fff" />
         )}
       </TouchableOpacity>
     </View>
