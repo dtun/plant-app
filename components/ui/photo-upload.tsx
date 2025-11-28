@@ -1,7 +1,7 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { Image } from "expo-image";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 interface PhotoUploadProps {
   onImageSelect: () => void;
@@ -14,15 +14,16 @@ export function PhotoUpload({
   onImageSelect,
   onRemoveImage,
   selectedImage,
-  size = 48,
+  size = 32,
 }: PhotoUploadProps) {
   let textColor = useThemeColor({}, "text");
   let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
 
   return (
-    <View style={styles.container}>
+    <View className="flex-row items-center gap-2">
       <TouchableOpacity
-        style={[styles.button, { borderColor, width: size, height: size }]}
+        className="rounded-lg border items-center justify-center gap-2"
+        style={{ borderColor, width: size, height: size }}
         onPress={onImageSelect}
         accessible={true}
         accessibilityRole="button"
@@ -34,28 +35,10 @@ export function PhotoUpload({
       {selectedImage ? (
         <Image
           source={{ uri: selectedImage }}
-          style={[styles.image, { width: size, height: size }]}
+          className="self-center rounded-lg"
+          style={{ width: size, height: size }}
         />
       ) : null}
     </View>
   );
 }
-
-let styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  button: {
-    borderRadius: 8,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-  },
-  image: {
-    alignSelf: "center",
-    borderRadius: 8,
-  },
-});

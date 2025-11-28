@@ -1,12 +1,7 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { ReactNode } from "react";
-import {
-  ActivityIndicator,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 
 interface SubmitButtonProps {
   children?: ReactNode;
@@ -24,7 +19,7 @@ export function SubmitButton({
   icon = "arrow.up",
   isLoading = false,
   onPress,
-  size = 48,
+  size = 32,
   variant = "primary",
 }: SubmitButtonProps) {
   let tintColor = useThemeColor({}, "tint");
@@ -32,17 +27,15 @@ export function SubmitButton({
   let isDisabled = disabled || isLoading;
 
   return (
-    <View style={styles.container}>
+    <View className="flex-row items-center gap-2">
       <TouchableOpacity
-        style={[
-          styles.button,
-          {
-            backgroundColor,
-            width: size,
-            height: size,
-          },
-          isDisabled && styles.buttonDisabled,
-        ]}
+        className="rounded-lg justify-center items-center"
+        style={{
+          backgroundColor,
+          width: size,
+          height: size,
+          opacity: isDisabled ? 0.7 : 1,
+        }}
         onPress={onPress}
         disabled={isDisabled}
         accessible={true}
@@ -51,7 +44,7 @@ export function SubmitButton({
         accessibilityState={{ disabled: isDisabled }}
       >
         {isLoading ? (
-          <View style={styles.buttonContent}>
+          <View className="flex-row items-center gap-2">
             <ActivityIndicator size="small" color="#fff" />
           </View>
         ) : children ? (
@@ -63,24 +56,3 @@ export function SubmitButton({
     </View>
   );
 }
-
-let styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  button: {
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
-  buttonContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-});
