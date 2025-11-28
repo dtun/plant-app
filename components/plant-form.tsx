@@ -220,7 +220,7 @@ export function PlantForm() {
                 name="plantType"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    className="border rounded-xl p-3 text-base"
+                    className="border rounded-xl p-2 text-base"
                     style={{
                       color: textColor,
                       borderColor,
