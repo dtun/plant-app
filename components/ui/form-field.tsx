@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/themed-text";
 import { ReactNode } from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 
 interface FormFieldProps {
   children: ReactNode;
@@ -22,13 +22,11 @@ export function FormField({
       {label ? (
         <ThemedText type="defaultSemiBold">
           {label}
-          {required ? <ThemedText className="text-error">*</ThemedText> : null}
+          {required ? <Text className="text-error">*</Text> : null}
         </ThemedText>
       ) : null}
       {children}
-      {error ? (
-        <ThemedText className="text-error text-sm mt-1">{error}</ThemedText>
-      ) : null}
+      {error ? <Text className="text-sm mt-1 text-error">{error}</Text> : null}
     </View>
   );
 }

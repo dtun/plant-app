@@ -1,6 +1,5 @@
-import { ThemedText } from "@/components/themed-text";
 import { ReactNode } from "react";
-import { TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 
 interface ChatInputProps {
   error?: string;
@@ -45,9 +44,7 @@ export function ChatInput({
         </View>
       </View>
       {error ? (
-        <ThemedText className="text-error text-sm mt-2 ml-4">
-          {error}
-        </ThemedText>
+        <Text className="text-sm mt-2 ml-4 text-error">{error}</Text>
       ) : null}
     </>
   );
