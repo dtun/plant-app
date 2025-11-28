@@ -1,7 +1,6 @@
 import { ThemedText } from "@/components/themed-text";
-import { useThemeColor } from "@/hooks/use-theme-color";
 import { ReactNode } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 
 interface ChatInputProps {
   error?: string;
@@ -26,71 +25,30 @@ export function ChatInput({
   rightButton,
   value,
 }: ChatInputProps) {
-  let textColor = useThemeColor({}, "text");
-  let backgroundColor = useThemeColor({}, "background");
-  let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
-  let placeholderColor = useThemeColor({ light: "#999", dark: "#666" }, "text");
-
   return (
     <>
-      <View style={[styles.container, { borderColor, backgroundColor }]}>
-        <View style={styles.inputWrapper}>
+      <View className="border border-icon rounded-xl gap-2 p-2 pt-3 pb-2 bg-background">
+        <View className="flex-row min-h-12">
           <TextInput
-            style={[
-              styles.input,
-              { color: textColor },
-              error && styles.inputError,
-            ]}
+            className="flex-1 text-base text-color pr-3 mb-1 max-h-12 py-0 placeholder:text-placeholder"
             onBlur={onBlur}
             onChangeText={onChangeText}
             value={value}
             placeholder={placeholder}
-            placeholderTextColor={placeholderColor}
             multiline={multiline}
             numberOfLines={numberOfLines}
           />
         </View>
-        <View style={styles.buttonsContainer}>
+        <View className="flex-row gap-2 justify-between">
           {leftButton}
           {rightButton}
         </View>
       </View>
-      {error ? <ThemedText style={styles.errorText}>{error}</ThemedText> : null}
+      {error ? (
+        <ThemedText className="text-error text-sm mt-2 ml-4">
+          {error}
+        </ThemedText>
+      ) : null}
     </>
   );
 }
-
-let styles = StyleSheet.create({
-  container: {
-    borderWidth: 1,
-    borderRadius: 12,
-    gap: 8,
-    padding: 12,
-  },
-  inputWrapper: {
-    flexDirection: "row",
-    minHeight: 48,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    maxHeight: 48,
-    paddingRight: 12,
-    paddingTop: 0,
-    paddingBottom: 0,
-  },
-  inputError: {
-    borderColor: "#ff4444",
-  },
-  buttonsContainer: {
-    flexDirection: "row",
-    gap: 8,
-    justifyContent: "space-between",
-  },
-  errorText: {
-    color: "#ff4444",
-    fontSize: 14,
-    marginTop: 8,
-    marginLeft: 16,
-  },
-});

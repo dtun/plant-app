@@ -26,4 +26,24 @@
   .border-tint {
     border-color: light-dark(#16A34A, #22C55E);
   }
+
+  .border-icon {
+    border-color: light-dark(#ccc, #555);
+  }
+
+  .border-color {
+    border-color: light-dark(#11181C, #ECEDEE);
+  }
+
+  .text-error {
+    color: #ff4444;
+  }
+
+  .text-placeholder {
+    color: light-dark(#999, #666);
+  }
+
+  .accent-color {
+    accent-color: light-dark(#11181C, #ECEDEE);
+  }
 }

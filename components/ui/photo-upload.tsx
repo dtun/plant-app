@@ -17,13 +17,12 @@ export function PhotoUpload({
   size = 32,
 }: PhotoUploadProps) {
   let textColor = useThemeColor({}, "text");
-  let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
 
   return (
     <View className="flex-row items-center gap-2">
       <TouchableOpacity
-        className="rounded-lg border items-center justify-center gap-2"
-        style={{ borderColor, width: size, height: size }}
+        className="rounded-lg border border-icon items-center justify-center gap-2"
+        style={{ width: size, height: size }}
         onPress={onImageSelect}
         accessible={true}
         accessibilityRole="button"
