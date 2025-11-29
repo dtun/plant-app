@@ -153,7 +153,7 @@ function handleAIError(error: unknown, operation: string): never {
   throw new Error(`Failed to ${operation}. Please try again.`);
 }
 
-function createPrompt(plantData: PlantData): string {
+function createPlantNamingPrompt(plantData: PlantData): string {
   let prompt = `Generate a cute, gentle, and endearing name for a plant with the following characteristics:
 
 Plant Type: ${plantData.plantType}
@@ -261,7 +261,7 @@ export async function generatePlantName(plantData: PlantData): Promise<string> {
     );
   }
 
-  let prompt = createPrompt(plantData);
+  let prompt = createPlantNamingPrompt(plantData);
 
   try {
     let model = createAIModel(config, "text");
