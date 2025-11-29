@@ -2,19 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import "expo-sqlite/localStorage/install";
 import React, { useCallback, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Alert,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { z } from "zod";
 
-import { useThemeColor } from "@/hooks/use-theme-color";
-import { ThemedText } from "./themed-text";
-import { ThemedView } from "./themed-view";
 import { FormField } from "./ui/form-field";
+import { OptionSelector } from "./ui/option-selector";
 
 let aiSetupSchema = z.object({
   apiKey: z.string().min(1, "API key is required"),
@@ -28,11 +20,6 @@ type AISetupFormData = z.infer<typeof aiSetupSchema>;
 let providerOptions = ["OpenAI", "Anthropic"] as const;
 
 export function AISetupForm() {
-  let textColor = useThemeColor({}, "text");
-  let backgroundColor = useThemeColor({}, "background");
-  let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
-  let placeholderColor = useThemeColor({ light: "#999", dark: "#666" }, "text");
-  let tintColor = useThemeColor({}, "tint");
   let {
     control,
     handleSubmit,
@@ -89,8 +76,8 @@ export function AISetupForm() {
     try {
       globalThis.localStorage.removeItem("ai_api_key");
       globalThis.localStorage.removeItem("ai_provider");
-      reset();
-      Alert.alert("Settings Reset", "All AI settings have been cleared.");
+      reset({ apiKey: "", provider: undefined });
+      Alert.alert("Settings Reset", "Your AI configuration has been reset.");
     } catch (error) {
       console.error("Error resetting settings:", error);
       Alert.alert("Error", "Failed to reset settings. Please try again.");
@@ -102,22 +89,18 @@ export function AISetupForm() {
   }, [loadStoredSettings]);
 
   return (
-    <ThemedView style={styles.container}>
+    <View className="flex-1 gap-4">
       <FormField label="API Key" required error={errors.apiKey?.message}>
         <Controller
           control={control}
           name="apiKey"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              style={[
-                styles.input,
-                { color: textColor, borderColor, backgroundColor },
-              ]}
+              className="border border-icon rounded-xl p-3 text-base text-color bg-background"
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
               placeholder="Enter your API key"
-              placeholderTextColor={placeholderColor}
               secureTextEntry
               autoCapitalize="none"
               autoCorrect={false}
@@ -131,111 +114,32 @@ export function AISetupForm() {
           control={control}
           name="provider"
           render={({ field: { onChange, value } }) => (
-            <View style={styles.providerContainer}>
-              {providerOptions.map((provider) => (
-                <TouchableOpacity
-                  key={provider}
-                  style={[
-                    styles.providerOption,
-                    { borderColor },
-                    value === provider && [
-                      styles.providerOptionSelected,
-                      { backgroundColor: tintColor, borderColor: tintColor },
-                    ],
-                  ]}
-                  onPress={() => onChange(provider)}
-                >
-                  <ThemedText
-                    style={[
-                      styles.providerOptionText,
-                      value === provider && styles.providerOptionTextSelected,
-                    ]}
-                  >
-                    {provider}
-                  </ThemedText>
-                </TouchableOpacity>
-              ))}
-            </View>
+            <OptionSelector
+              options={providerOptions}
+              value={value}
+              onChange={onChange}
+            />
           )}
         />
       </FormField>
 
-      <View style={styles.buttonContainer}>
+      <View className="mt-8 gap-3">
         <TouchableOpacity
-          style={[styles.button, { backgroundColor: tintColor }]}
+          className="rounded-xl p-4 items-center bg-tint"
           onPress={handleSubmit(onSubmit)}
         >
-          <ThemedText style={styles.buttonText}>Save Settings</ThemedText>
+          <Text className="text-white text-base font-semibold">
+            Save Settings
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.button, styles.resetButton]}
+          className="rounded-xl p-4 items-center"
           onPress={handleReset}
         >
-          <ThemedText style={styles.resetButtonText}>Reset All</ThemedText>
+          <Text className="text-base font-semibold text-color">Reset All</Text>
         </TouchableOpacity>
       </View>
-    </ThemedView>
+    </View>
   );
 }
-
-let styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    gap: 16,
-  },
-  title: {
-    textAlign: "center",
-    fontSize: 32,
-    fontWeight: "300",
-    marginBottom: 8,
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
-    fontSize: 16,
-  },
-  providerContainer: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  providerOption: {
-    flex: 1,
-    borderWidth: 1,
-    borderRadius: 12,
-    padding: 12,
-    alignItems: "center",
-  },
-  providerOptionSelected: {
-    // backgroundColor and borderColor set dynamically via tintColor
-  },
-  providerOptionText: {
-    fontSize: 16,
-  },
-  providerOptionTextSelected: {
-    color: "#fff",
-    fontWeight: "600",
-  },
-  buttonContainer: {
-    marginTop: 32,
-    gap: 12,
-  },
-  button: {
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
-  },
-  resetButton: {
-    backgroundColor: "transparent",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  resetButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-});
