@@ -1,19 +1,15 @@
 import { HeaderLeafImg } from "@/components/ui/header-leaf-img";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { Drawer } from "expo-router/drawer";
 
 export default function DrawerLayout() {
-  let colorScheme = useColorScheme();
-  let tintColor = Colors[colorScheme ?? "light"].tint;
   let textColor = useThemeColor({}, "text");
 
   return (
     <Drawer
       screenOptions={{
-        drawerActiveTintColor: tintColor,
+        drawerActiveTintColor: textColor,
         headerShown: false,
       }}
     >
@@ -28,7 +24,7 @@ export default function DrawerLayout() {
           headerTitle: HeaderLeafImg,
           headerLeft: () => null,
           headerShown: true,
-          headerTintColor: tintColor,
+          headerTintColor: textColor,
         }}
       />
       <Drawer.Screen
