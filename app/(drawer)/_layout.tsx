@@ -56,29 +56,6 @@ export default function DrawerLayout() {
           headerTintColor: textColor,
         }}
       />
-      <Drawer.Screen
-        name="settings"
-        options={{
-          drawerLabel: "Settings",
-          title: "Settings",
-          drawerItemStyle: { display: "none" },
-          drawerIcon: ({ color }) => (
-            <IconSymbol size={28} name="gear" color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="ai-setup"
-        options={{
-          drawerLabel: "AI Setup",
-          title: "AI Setup",
-          drawerIcon: ({ color }) => (
-            <IconSymbol size={28} name="wrench" color={color} />
-          ),
-          headerShown: true,
-          headerTintColor: textColor,
-        }}
-      />
     </Drawer>
   );
 }
