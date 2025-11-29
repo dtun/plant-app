@@ -1,5 +1,4 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useThemeColor } from "@/hooks/use-theme-color";
 import { Image } from "expo-image";
 import { TouchableOpacity, View } from "react-native";
 
@@ -16,12 +15,10 @@ export function PhotoUpload({
   selectedImage,
   size = 32,
 }: PhotoUploadProps) {
-  let textColor = useThemeColor({}, "text");
-
   return (
     <View className="flex-row items-center gap-2">
       <TouchableOpacity
-        className="rounded-lg border border-icon items-center justify-center gap-2"
+        className="rounded-lg border border-icon items-center justify-center bg-gray-900 dark:bg-gray-800"
         style={{ width: size, height: size }}
         onPress={onImageSelect}
         accessible={true}
@@ -29,7 +26,7 @@ export function PhotoUpload({
         accessibilityLabel="Add plant photo"
         accessibilityHint="Take a photo or select from library"
       >
-        <IconSymbol name="camera.fill" size={20} color={textColor} />
+        <IconSymbol name="camera.fill" size={20} color="#fff" />
       </TouchableOpacity>
       {selectedImage ? (
         <Image

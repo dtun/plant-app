@@ -37,4 +37,8 @@
   .text-error {
     color: #ff4444;
   }
+
+  .text-placeholder {
+    color: light-dark(#999, #666);
+  }
 }

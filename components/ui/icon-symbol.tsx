@@ -1,5 +1,7 @@
 // Fallback for using MaterialIcons on Android and web.
 
+import { useThemeColor } from "@/hooks/use-theme-color";
+import { Colors } from "@/constants/theme";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { SymbolViewProps, SymbolWeight } from "expo-symbols";
 import { ComponentProps } from "react";
@@ -11,6 +13,7 @@ type IconMapping = Record<
 >;
 
 type IconSymbolName = keyof typeof mapping;
+type ThemeColorName = keyof typeof Colors.light & keyof typeof Colors.dark;
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
@@ -34,17 +37,21 @@ export function IconSymbol({
   name,
   size = 24,
   color,
+  themeColor = "text",
   style,
 }: {
   name: IconSymbolName;
   size?: number;
-  color: string | OpaqueColorValue;
+  color?: string | OpaqueColorValue;
+  themeColor?: ThemeColorName;
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
+  let resolvedColor = useThemeColor({}, themeColor);
+
   return (
     <MaterialIcons
-      color={color}
+      color={color ?? resolvedColor}
       size={size}
       name={mapping[name]}
       style={style}

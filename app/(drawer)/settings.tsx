@@ -1,98 +1,33 @@
 import { Link } from "expo-router";
 import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
-import ParallaxScrollView from "@/components/parallax-scroll-view";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useThemeColor } from "@/hooks/use-theme-color";
 
 export default function SettingsScreen() {
-  let borderColor = useThemeColor({ light: "#e0e0e0", dark: "#333" }, "icon");
-  let tintColor = useThemeColor({}, "tint");
-
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#f0f7f0", dark: "#1a2e1a" }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="gear"
-          style={styles.headerImage}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Settings</ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.settingsContainer}>
+    <ScrollView className="flex-1 bg-background">
+      <View className="flex-row self-center gap-2 mb-8 p-4">
+        <Text className="text-4xl font-light text-color">Settings</Text>
+      </View>
+      <View className="flex-1 p-4">
         <Link href="/ai-setup" asChild>
-          <TouchableOpacity
-            style={[styles.settingItem, { borderBottomColor: borderColor }]}
-          >
-            <ThemedView style={styles.settingContent}>
-              <IconSymbol size={24} name="brain" color={tintColor} />
-              <ThemedView style={styles.settingTextContainer}>
-                <ThemedText type="defaultSemiBold" style={styles.settingTitle}>
+          <TouchableOpacity className="border-b border-gray-200 dark:border-gray-700 py-4 -mx-5 px-5">
+            <View className="flex-row items-center gap-4">
+              <IconSymbol size={24} name="brain" themeColor="tint" />
+              <View className="flex-1 gap-1">
+                <Text className="text-base font-semibold text-color">
                   AI Setup
-                </ThemedText>
-                <ThemedText style={styles.settingDescription}>
+                </Text>
+                <Text className="text-sm opacity-70 text-color">
                   Configure your AI provider and API key
-                </ThemedText>
-              </ThemedView>
-              <IconSymbol
-                size={20}
-                name="chevron.right"
-                color={useThemeColor({ light: "#999", dark: "#666" }, "icon")}
-              />
-            </ThemedView>
+                </Text>
+              </View>
+              <IconSymbol size={20} name="chevron.right" themeColor="icon" />
+            </View>
           </TouchableOpacity>
         </Link>
-      </ThemedView>
-    </ParallaxScrollView>
+      </View>
+    </ScrollView>
   );
 }
-
-let styles = StyleSheet.create({
-  headerImage: {
-    color: "#808080",
-    bottom: -90,
-    left: -35,
-    position: "absolute",
-  },
-  titleContainer: {
-    flexDirection: "row",
-    alignSelf: "center",
-    gap: 8,
-    marginBottom: 32,
-    padding: 16,
-  },
-  settingsContainer: {
-    flex: 1,
-    padding: 16,
-  },
-  settingItem: {
-    borderBottomWidth: 1,
-    paddingVertical: 16,
-    marginHorizontal: -20,
-    paddingHorizontal: 20,
-  },
-  settingContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-  },
-  settingTextContainer: {
-    flex: 1,
-    gap: 4,
-  },
-  settingTitle: {
-    fontSize: 16,
-  },
-  settingDescription: {
-    fontSize: 14,
-    opacity: 0.7,
-  },
-});

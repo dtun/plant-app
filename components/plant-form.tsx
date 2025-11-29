@@ -4,7 +4,6 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { PhotoUpload } from "@/components/ui/photo-upload";
 import { SizeSelector } from "@/components/ui/size-selector";
 import { SubmitButton } from "@/components/ui/submit-button";
-import { useThemeColor } from "@/hooks/use-theme-color";
 import {
   analyzePhotoAndSetDescription,
   generatePlantName,
@@ -56,11 +55,6 @@ let sizeOptions = ["Small", "Medium", "Large"] as const;
 
 export function PlantForm() {
   let navigation = useNavigation();
-  let textColor = useThemeColor({}, "text");
-  let backgroundColor = useThemeColor({}, "background");
-  let borderColor = useThemeColor({ light: "#ccc", dark: "#555" }, "icon");
-  let placeholderColor = useThemeColor({ light: "#999", dark: "#666" }, "text");
-  let tintColor = useThemeColor({}, "tint");
   let [isGenerating, setIsGenerating] = useState(false);
   let [selectedImage, setSelectedImage] = useState<string | null>(null);
   let [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -199,7 +193,7 @@ export function PlantForm() {
           )
         : null,
     });
-  }, [hasFieldsWithValues, navigation, handleReset, tintColor, textColor]);
+  }, [hasFieldsWithValues, navigation, handleReset]);
 
   return (
     <FlatList
@@ -220,17 +214,11 @@ export function PlantForm() {
                 name="plantType"
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    className="border rounded-xl p-3 pt-2 text-base"
-                    style={{
-                      color: textColor,
-                      borderColor,
-                      backgroundColor,
-                    }}
+                    className="border border-icon rounded-xl px-3 py-3 text-base text-color bg-background placeholder:text-placeholder"
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value || ""}
                     placeholder="e.g., Succulent, Fern, Flowering Plant..."
-                    placeholderTextColor={placeholderColor}
                   />
                 )}
               />
@@ -260,7 +248,7 @@ export function PlantForm() {
         {
           render: isAnalyzing ? (
             <View className="flex-row items-center justify-center gap-1 py-2">
-              <ActivityIndicator size="small" color={textColor} />
+              <ActivityIndicator size="small" color="#11181C" />
               <Text className="text-sm italic text-color">
                 Analyzing photo...
               </Text>
@@ -282,7 +270,7 @@ export function PlantForm() {
                   accessibilityHint="Remove the selected plant photo"
                   className="flex-row items-center gap-1 py-1 px-2"
                 >
-                  <IconSymbol name="trash" size={20} color={textColor} />
+                  <IconSymbol name="trash" size={20} themeColor="text" />
                 </TouchableOpacity>
               ) : null}
             </View>

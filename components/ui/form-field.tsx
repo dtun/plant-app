@@ -1,4 +1,3 @@
-import { ThemedText } from "@/components/themed-text";
 import { ReactNode } from "react";
 import { Text, View } from "react-native";
 
@@ -20,10 +19,10 @@ export function FormField({
   return (
     <View className="gap-2" style={style}>
       {label ? (
-        <ThemedText type="defaultSemiBold">
+        <Text className="text-base font-semibold text-color">
           {label}
           {required ? <Text className="text-error">*</Text> : null}
-        </ThemedText>
+        </Text>
       ) : null}
       {children}
       {error ? <Text className="text-sm mt-1 text-error">{error}</Text> : null}

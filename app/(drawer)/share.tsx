@@ -1,7 +1,6 @@
-import { ThemedView } from "@/components/themed-view";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { useEffect, useRef } from "react";
-import { Animated, Easing, StyleSheet } from "react-native";
+import { Animated, Easing, View } from "react-native";
 import QRCodeStyled from "react-native-qrcode-styled";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -49,49 +48,26 @@ export default function ShareScreen() {
   }, [opacityAnimations]);
 
   return (
-    <ThemedView style={styles.screenContainer}>
-      <SafeAreaView style={styles.container}>
-        <ThemedView style={styles.qrContainer}>
+    <View className="flex-1 items-center bg-background">
+      <SafeAreaView>
+        <View className="relative w-80 h-80 justify-center items-center">
           {rainbowColors.map((color, index) => (
             <Animated.View
               key={color}
-              style={[styles.qrWrapper, { opacity: opacityAnimations[index] }]}
+              className="absolute inset-0 justify-center items-center"
+              style={{ opacity: opacityAnimations[index] }}
             >
               <QRCodeStyled
                 color={color}
                 data={testFlightUrl}
                 pieceBorderRadius="50%"
                 pieceScale={1.04}
-                style={{ backgroundColor: backgroundColor }}
+                style={{ backgroundColor }}
               />
             </Animated.View>
           ))}
-        </ThemedView>
+        </View>
       </SafeAreaView>
-    </ThemedView>
+    </View>
   );
 }
-
-let styles = StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    alignItems: "center",
-  },
-  container: {},
-  qrContainer: {
-    position: "relative",
-    width: 320,
-    height: 320,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  qrWrapper: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

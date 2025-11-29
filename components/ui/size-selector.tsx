@@ -1,5 +1,4 @@
-import { ThemedText } from "@/components/themed-text";
-import { TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 interface SizeSelectorProps<T extends string> {
   label?: string;
@@ -30,13 +29,13 @@ export function SizeSelector<T extends string>({
           accessibilityLabel={`Select ${option.toLowerCase()}`}
           accessibilityState={{ selected: value === option }}
         >
-          <ThemedText
+          <Text
             className={
-              value === option ? "text-base font-semibold" : "text-base"
+              value === option ? "text-base font-semibold text-color" : "text-base text-color"
             }
           >
             {option}
-          </ThemedText>
+          </Text>
         </TouchableOpacity>
       ))}
     </View>

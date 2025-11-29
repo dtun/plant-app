@@ -1,5 +1,4 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useThemeColor } from "@/hooks/use-theme-color";
 import { ReactNode } from "react";
 import { ActivityIndicator, TouchableOpacity, View } from "react-native";
 
@@ -22,16 +21,17 @@ export function SubmitButton({
   size = 32,
   variant = "primary",
 }: SubmitButtonProps) {
-  let tintColor = useThemeColor({}, "tint");
-  let backgroundColor = variant === "primary" ? tintColor : "transparent";
   let isDisabled = disabled || isLoading;
 
   return (
     <View className="flex-row items-center gap-2">
       <TouchableOpacity
-        className="rounded-lg justify-center items-center"
+        className={
+          variant === "primary"
+            ? "rounded-lg justify-center items-center bg-tint"
+            : "rounded-lg justify-center items-center"
+        }
         style={{
-          backgroundColor,
           width: size,
           height: size,
           opacity: isDisabled ? 0.7 : 1,
