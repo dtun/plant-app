@@ -25,7 +25,7 @@ export type AIConfig = z.infer<typeof aiConfigSchema>;
 
 async function fetchAIConfigFromEndpoint(): Promise<AIConfig | null> {
   try {
-    console.log("Fetching AI config from endpoint:", CONFIG_ENDPOINT);
+    // console.log("Fetching AI config from endpoint:", CONFIG_ENDPOINT);
 
     let response = await fetch(CONFIG_ENDPOINT, {
       method: "GET",
@@ -45,7 +45,7 @@ async function fetchAIConfigFromEndpoint(): Promise<AIConfig | null> {
 
     let validationResult = aiConfigSchema.safeParse(data);
 
-    console.log(JSON.stringify({ validationResult }));
+    // console.log(JSON.stringify({ validationResult }));
 
     if (!validationResult.success) {
       console.error("Invalid config from endpoint:", validationResult.error);
@@ -59,7 +59,7 @@ async function fetchAIConfigFromEndpoint(): Promise<AIConfig | null> {
       validationResult.data.provider
     );
 
-    console.log("Successfully fetched and cached config from endpoint");
+    // console.log("Successfully fetched and cached config from endpoint");
     return validationResult.data;
   } catch (error) {
     console.error("Error fetching AI config from endpoint:", error);
@@ -72,12 +72,12 @@ async function getAIConfig(): Promise<AIConfig | null> {
     // First, try to fetch from the public endpoint
     let endpointConfig = await fetchAIConfigFromEndpoint();
     if (endpointConfig) {
-      console.log("Using AI config from endpoint");
+      // console.log("Using AI config from endpoint");
       return endpointConfig;
     }
 
     // Fallback to cached localStorage config
-    console.log("Falling back to cached/env AI config");
+    // console.log("Falling back to cached/env AI config");
     let storedApiKey =
       globalThis.localStorage.getItem("ai_api_key") ||
       process.env.EXPO_PUBLIC_DEFAULT_AI_API_KEY;
