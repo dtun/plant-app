@@ -1,3 +1,4 @@
+import { useColorScheme } from "@/hooks/use-color-scheme";
 import {
   DarkTheme,
   DefaultTheme,
@@ -5,11 +6,9 @@ import {
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 import "../global.css";
-
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { KeyboardProvider } from "react-native-keyboard-controller";
 
 export const unstable_settings = {
   anchor: "(drawer)",
