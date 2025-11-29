@@ -277,6 +277,8 @@ export async function generatePlantName(plantData: PlantData): Promise<string> {
       throw new Error("No name generated");
     }
 
+    generatedNames.push(plantName);
+
     return plantName;
   } catch (error) {
     handleAIError(error, "generate plant name");
