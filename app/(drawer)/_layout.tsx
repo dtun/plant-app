@@ -10,34 +10,29 @@ export default function DrawerLayout() {
     <Drawer
       screenOptions={{
         drawerActiveTintColor: textColor,
-        headerShown: false,
+        headerShown: true,
+        headerTintColor: textColor,
+        headerTitle: HeaderLeafImg,
       }}
     >
       <Drawer.Screen
         name="index"
         options={{
-          drawerLabel: "Home",
-          title: "Home",
           drawerIcon: ({ color }) => (
             <IconSymbol size={28} name="leaf" color={color} />
           ),
-          headerTitle: HeaderLeafImg,
-          headerLeft: () => null,
-          headerShown: true,
-          headerTintColor: textColor,
+          drawerLabel: "Home",
+          title: "Home",
         }}
       />
       <Drawer.Screen
         name="share"
         options={{
-          drawerLabel: "Share",
-          title: "Share",
           drawerIcon: ({ color }) => (
             <IconSymbol size={28} name="qrcode.viewfinder" color={color} />
           ),
-          headerTitle: HeaderLeafImg,
-          headerShown: true,
-          headerTintColor: textColor,
+          drawerLabel: "Share",
+          title: "Share",
         }}
       />
     </Drawer>
