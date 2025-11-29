@@ -7,6 +7,8 @@ import "expo-sqlite/localStorage/install";
 
 let CONFIG_ENDPOINT = "https://www.keeptend.com/api/config";
 
+let generatedNames: string[] = [];
+
 export interface PlantData {
   plantType: string;
   description: string;
@@ -159,6 +161,12 @@ Description: ${plantData.description}`;
 
   if (plantData.size) {
     prompt += `\nSize: ${plantData.size}`;
+  }
+
+  if (generatedNames.length > 0) {
+    prompt += `\nPreviously generated names to avoid: ${JSON.stringify({
+      previouslyGeneratedNames: generatedNames,
+    })}`;
   }
 
   if (plantData.photoDescription) {
