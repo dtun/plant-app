@@ -22,6 +22,7 @@ import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   Alert,
+  Clipboard,
   FlatList,
   Keyboard,
   Text,
@@ -136,8 +137,13 @@ export function PlantForm() {
 
       let plantName = await generatePlantName(plantData);
 
-      Alert.alert("Your Plant's Name", `Meet "${plantName}"!`, [
-        { text: "Perfect!", style: "default" },
+      Alert.alert("Your Plant's Name", `"${plantName}"`, [
+        {
+          text: "Copy",
+          style: "default",
+          onPress: () => Clipboard.setString(plantName),
+        },
+        { text: "Done", style: "cancel" },
       ]);
 
       console.log("Generated plant name:", plantName);
