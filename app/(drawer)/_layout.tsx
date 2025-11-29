@@ -1,13 +1,9 @@
+import { HeaderLeafImg } from "@/components/ui/header-leaf-img";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { useThemeColor } from "@/hooks/use-theme-color";
-import { Image } from "expo-image";
 import { Drawer } from "expo-router/drawer";
-import React from "react";
-import { View } from "react-native";
-
-let leafImage = require("@/assets/images/KeepTend-Leaf.png");
 
 export default function DrawerLayout() {
   let colorScheme = useColorScheme();
@@ -29,11 +25,7 @@ export default function DrawerLayout() {
           drawerIcon: ({ color }) => (
             <IconSymbol size={28} name="leaf" color={color} />
           ),
-          headerTitle: () => (
-            <View className="h-8 w-8">
-              <Image source={leafImage} style={{ height: "100%" }} />
-            </View>
-          ),
+          headerTitle: HeaderLeafImg,
           headerLeft: () => null,
           headerShown: true,
           headerTintColor: tintColor,
@@ -47,11 +39,7 @@ export default function DrawerLayout() {
           drawerIcon: ({ color }) => (
             <IconSymbol size={28} name="qrcode.viewfinder" color={color} />
           ),
-          headerTitle: () => (
-            <View className="h-8 w-8">
-              <Image source={leafImage} style={{ height: "100%" }} />
-            </View>
-          ),
+          headerTitle: HeaderLeafImg,
           headerShown: true,
           headerTintColor: textColor,
         }}
