@@ -16,7 +16,6 @@ import {
 } from "@/utils/photo-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigation } from "@react-navigation/native";
-import { router } from "expo-router";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -161,12 +160,12 @@ export function PlantForm() {
           "AI Setup Required",
           "Please configure your AI settings first.",
           [
-            { text: "Cancel", style: "cancel" },
-            {
-              text: "Go to AI Setup",
-              style: "default",
-              onPress: () => router.push("/(drawer)/ai-setup"),
-            },
+            { text: "Try Again", style: "cancel" },
+            // {
+            //   text: "Go to AI Setup",
+            //   style: "default",
+            //   onPress: () => router.push("/(drawer)/ai-setup"),
+            // },
           ]
         );
       } else {
