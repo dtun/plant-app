@@ -1,4 +1,3 @@
-import { useThemeColor } from "@/hooks/use-theme-color";
 import { useEffect, useRef } from "react";
 import { Animated, Easing, View } from "react-native";
 import QRCodeStyled from "react-native-qrcode-styled";
@@ -17,7 +16,6 @@ let rainbowColors = [
 ];
 
 export default function ShareScreen() {
-  let backgroundColor = useThemeColor({}, "background");
   let opacityAnimations = useRef(
     rainbowColors.map((_, i) => new Animated.Value(i === 0 ? 1 : 0))
   ).current;
@@ -57,13 +55,14 @@ export default function ShareScreen() {
               className="absolute inset-0 justify-center items-center"
               style={{ opacity: opacityAnimations[index] }}
             >
-              <QRCodeStyled
-                color={color}
-                data={testFlightUrl}
-                pieceBorderRadius="50%"
-                pieceScale={1.04}
-                style={{ backgroundColor }}
-              />
+              <View className="bg-background p-4 rounded-2xl">
+                <QRCodeStyled
+                  color={color}
+                  data={testFlightUrl}
+                  pieceBorderRadius="50%"
+                  pieceScale={1.04}
+                />
+              </View>
             </Animated.View>
           ))}
         </View>

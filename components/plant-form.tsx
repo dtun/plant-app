@@ -29,7 +29,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { withUniwind } from "uniwind";
 import { z } from "zod";
+
+let StyledActivityIndicator = withUniwind(ActivityIndicator);
 
 let plantSchema = z
   .object({
@@ -253,7 +256,10 @@ export function PlantForm() {
         {
           render: isAnalyzing ? (
             <View className="flex-row items-center justify-center gap-1 py-2">
-              <ActivityIndicator size="small" color="#11181C" />
+              <StyledActivityIndicator
+                size="small"
+                colorClassName="text-color"
+              />
               <Text className="text-sm italic text-color">
                 Analyzing photo...
               </Text>
@@ -275,7 +281,7 @@ export function PlantForm() {
                   accessibilityHint="Remove the selected plant photo"
                   className="flex-row items-center gap-1 py-1 px-2"
                 >
-                  <IconSymbol name="trash" size={20} themeColor="text" />
+                  <IconSymbol name="trash" size={20} />
                 </TouchableOpacity>
               ) : null}
             </View>

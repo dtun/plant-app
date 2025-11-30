@@ -1,17 +1,17 @@
 import { HeaderLeafImg } from "@/components/ui/header-leaf-img";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { useThemeColor } from "@/hooks/use-theme-color";
 import { Drawer } from "expo-router/drawer";
+import { useResolveClassNames } from "uniwind";
 
 export default function DrawerLayout() {
-  let textColor = useThemeColor({}, "text");
+  let tintColor = useResolveClassNames("text-color").color?.toString();
 
   return (
     <Drawer
       screenOptions={{
-        drawerActiveTintColor: textColor,
+        drawerActiveTintColor: tintColor,
         headerShown: true,
-        headerTintColor: textColor,
+        headerTintColor: tintColor,
         headerTitle: HeaderLeafImg,
       }}
     >
