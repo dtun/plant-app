@@ -148,8 +148,8 @@ export function PlantForm() {
         { text: "Done", style: "cancel" },
       ]);
 
-      console.log("Generated plant name:", plantName);
-      console.log("Plant data:", plantData);
+      // console.log("Generated plant name:", plantName);
+      // console.log("Plant data:", plantData);
     } catch (error) {
       console.error("Error generating plant name:", error);
 
