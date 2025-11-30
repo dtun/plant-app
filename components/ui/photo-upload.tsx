@@ -26,7 +26,12 @@ export function PhotoUpload({
         accessibilityLabel="Add plant photo"
         accessibilityHint="Take a photo or select from library"
       >
-        <IconSymbol name="camera.fill" size={20} color="#fff" />
+        <IconSymbol
+          colorClassName={null}
+          name="camera.fill"
+          size={20}
+          color="#fff"
+        />
       </TouchableOpacity>
       {selectedImage ? (
         <Image

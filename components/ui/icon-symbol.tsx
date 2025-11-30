@@ -12,7 +12,7 @@ type IconMapping = Record<
 >;
 
 type IconSymbolName = keyof typeof mapping;
-type ThemeColorClassName = "text-color" | "text-tint" | "text-icon";
+type ThemeColorClassName = "text-color" | "text-tint" | "text-icon" | null;
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
