@@ -15,8 +15,9 @@ jest.mock("expo-router", () => ({
   },
 }));
 
-jest.mock("@/hooks/use-theme-color", () => ({
-  useThemeColor: () => "#000000",
+jest.mock("uniwind", () => ({
+  useResolveClassNames: () => ({ color: "#000000" }),
+  withUniwind: (Component: any) => Component,
 }));
 
 jest.mock("@/utils/photo-utils", () => ({
