@@ -1,11 +1,10 @@
 // Fallback for using MaterialIcons on Android and web.
 
-import { useThemeColor } from "@/hooks/use-theme-color";
-import { Colors } from "@/constants/theme";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { SymbolViewProps, SymbolWeight } from "expo-symbols";
 import { ComponentProps } from "react";
 import { OpaqueColorValue, type StyleProp, type TextStyle } from "react-native";
+import { useResolveClassNames } from "uniwind";
 
 type IconMapping = Record<
   SymbolViewProps["name"],
@@ -13,7 +12,7 @@ type IconMapping = Record<
 >;
 
 type IconSymbolName = keyof typeof mapping;
-type ThemeColorName = keyof typeof Colors.light & keyof typeof Colors.dark;
+type ThemeColorClassName = "text-color" | "text-tint" | "text-icon";
 
 /**
  * Add your SF Symbols to Material Icons mappings here.
@@ -26,6 +25,7 @@ let mapping = {
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
   "camera.fill": "photo-camera",
+  trash: "delete",
 } as IconMapping;
 
 /**
@@ -37,21 +37,22 @@ export function IconSymbol({
   name,
   size = 24,
   color,
-  themeColor = "text",
+  colorClassName = "text-color",
   style,
 }: {
   name: IconSymbolName;
   size?: number;
   color?: string | OpaqueColorValue;
-  themeColor?: ThemeColorName;
+  colorClassName?: ThemeColorClassName;
   style?: StyleProp<TextStyle>;
   weight?: SymbolWeight;
 }) {
-  let resolvedColor = useThemeColor({}, themeColor);
+  let { color: resolvedColor } = useResolveClassNames(colorClassName || "");
+  let iconColor = colorClassName ? resolvedColor?.toString() : color;
 
   return (
     <MaterialIcons
-      color={color ?? resolvedColor}
+      color={iconColor}
       size={size}
       name={mapping[name]}
       style={style}
