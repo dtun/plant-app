@@ -1,9 +1,20 @@
-@import 'tailwindcss';
-@import 'uniwind';
+@import "tailwindcss";
+@import "uniwind";
 
+/**
+ * Minimal theme variables for useResolveClassNames
+ */
+@theme {
+  --color-text-light: #11181c;
+  --color-text-dark: #ecedee;
+}
+
+/**
+ * Color utilities - Single source of truth for all theme colors
+ */
 @layer utilities {
   .text-color {
-    color: light-dark(#11181C, #ECEDEE);
+    color: light-dark(#11181c, #ecedee);
   }
 
   .bg-background {
@@ -11,19 +22,19 @@
   }
 
   .text-tint {
-    color: light-dark(#16A34A, #22C55E);
+    color: light-dark(#16a34a, #22c55e);
   }
 
   .bg-tint {
-    background-color: light-dark(#16A34A, #22C55E);
+    background-color: light-dark(#16a34a, #22c55e);
   }
 
   .text-icon {
-    color: light-dark(#687076, #9BA1A6);
+    color: light-dark(#687076, #9ba1a6);
   }
 
   .border-tint {
-    border-color: light-dark(#16A34A, #22C55E);
+    border-color: light-dark(#16a34a, #22c55e);
   }
 
   .border-icon {
@@ -31,11 +42,11 @@
   }
 
   .border-text {
-    border-color: light-dark(#11181C, #ECEDEE);
+    border-color: light-dark(#11181c, #ecedee);
   }
 
   .text-error {
-    color: #ff4444;
+    color: light-dark(#ff4444, #ff6666);
   }
 
   .text-placeholder {
