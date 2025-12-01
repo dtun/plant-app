@@ -109,8 +109,8 @@ let modelMappings = {
     text: "gpt-4o-mini",
   },
   Anthropic: {
-    vision: "claude-3-5-sonnet-20241022",
-    text: "claude-3-haiku-20240307",
+    vision: "claude-sonnet-4-5-20250929",
+    text: "claude-haiku-4-5-20251001",
   },
 } as const;
 
