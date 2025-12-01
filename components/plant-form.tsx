@@ -53,7 +53,7 @@ type PlantFormData = z.infer<typeof plantSchema>;
 let sizeOptions = ["Small", "Medium", "Large"] as const;
 
 interface PlantFormProps {
-  setOptions?: (options: any) => void;
+  setOptions?: (options: Partial<object>) => void;
 }
 
 export function PlantForm({ setOptions }: PlantFormProps = {}) {
