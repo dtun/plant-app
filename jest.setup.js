@@ -7,12 +7,6 @@ require('react-native-reanimated').setUpTests();
 
 // Global mocks for common dependencies
 
-jest.mock("@react-navigation/native", () => ({
-  useNavigation: () => ({
-    setOptions: jest.fn(),
-  }),
-}));
-
 jest.mock("expo-router", () => ({
   router: {
     push: jest.fn(),

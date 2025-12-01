@@ -16,17 +16,16 @@ import {
   takePhotoWithCamera,
 } from "@/utils/photo-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigation } from "@react-navigation/native";
-import { useCallback, useLayoutEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Alert,
   Clipboard,
   FlatList,
   Keyboard,
+  Pressable,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { z } from "zod";
@@ -53,8 +52,11 @@ type PlantFormData = z.infer<typeof plantSchema>;
 
 let sizeOptions = ["Small", "Medium", "Large"] as const;
 
-export function PlantForm() {
-  let navigation = useNavigation();
+interface PlantFormProps {
+  setOptions?: (options: any) => void;
+}
+
+export function PlantForm({ setOptions }: PlantFormProps = {}) {
   let [isGenerating, setIsGenerating] = useState(false);
   let [selectedImage, setSelectedImage] = useState<string | null>(null);
   let [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -181,11 +183,11 @@ export function PlantForm() {
     setSelectedImage(null);
   }, [reset, setSelectedImage]);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
+  useEffect(() => {
+    setOptions?.({
       headerRight: hasFieldsWithValues
         ? () => (
-            <TouchableOpacity
+            <Pressable
               onPress={handleReset}
               accessible={true}
               accessibilityRole="button"
@@ -194,11 +196,11 @@ export function PlantForm() {
               className="mr-4"
             >
               <Text className="text-base py-1 text-color">Reset</Text>
-            </TouchableOpacity>
+            </Pressable>
           )
         : null,
     });
-  }, [hasFieldsWithValues, navigation, handleReset]);
+  }, [hasFieldsWithValues, handleReset, setOptions]);
 
   return (
     <FlatList
@@ -267,7 +269,7 @@ export function PlantForm() {
                 Photo Analysis
               </Text>
               {selectedImage ? (
-                <TouchableOpacity
+                <Pressable
                   onPress={removePhoto}
                   accessible={true}
                   accessibilityRole="button"
@@ -276,7 +278,7 @@ export function PlantForm() {
                   className="flex-row items-center gap-1 py-1 px-2"
                 >
                   <IconSymbol name="trash" size={20} />
-                </TouchableOpacity>
+                </Pressable>
               ) : null}
             </View>
           ) : null,
