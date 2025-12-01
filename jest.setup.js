@@ -7,12 +7,6 @@ require('react-native-reanimated').setUpTests();
 
 // Global mocks for common dependencies
 
-jest.mock("expo-router", () => ({
-  router: {
-    push: jest.fn(),
-  },
-}));
-
 jest.mock("uniwind", () => ({
   useResolveClassNames: () => ({ color: "#000000" }),
   withUniwind: (Component) => Component,
