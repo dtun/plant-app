@@ -6,6 +6,7 @@
 require('react-native-reanimated').setUpTests();
 
 // Global mocks for common dependencies
+
 jest.mock("@react-navigation/native", () => ({
   useNavigation: () => ({
     setOptions: jest.fn(),
@@ -23,13 +24,14 @@ jest.mock("uniwind", () => ({
   withUniwind: (Component) => Component,
 }));
 
-jest.mock("@/utils/photo-utils", () => ({
-  pickImageFromLibrary: jest.fn(),
-  showPhotoPickerAlert: jest.fn(),
-  takePhotoWithCamera: jest.fn(),
-}));
-
-jest.mock("@/utils/ai-service", () => ({
-  analyzePhotoAndSetDescription: jest.fn(),
-  generatePlantName: jest.fn(),
+// Mock expo-sqlite native module (used by ai-service.ts for localStorage polyfill)
+jest.mock("expo-sqlite", () => ({
+  openDatabaseSync: jest.fn(() => ({
+    execSync: jest.fn(),
+    closeSync: jest.fn(),
+    withTransactionSync: jest.fn((callback) => callback()),
+    getFirstSync: jest.fn(() => ({ user_version: 1 })),
+    getAllSync: jest.fn(() => []),
+    runSync: jest.fn(),
+  })),
 }));
