@@ -1,6 +1,7 @@
+import { ActivityIndicator } from "@/components/ui/activity-indicator";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { ReactNode } from "react";
-import { ActivityIndicator, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 interface SubmitButtonProps {
   children?: ReactNode;

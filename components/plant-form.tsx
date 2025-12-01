@@ -1,3 +1,4 @@
+import { ActivityIndicator } from "@/components/ui/activity-indicator";
 import { ChatInput } from "@/components/ui/chat-input";
 import { FormField } from "@/components/ui/form-field";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -19,7 +20,6 @@ import { useNavigation } from "@react-navigation/native";
 import { useCallback, useLayoutEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  ActivityIndicator,
   Alert,
   Clipboard,
   FlatList,
@@ -29,10 +29,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { withUniwind } from "uniwind";
 import { z } from "zod";
-
-let StyledActivityIndicator = withUniwind(ActivityIndicator);
 
 let plantSchema = z
   .object({
@@ -256,10 +253,7 @@ export function PlantForm() {
         {
           render: isAnalyzing ? (
             <View className="flex-row items-center justify-center gap-1 py-2">
-              <StyledActivityIndicator
-                size="small"
-                colorClassName="text-color"
-              />
+              <ActivityIndicator size="small" colorClassName="text-color" />
               <Text className="text-sm italic text-color">
                 Analyzing photo...
               </Text>
