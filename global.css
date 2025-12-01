@@ -2,14 +2,6 @@
 @import "uniwind";
 
 /**
- * Minimal theme variables for useResolveClassNames
- */
-@theme {
-  --color-text-light: #11181c;
-  --color-text-dark: #ecedee;
-}
-
-/**
  * Color utilities - Single source of truth for all theme colors
  */
 @layer utilities {
