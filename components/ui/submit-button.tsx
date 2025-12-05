@@ -29,8 +29,8 @@ export function SubmitButton({
       <TouchableOpacity
         className={
           variant === "primary"
-            ? "rounded-lg justify-center items-center bg-tint"
-            : "rounded-lg justify-center items-center"
+            ? "rounded justify-center items-center bg-tint"
+            : "rounded justify-center items-center"
         }
         style={{
           width: size,

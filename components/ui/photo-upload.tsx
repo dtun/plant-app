@@ -18,7 +18,7 @@ export function PhotoUpload({
   return (
     <View className="flex-row items-center gap-2">
       <TouchableOpacity
-        className="rounded-lg border border-icon items-center justify-center bg-gray-900 dark:bg-gray-800"
+        className="rounded items-center justify-center bg-gray-900 dark:bg-gray-800"
         style={{ width: size, height: size }}
         onPress={onImageSelect}
         accessible={true}
@@ -36,7 +36,7 @@ export function PhotoUpload({
       {selectedImage ? (
         <Image
           source={{ uri: selectedImage }}
-          className="self-center rounded-lg"
+          className="self-center rounded"
           style={{ width: size, height: size }}
         />
       ) : null}
