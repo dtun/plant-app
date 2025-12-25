@@ -1,4 +1,7 @@
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { schema } from "@/src/livestore/schema";
+import { makePersistedAdapter } from "@livestore/adapter-expo";
+import { LiveStoreProvider } from "@livestore/react";
 import {
   DarkTheme,
   DefaultTheme,
@@ -6,6 +9,7 @@ import {
 } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useMemo } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
 import "../global.css";
@@ -17,14 +21,29 @@ export const unstable_settings = {
 export default function RootLayout() {
   let colorScheme = useColorScheme();
 
+  // Create local-only adapter
+  let adapter = useMemo(() => makePersistedAdapter({ sync: undefined }), []);
+
+  // React 19 has automatic batching, but LiveStoreProvider requires this prop
+  // Using identity function since batching is automatic
+  let batchUpdates = useMemo(() => (fn: () => void) => fn(), []);
+
   return (
-    <KeyboardProvider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(drawer)" />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </KeyboardProvider>
+    <LiveStoreProvider
+      schema={schema}
+      adapter={adapter}
+      batchUpdates={batchUpdates}
+    >
+      <KeyboardProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(drawer)" />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </KeyboardProvider>
+    </LiveStoreProvider>
   );
 }

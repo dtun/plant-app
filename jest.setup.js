@@ -23,3 +23,17 @@ jest.mock("expo-sqlite", () => ({
     runSync: jest.fn(),
   })),
 }));
+
+// Mock LiveStore modules for testing
+jest.mock("@livestore/adapter-expo", () => ({
+  makePersistedAdapter: jest.fn(() => ({
+    connect: jest.fn(),
+    disconnect: jest.fn(),
+  })),
+}));
+
+jest.mock("@livestore/react", () => ({
+  LiveStoreProvider: ({ children }) => children,
+  useQuery: jest.fn(() => []),
+  useClientDocument: jest.fn(() => ({})),
+}));
