@@ -5,20 +5,20 @@
  * Each device gets isolated storage: keeptend-{deviceId}
  */
 
+import { getDeviceId } from "@/utils/device";
 import { makePersistedAdapter } from "@livestore/adapter-expo";
 import { useStore as useLiveStore } from "@livestore/react";
-import Constants from "expo-constants";
 
 /**
  * Get device-specific store ID
  * Format: keeptend-{deviceId}
  * Falls back to keeptend-default if deviceId unavailable
  *
- * Uses expo-constants sessionId for device identification.
- * This provides a unique ID per app installation.
+ * Uses utils/device for device identification.
+ * This provides a unique UUID per app installation.
  */
 function getStoreId(): string {
-  let deviceId = Constants.sessionId || "default";
+  let deviceId = getDeviceId();
   return `keeptend-${deviceId}`;
 }
 

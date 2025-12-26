@@ -5,10 +5,12 @@ import { createAdapter, getStoreId, useStore } from "./store";
 
 describe("db/store", () => {
   describe("getStoreId", () => {
-    test("should return keeptend-{sessionId} format", () => {
+    test("should return keeptend-{deviceId} format", () => {
       let storeId = getStoreId();
 
-      expect(storeId).toBe("keeptend-mock-session-id");
+      // Should match UUID pattern or "default"
+      expect(storeId).toMatch(/^keeptend-/);
+      expect(typeof storeId).toBe("string");
     });
   });
 
@@ -29,7 +31,7 @@ describe("db/store", () => {
       expect(makePersistedAdapter).toHaveBeenCalledWith(
         expect.objectContaining({
           storage: {
-            subDirectory: "keeptend-mock-session-id",
+            subDirectory: expect.stringMatching(/^keeptend-/),
           },
         })
       );

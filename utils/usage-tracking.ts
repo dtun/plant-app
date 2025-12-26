@@ -7,7 +7,7 @@
 
 import { events, tables, type AppSchema } from "@/src/livestore/schema";
 import type { Store } from "@livestore/livestore";
-import Constants from "expo-constants";
+import { getDeviceId } from "./device";
 
 export type UserTier = "free" | "pro";
 
@@ -25,13 +25,6 @@ export interface UsageStats {
 
 // Constants
 const FREE_TIER_LIMIT = 3;
-
-/**
- * Get device ID from expo-constants
- */
-function getDeviceId(): string {
-  return Constants.sessionId || "default";
-}
 
 /**
  * Get current month in YYYY-MM format
