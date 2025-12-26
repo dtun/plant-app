@@ -113,7 +113,7 @@ let messageCreated = Events.synced({
   }),
 });
 
-export const events = {
+export let events = {
   userCreated,
   userUpdated,
   usageRecorded,
@@ -221,7 +221,7 @@ let chatMessagesTable = State.SQLite.table({
   },
 });
 
-export const tables = {
+export let tables = {
   user: userTable,
   usage: usageTable,
   plants: plantsTable,
