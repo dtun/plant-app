@@ -87,10 +87,7 @@ async function getOrCreateUser(
 /**
  * Get usage record for current month
  */
-function getCurrentMonthUsage(
-  store: Store<AppSchema>,
-  usageId: string
-): number {
+function getCurrentMonthUsage(store: Store<AppSchema>, usageId: string): number {
   let usageRecords = store.query(tables.usage.where({ id: usageId }));
   let usage = usageRecords[0];
 
@@ -105,9 +102,7 @@ function getCurrentMonthUsage(
  * - remaining: number of generations left (-1 for unlimited pro tier, 0-3 for free tier)
  * - tier: user's current subscription tier
  */
-export async function canGenerateName(
-  store: Store<AppSchema>
-): Promise<UsageCheckResult> {
+export async function canGenerateName(store: Store<AppSchema>): Promise<UsageCheckResult> {
   let deviceId = getDeviceId();
   let user = await getOrCreateUser(store, deviceId);
 
@@ -165,9 +160,7 @@ export async function incrementUsage(store: Store<AppSchema>): Promise<void> {
  * Returns the current month's usage count along with tier information.
  * Useful for displaying usage stats to the user.
  */
-export async function getCurrentUsage(
-  store: Store<AppSchema>
-): Promise<UsageStats> {
+export async function getCurrentUsage(store: Store<AppSchema>): Promise<UsageStats> {
   let deviceId = getDeviceId();
   let user = await getOrCreateUser(store, deviceId);
   let currentMonth = getCurrentMonth();
@@ -189,9 +182,7 @@ export async function getCurrentUsage(
  * This is primarily used for testing but could also be used
  * for customer support scenarios.
  */
-export async function resetMonthlyUsage(
-  store: Store<AppSchema>
-): Promise<void> {
+export async function resetMonthlyUsage(store: Store<AppSchema>): Promise<void> {
   let deviceId = getDeviceId();
   let user = await getOrCreateUser(store, deviceId);
   let currentMonth = getCurrentMonth();

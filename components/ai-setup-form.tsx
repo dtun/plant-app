@@ -42,10 +42,7 @@ export function AISetupForm() {
       if (storedApiKey) {
         setValue("apiKey", storedApiKey);
       }
-      if (
-        storedProvider &&
-        (storedProvider === "OpenAI" || storedProvider === "Anthropic")
-      ) {
+      if (storedProvider && (storedProvider === "OpenAI" || storedProvider === "Anthropic")) {
         setValue("provider", storedProvider as "OpenAI" | "Anthropic");
       }
     } catch (error) {
@@ -62,10 +59,7 @@ export function AISetupForm() {
         provider: data.provider,
         apiKeyLength: data.apiKey.length,
       });
-      Alert.alert(
-        "Settings Saved",
-        "Your AI configuration has been saved successfully."
-      );
+      Alert.alert("Settings Saved", "Your AI configuration has been saved successfully.");
     } catch (error) {
       console.error("Error saving settings:", error);
       Alert.alert("Error", "Failed to save settings. Please try again.");
@@ -114,11 +108,7 @@ export function AISetupForm() {
           control={control}
           name="provider"
           render={({ field: { onChange, value } }) => (
-            <OptionSelector
-              options={providerOptions}
-              value={value}
-              onChange={onChange}
-            />
+            <OptionSelector options={providerOptions} value={value} onChange={onChange} />
           )}
         />
       </FormField>
@@ -128,15 +118,10 @@ export function AISetupForm() {
           className="rounded-xl p-4 items-center bg-tint"
           onPress={handleSubmit(onSubmit)}
         >
-          <Text className="text-white text-base font-semibold">
-            Save Settings
-          </Text>
+          <Text className="text-white text-base font-semibold">Save Settings</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          className="rounded-xl p-4 items-center"
-          onPress={handleReset}
-        >
+        <TouchableOpacity className="rounded-xl p-4 items-center" onPress={handleReset}>
           <Text className="text-base font-semibold text-color">Reset All</Text>
         </TouchableOpacity>
       </View>

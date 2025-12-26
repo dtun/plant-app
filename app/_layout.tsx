@@ -3,11 +3,7 @@ import { useColorScheme } from "@/hooks/use-color-scheme";
 import "@/polyfills/crypto";
 import { schema } from "@/src/livestore/schema";
 import { LiveStoreProvider } from "@livestore/react";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useMemo } from "react";
@@ -36,9 +32,7 @@ export default function RootLayout() {
       batchUpdates={batchUpdates}
     >
       <KeyboardProvider>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
+        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(drawer)" />
           </Stack>

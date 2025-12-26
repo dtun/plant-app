@@ -3,15 +3,12 @@ module.exports = function (api) {
   return {
     presets: [
       [
-        'babel-preset-expo',
+        "babel-preset-expo",
         {
           unstable_transformImportMeta: true,
         },
       ],
     ],
-    plugins: [
-      'babel-plugin-transform-vite-meta-env',
-      '@babel/plugin-syntax-import-attributes'
-    ],
+    plugins: ["babel-plugin-transform-vite-meta-env", "@babel/plugin-syntax-import-attributes"],
   };
 };

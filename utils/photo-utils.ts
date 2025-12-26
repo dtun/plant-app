@@ -8,8 +8,7 @@ export interface PhotoResult {
 
 export async function pickImageFromLibrary(): Promise<PhotoResult> {
   try {
-    let permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
       Alert.alert(
         "Permission Required",
@@ -66,17 +65,10 @@ export async function takePhotoWithCamera(): Promise<PhotoResult> {
   }
 }
 
-export function showPhotoPickerAlert(
-  onCamera: () => void,
-  onLibrary: () => void
-): void {
-  Alert.alert(
-    "Select Plant Photo",
-    "Choose how you'd like to add a photo of your plant",
-    [
-      { text: "Camera", onPress: onCamera },
-      { text: "Photo Library", onPress: onLibrary },
-      { text: "Cancel", style: "cancel" },
-    ]
-  );
+export function showPhotoPickerAlert(onCamera: () => void, onLibrary: () => void): void {
+  Alert.alert("Select Plant Photo", "Choose how you'd like to add a photo of your plant", [
+    { text: "Camera", onPress: onCamera },
+    { text: "Photo Library", onPress: onLibrary },
+    { text: "Cancel", style: "cancel" },
+  ]);
 }

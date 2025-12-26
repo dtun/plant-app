@@ -18,11 +18,7 @@ if (typeof global.crypto === "undefined") {
       let randomBytes = Crypto.getRandomBytes(byteLength);
 
       // Create a Uint8Array view of the input array's buffer
-      let uint8View = new Uint8Array(
-        array.buffer,
-        array.byteOffset,
-        byteLength
-      );
+      let uint8View = new Uint8Array(array.buffer, array.byteOffset, byteLength);
 
       // Copy the random bytes into the view
       uint8View.set(randomBytes);

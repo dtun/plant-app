@@ -158,18 +158,14 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
       }
 
       if (errorMessage.includes("configuration not found")) {
-        Alert.alert(
-          "AI Setup Required",
-          "Please configure your AI settings first.",
-          [
-            { text: "Try Again", style: "cancel" },
-            // {
-            //   text: "Go to AI Setup",
-            //   style: "default",
-            //   onPress: () => router.push("/(drawer)/ai-setup"),
-            // },
-          ]
-        );
+        Alert.alert("AI Setup Required", "Please configure your AI settings first.", [
+          { text: "Try Again", style: "cancel" },
+          // {
+          //   text: "Go to AI Setup",
+          //   style: "default",
+          //   onPress: () => router.push("/(drawer)/ai-setup"),
+          // },
+        ]);
       } else {
         Alert.alert("Error", errorMessage);
       }
@@ -212,10 +208,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
       data={[
         {
           render: (
-            <FormField
-              label="What type of plant is it?"
-              error={errors.plantType?.message}
-            >
+            <FormField label="What type of plant is it?" error={errors.plantType?.message}>
               <Controller
                 control={control}
                 name="plantType"
@@ -234,19 +227,12 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
         },
         {
           render: (
-            <FormField
-              label="What size is your plant?"
-              error={errors.size?.message}
-            >
+            <FormField label="What size is your plant?" error={errors.size?.message}>
               <Controller
                 control={control}
                 name="size"
                 render={({ field: { onChange, value } }) => (
-                  <SizeSelector
-                    options={sizeOptions}
-                    value={value}
-                    onChange={onChange}
-                  />
+                  <SizeSelector options={sizeOptions} value={value} onChange={onChange} />
                 )}
               />
             </FormField>
@@ -256,18 +242,14 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
           render: isAnalyzing ? (
             <View className="flex-row items-center justify-center gap-1 py-2">
               <ActivityIndicator size="small" colorClassName="text-color" />
-              <Text className="text-sm italic text-color">
-                Analyzing photo...
-              </Text>
+              <Text className="text-sm italic text-color">Analyzing photo...</Text>
             </View>
           ) : null,
         },
         {
           render: watchedFields.photoDescription ? (
             <View className="flex-row justify-between items-center">
-              <Text className="text-base font-semibold text-color">
-                Photo Analysis
-              </Text>
+              <Text className="text-base font-semibold text-color">Photo Analysis</Text>
               {selectedImage ? (
                 <Pressable
                   onPress={removePhoto}
@@ -293,9 +275,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
-                  placeholder={
-                    selectedImage ? "Anything else?" : "Describe your plant..."
-                  }
+                  placeholder={selectedImage ? "Anything else?" : "Describe your plant..."}
                   error={errors.plantInput?.message}
                   leftButton={
                     <PhotoUpload
@@ -304,10 +284,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
                     />
                   }
                   rightButton={
-                    <SubmitButton
-                      onPress={handleSubmit(onSubmit)}
-                      isLoading={isGenerating}
-                    />
+                    <SubmitButton onPress={handleSubmit(onSubmit)} isLoading={isGenerating} />
                   }
                 />
               )}
@@ -318,9 +295,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
       keyboardDismissMode="interactive"
       keyboardShouldPersistTaps="handled"
       ListHeaderComponent={
-        <Text className="text-center text-2xl font-light text-color">
-          About your plant
-        </Text>
+        <Text className="text-center text-2xl font-light text-color">About your plant</Text>
       }
       renderItem={({ item: { render } }) => render}
       className="flex-1"

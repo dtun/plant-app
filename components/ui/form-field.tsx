@@ -9,13 +9,7 @@ interface FormFieldProps {
   style?: any;
 }
 
-export function FormField({
-  children,
-  error,
-  label,
-  required,
-  style,
-}: FormFieldProps) {
+export function FormField({ children, error, label, required, style }: FormFieldProps) {
   return (
     <View className="gap-2" style={style}>
       {label ? (

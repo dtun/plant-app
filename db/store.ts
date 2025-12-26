@@ -39,9 +39,7 @@ function createAdapter() {
     });
   } catch (error) {
     throw new Error(
-      `Failed to create adapter: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
+      `Failed to create adapter: ${error instanceof Error ? error.message : "Unknown error"}`
     );
   }
 }

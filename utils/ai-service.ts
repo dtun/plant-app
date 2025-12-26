@@ -35,9 +35,7 @@ async function fetchAIConfigFromEndpoint(): Promise<AIConfig | null> {
     });
 
     if (!response.ok) {
-      console.error(
-        `Failed to fetch config: ${response.status} ${response.statusText}`
-      );
+      console.error(`Failed to fetch config: ${response.status} ${response.statusText}`);
       return null;
     }
 
@@ -54,10 +52,7 @@ async function fetchAIConfigFromEndpoint(): Promise<AIConfig | null> {
 
     // Cache the config in localStorage for offline access
     globalThis.localStorage.setItem("ai_api_key", validationResult.data.apiKey);
-    globalThis.localStorage.setItem(
-      "ai_provider",
-      validationResult.data.provider
-    );
+    globalThis.localStorage.setItem("ai_provider", validationResult.data.provider);
 
     // console.log("Successfully fetched and cached config from endpoint");
     return validationResult.data;
@@ -79,11 +74,9 @@ async function getAIConfig(): Promise<AIConfig | null> {
     // Fallback to cached localStorage config
     // console.log("Falling back to cached/env AI config");
     let storedApiKey =
-      globalThis.localStorage.getItem("ai_api_key") ||
-      process.env.EXPO_PUBLIC_DEFAULT_AI_API_KEY;
+      globalThis.localStorage.getItem("ai_api_key") || process.env.EXPO_PUBLIC_DEFAULT_AI_API_KEY;
     let storedProvider =
-      globalThis.localStorage.getItem("ai_provider") ||
-      process.env.EXPO_PUBLIC_DEFAULT_AI_PROVIDER;
+      globalThis.localStorage.getItem("ai_provider") || process.env.EXPO_PUBLIC_DEFAULT_AI_PROVIDER;
     let validationResult = aiConfigSchema.safeParse({
       apiKey: storedApiKey,
       provider: storedProvider,
@@ -207,9 +200,7 @@ export async function analyzePhotoAndSetDescription(
   }
 }
 
-export async function generatePhotoDescription(
-  imageUri: string
-): Promise<string> {
+export async function generatePhotoDescription(imageUri: string): Promise<string> {
   let config = await getAIConfig();
 
   if (!config) {

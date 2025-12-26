@@ -31,9 +31,7 @@ export function OptionSelector<T extends string>({
         >
           <Text
             className={
-              value === option
-                ? "text-base font-semibold text-white"
-                : "text-base text-color"
+              value === option ? "text-base font-semibold text-white" : "text-base text-color"
             }
           >
             {option}

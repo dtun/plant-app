@@ -11,7 +11,6 @@ AI-powered app that generates creative names for your plants using photo analysi
    ```
 
 2. Configure AI provider (Settings > AI Setup)
-
    - Add your OpenAI or Anthropic API key
 
 3. Start the app

@@ -18,9 +18,7 @@ export default function DrawerLayout() {
       <Drawer.Screen
         name="index"
         options={{
-          drawerIcon: ({ color }) => (
-            <IconSymbol size={28} name="leaf" color={color} />
-          ),
+          drawerIcon: ({ color }) => <IconSymbol size={28} name="leaf" color={color} />,
           drawerLabel: "Home",
           title: "Home",
         }}

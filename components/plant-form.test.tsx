@@ -23,16 +23,12 @@ test("renders size selector options", () => {
 
 test("renders plant description input", () => {
   render(<PlantForm />);
-  expect(
-    screen.getByPlaceholderText("Describe your plant...")
-  ).toBeOnTheScreen();
+  expect(screen.getByPlaceholderText("Describe your plant...")).toBeOnTheScreen();
 });
 
 test("can type in plant type field", () => {
   render(<PlantForm />);
-  let input = screen.getByPlaceholderText(
-    "e.g., Succulent, Fern, Flowering Plant..."
-  );
+  let input = screen.getByPlaceholderText("e.g., Succulent, Fern, Flowering Plant...");
   fireEvent.changeText(input, "Succulent");
   expect(input).toHaveDisplayValue("Succulent");
 });

@@ -43,9 +43,7 @@ export function ChatInput({
           {rightButton}
         </View>
       </View>
-      {error ? (
-        <Text className="text-sm mt-2 ml-4 text-error">{error}</Text>
-      ) : null}
+      {error ? <Text className="text-sm mt-2 ml-4 text-error">{error}</Text> : null}
     </>
   );
 }
