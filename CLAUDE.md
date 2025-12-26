@@ -18,6 +18,30 @@
 - Numbers that represent constants (e.g., `const MAX_RETRIES = 3`)
 - **Avoid `const` for objects or arrays that will be mutated, even if the reference doesn't change**
 
+**Important: Mutability vs. Reassignment**
+
+JavaScript's `const` prevents reassignment but does NOT prevent mutation. While `const items = []; items.push(1)` is technically valid JavaScript, we use `let` for mutable data structures to clearly indicate they will change:
+
+```javascript
+// ❌ Incorrect - const with mutable array
+const items = [];
+items.push(1); // This works in JavaScript, but violates our convention
+
+// ✅ Correct - let for mutable array
+let items = [];
+items.push(1);
+
+// ❌ Incorrect - const with mutable object
+const config = {};
+config.apiKey = "abc123"; // This works, but we avoid it
+
+// ✅ Correct - let for mutable object
+let config = {};
+config.apiKey = "abc123";
+```
+
+Our rule: If you intend to mutate it (push, pop, modify properties, etc.), use `let`.
+
 ### Function Declarations
 
 **Use `function` keyword for function definitions:**
@@ -152,6 +176,30 @@ Individual scripts:
 - `npm run lint` - Run ESLint checks
 - `npm run typecheck` - Run TypeScript compiler checks
 - `npm run test` - Run tests
+
+### Testing
+
+This project uses **Jest** as the testing framework (not Vitest).
+
+**Test Configuration:**
+
+- Jest is configured in `package.json` and `jest.setup.js`
+- Test setup file: `jest.setup.js` (runs before all tests)
+- Uses `jest-expo` preset for React Native compatibility
+- Manual mocks are placed in `__mocks__/` directories
+
+**Mock Structure:**
+
+- External package mocks: `__mocks__/package-name.ts`
+- Scoped package mocks: `__mocks__/@scope/package-name.ts`
+- Local module mocks: `src/path/__mocks__/module.ts`
+
+**Running Tests:**
+
+```bash
+npm run test        # Run all tests
+npm run vibecheck   # Run format, lint, typecheck, and tests
+```
 
 ### Code Formatting
 
