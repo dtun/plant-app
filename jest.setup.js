@@ -32,6 +32,30 @@ jest.mock("@livestore/adapter-expo", () => ({
   })),
 }));
 
+jest.mock("@livestore/livestore", () => ({
+  Events: {
+    synced: jest.fn((config) => config),
+  },
+  Schema: {
+    Struct: jest.fn((schema) => schema),
+    String: "string",
+    Number: "number",
+    Boolean: "boolean",
+    optional: jest.fn((type) => ({ optional: true, type })),
+  },
+  State: {
+    SQLite: {
+      table: jest.fn((config) => config),
+      text: jest.fn((options) => ({ type: "text", ...options })),
+      integer: jest.fn((options) => ({ type: "integer", ...options })),
+      boolean: jest.fn((options) => ({ type: "boolean", ...options })),
+      makeState: jest.fn((config) => config),
+      materializers: jest.fn((events, materializers) => materializers),
+    },
+  },
+  makeSchema: jest.fn((config) => config),
+}));
+
 jest.mock("@livestore/react", () => ({
   LiveStoreProvider: ({ children }) => children,
   useQuery: jest.fn(() => []),
@@ -48,4 +72,53 @@ jest.mock('expo-constants', () => ({
   __esModule: true,
   default: mockConstants,
   Constants: mockConstants,
+}));
+
+// Mock schema events and tables
+jest.mock('@/src/livestore/schema', () => ({
+  events: {
+    userCreated: jest.fn((data) => ({
+      type: 'v1.UserCreated',
+      data,
+    })),
+    userUpdated: jest.fn((data) => ({
+      type: 'v1.UserUpdated',
+      data,
+    })),
+    usageRecorded: jest.fn((data) => ({
+      type: 'v1.UsageRecorded',
+      data,
+    })),
+    plantCreated: jest.fn((data) => ({
+      type: 'v1.PlantCreated',
+      data,
+    })),
+    plantUpdated: jest.fn((data) => ({
+      type: 'v1.PlantUpdated',
+      data,
+    })),
+    plantDeleted: jest.fn((data) => ({
+      type: 'v1.PlantDeleted',
+      data,
+    })),
+    messageCreated: jest.fn((data) => ({
+      type: 'v1.MessageCreated',
+      data,
+    })),
+  },
+  tables: {
+    user: {
+      where: jest.fn((conditions) => ({ __table: 'user', __conditions: conditions })),
+    },
+    usage: {
+      where: jest.fn((conditions) => ({ __table: 'usage', __conditions: conditions })),
+    },
+    plants: {
+      where: jest.fn((conditions) => ({ __table: 'plants', __conditions: conditions })),
+    },
+    chatMessages: {
+      where: jest.fn((conditions) => ({ __table: 'chatMessages', __conditions: conditions })),
+    },
+  },
+  schema: {},
 }));
