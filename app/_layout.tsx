@@ -1,6 +1,7 @@
+import { createAdapter, getStoreId } from "@/db/store";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import "@/polyfills/crypto";
 import { schema } from "@/src/livestore/schema";
-import { makePersistedAdapter } from "@livestore/adapter-expo";
 import { LiveStoreProvider } from "@livestore/react";
 import {
   DarkTheme,
@@ -20,10 +21,9 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   let colorScheme = useColorScheme();
-
-  // Create local-only adapter
-  let adapter = useMemo(() => makePersistedAdapter({ sync: undefined }), []);
-
+  // Create device-specific adapter
+  let adapter = useMemo(() => createAdapter(), []);
+  let storeId = useMemo(() => getStoreId(), []);
   // React 19 has automatic batching, but LiveStoreProvider requires this prop
   // Using identity function since batching is automatic
   let batchUpdates = useMemo(() => (fn: () => void) => fn(), []);
@@ -31,6 +31,7 @@ export default function RootLayout() {
   return (
     <LiveStoreProvider
       schema={schema}
+      storeId={storeId}
       adapter={adapter}
       batchUpdates={batchUpdates}
     >

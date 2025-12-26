@@ -421,7 +421,7 @@ let state = State.SQLite.makeState({ tables, materializers });
 export let schema = makeSchema({ events, state });
 
 /**
- * Schema type for use throughout the app
+ * App-specific schema type for use throughout the app
  *
  * Use this type to access:
  * - Event types for committing changes
@@ -430,11 +430,11 @@ export let schema = makeSchema({ events, state });
  *
  * Example:
  * ```typescript
- * import { schema, events } from '@/src/livestore/schema';
+ * import { schema, events, type AppSchema } from '@/src/livestore/schema';
  * import { useStore } from '@livestore/react';
  *
- * const { store } = useStore({ schema });
+ * let { store } = useStore({ schema });
  * store.commit(events.plantCreated({ ... }));
  * ```
  */
-export type Schema = typeof schema;
+export type AppSchema = typeof schema;

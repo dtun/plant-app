@@ -36,4 +36,16 @@ jest.mock("@livestore/react", () => ({
   LiveStoreProvider: ({ children }) => children,
   useQuery: jest.fn(() => []),
   useClientDocument: jest.fn(() => ({})),
+  useStore: jest.fn(() => ({ store: {} })),
+}));
+
+// Mock expo-constants for db/store.ts testing
+let mockConstants = {
+  sessionId: 'mock-session-id',
+};
+
+jest.mock('expo-constants', () => ({
+  __esModule: true,
+  default: mockConstants,
+  Constants: mockConstants,
 }));
