@@ -127,3 +127,40 @@ let calculateTotal = function (items) {
 - Proper `accessibilityRole`, `accessibilityLabel`, and `accessibilityHint`
 - Screen reader support for all interactive elements
 - High contrast support through theme system
+
+## Development Workflow
+
+### Code Quality Checks
+
+Before committing code, run the vibecheck script to ensure code quality:
+
+```bash
+npm run vibecheck
+```
+
+This script runs the following checks in order:
+
+1. **Format check** (`format:check`) - Verifies code formatting with Prettier
+2. **Lint** (`lint`) - Checks code quality with ESLint
+3. **Type check** (`typecheck`) - Validates TypeScript types
+4. **Test** (`test`) - Runs Jest test suite
+
+Individual scripts:
+
+- `npm run format` - Auto-format code with Prettier
+- `npm run format:check` - Check formatting without modifying files
+- `npm run lint` - Run ESLint checks
+- `npm run typecheck` - Run TypeScript compiler checks
+- `npm run test` - Run tests
+
+### Code Formatting
+
+This project uses Prettier for consistent code formatting:
+
+- Double quotes for strings
+- Semicolons at end of statements
+- ES5 trailing commas
+- 100 character line width
+- 2-space indentation
+
+The format is enforced through Prettier configuration (.prettierrc.json).
