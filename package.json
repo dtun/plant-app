@@ -87,7 +87,8 @@
     "preset": "jest-expo",
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.js"
-    ]
+    ],
+    "clearMocks": true
   },
   "private": true
 }

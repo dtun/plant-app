@@ -4,10 +4,6 @@ import { createAdapter, getStoreId, useStore } from "./store";
 // Mocks are set up in jest.setup.js
 
 describe("db/store", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   describe("getStoreId", () => {
     test("should return keeptend-{sessionId} format", () => {
       let storeId = getStoreId();

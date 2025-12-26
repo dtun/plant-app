@@ -21,7 +21,6 @@ describe("utils/usage-tracking", () => {
   }
 
   beforeEach(() => {
-    jest.clearAllMocks();
     mockStore = {
       commit: jest.fn().mockResolvedValue(undefined),
       query: jest.fn(() => []),
