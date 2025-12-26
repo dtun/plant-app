@@ -10,13 +10,6 @@ describe("db/store", () => {
 
       expect(storeId).toBe("keeptend-mock-session-id");
     });
-
-    test("should use default when sessionId is falsy (implementation detail)", () => {
-      // This test verifies the implementation uses || operator for fallback
-      // The actual fallback behavior (null/undefined/empty) is tested implicitly
-      // through the implementation: `Constants.sessionId || 'default'`
-      expect(getStoreId()).toContain("keeptend-");
-    });
   });
 
   describe("createAdapter", () => {
