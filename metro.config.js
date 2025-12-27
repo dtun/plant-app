@@ -1,11 +1,11 @@
 const { getDefaultConfig } = require("expo/metro-config");
 const { withUniwindConfig } = require("uniwind/metro");
-const { isProduction } = require("./src/utils/env");
+const { isDev } = require("./src/utils/env");
 
 const config = getDefaultConfig(__dirname);
 
 // Only add LiveStore devtools in development
-if (!isProduction()) {
+if (isDev()) {
   try {
     const { addLiveStoreDevtoolsMiddleware } = require("@livestore/devtools-expo");
     addLiveStoreDevtoolsMiddleware(config, {
