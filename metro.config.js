@@ -1,13 +1,13 @@
-const { getDefaultConfig } = require("expo/metro-config");
-const { withUniwindConfig } = require("uniwind/metro");
-const { isDev } = require("./src/utils/env");
+let { getDefaultConfig } = require("expo/metro-config");
+let { withUniwindConfig } = require("uniwind/metro");
+let { isDev } = require("./src/utils/env");
 
-const config = getDefaultConfig(__dirname);
+let config = getDefaultConfig(__dirname);
 
 // Only add LiveStore devtools in development
 if (isDev()) {
   try {
-    const { addLiveStoreDevtoolsMiddleware } = require("@livestore/devtools-expo");
+    let { addLiveStoreDevtoolsMiddleware } = require("@livestore/devtools-expo");
     addLiveStoreDevtoolsMiddleware(config, {
       schemaPath: "./src/livestore/schema.ts",
     });
