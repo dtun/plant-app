@@ -1,13 +1,21 @@
 const { getDefaultConfig } = require("expo/metro-config");
 const { withUniwindConfig } = require("uniwind/metro");
-const { addLiveStoreDevtoolsMiddleware } = require("@livestore/devtools-expo");
+const { isProduction } = require("./src/utils/env");
 
 const config = getDefaultConfig(__dirname);
 
-// Add LiveStore devtools middleware before uniwind
-addLiveStoreDevtoolsMiddleware(config, {
-  schemaPath: "./src/livestore/schema.ts",
-});
+// Only add LiveStore devtools in development
+if (!isProduction()) {
+  try {
+    const { addLiveStoreDevtoolsMiddleware } = require("@livestore/devtools-expo");
+    addLiveStoreDevtoolsMiddleware(config, {
+      schemaPath: "./src/livestore/schema.ts",
+    });
+  } catch (error) {
+    // Silently fail if devtools can't load (ESM compatibility issues)
+    console.warn("LiveStore devtools failed to load:", error.message);
+  }
+}
 
 module.exports = withUniwindConfig(config, {
   cssEntryFile: "./global.css",
