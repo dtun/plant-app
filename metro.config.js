@@ -3,8 +3,8 @@ let { withUniwindConfig } = require("uniwind/metro");
 
 let config = getDefaultConfig(__dirname);
 
-// Only add LiveStore devtools in development
-if (process.env.NODE_ENV !== "production") {
+// Only add LiveStore devtools in development (not in production or EAS builds)
+if (process.env.NODE_ENV !== "production" && !process.env.EAS_BUILD) {
   try {
     let { addLiveStoreDevtoolsMiddleware } = require("@livestore/devtools-expo");
     addLiveStoreDevtoolsMiddleware(config, {
