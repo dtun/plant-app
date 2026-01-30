@@ -1,3 +1,4 @@
+import { __resetCachedDeviceIdForTesting, __setCachedDeviceIdForTesting } from "./device";
 import {
   canGenerateName,
   getCurrentUsage,
@@ -21,6 +22,9 @@ describe("utils/usage-tracking", () => {
   }
 
   beforeEach(() => {
+    __resetCachedDeviceIdForTesting();
+    __setCachedDeviceIdForTesting("mock-device-id");
+
     mockStore = {
       commit: jest.fn().mockResolvedValue(undefined),
       query: jest.fn(() => []),
@@ -29,7 +33,7 @@ describe("utils/usage-tracking", () => {
 
   describe("canGenerateName", () => {
     test("free tier with no usage allows generation", async () => {
-      mockQueryResponses([{ id: "mock-session-id", tier: "free" }], []);
+      mockQueryResponses([{ id: "mock-device-id", tier: "free" }], []);
 
       let result = await canGenerateName(mockStore);
 
@@ -42,8 +46,8 @@ describe("utils/usage-tracking", () => {
 
     test("free tier at limit blocks generation", async () => {
       mockQueryResponses(
-        [{ id: "mock-session-id", tier: "free" }],
-        [{ id: "mock-session-id-2025-12", count: 3 }]
+        [{ id: "mock-device-id", tier: "free" }],
+        [{ id: "mock-device-id-2025-12", count: 3 }]
       );
 
       let result = await canGenerateName(mockStore);
@@ -57,8 +61,8 @@ describe("utils/usage-tracking", () => {
 
     test("pro tier always allows generation", async () => {
       mockQueryResponses(
-        [{ id: "mock-session-id", tier: "pro" }],
-        [{ id: "mock-session-id-2025-12", count: 100 }]
+        [{ id: "mock-device-id", tier: "pro" }],
+        [{ id: "mock-device-id-2025-12", count: 100 }]
       );
 
       let result = await canGenerateName(mockStore);
@@ -93,7 +97,7 @@ describe("utils/usage-tracking", () => {
 
   describe("incrementUsage", () => {
     test("first usage records count of 1", async () => {
-      mockQueryResponses([{ id: "mock-session-id", tier: "free" }], []);
+      mockQueryResponses([{ id: "mock-device-id", tier: "free" }], []);
 
       await incrementUsage(mockStore);
 
@@ -109,8 +113,8 @@ describe("utils/usage-tracking", () => {
 
     test("subsequent usage increments count", async () => {
       mockQueryResponses(
-        [{ id: "mock-session-id", tier: "free" }],
-        [{ id: "mock-session-id-2025-12", count: 2 }]
+        [{ id: "mock-device-id", tier: "free" }],
+        [{ id: "mock-device-id-2025-12", count: 2 }]
       );
 
       await incrementUsage(mockStore);
@@ -128,7 +132,7 @@ describe("utils/usage-tracking", () => {
 
   describe("getCurrentUsage", () => {
     test("returns zero when no usage exists", async () => {
-      mockQueryResponses([{ id: "mock-session-id", tier: "free" }], []);
+      mockQueryResponses([{ id: "mock-device-id", tier: "free" }], []);
 
       let result = await getCurrentUsage(mockStore);
 
@@ -141,8 +145,8 @@ describe("utils/usage-tracking", () => {
 
     test("returns existing usage count", async () => {
       mockQueryResponses(
-        [{ id: "mock-session-id", tier: "free" }],
-        [{ id: "mock-session-id-2025-12", count: 2 }]
+        [{ id: "mock-device-id", tier: "free" }],
+        [{ id: "mock-device-id-2025-12", count: 2 }]
       );
 
       let result = await getCurrentUsage(mockStore);
@@ -156,7 +160,7 @@ describe("utils/usage-tracking", () => {
 
   describe("resetMonthlyUsage", () => {
     test("commits usage record with count of zero", async () => {
-      mockQueryResponses([{ id: "mock-session-id", tier: "free" }], []);
+      mockQueryResponses([{ id: "mock-device-id", tier: "free" }], []);
 
       await resetMonthlyUsage(mockStore);
 

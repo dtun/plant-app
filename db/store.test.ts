@@ -1,15 +1,21 @@
 import { makePersistedAdapter } from "@livestore/adapter-expo";
+import { __resetCachedDeviceIdForTesting, __setCachedDeviceIdForTesting } from "../utils/device";
 import { createAdapter, getStoreId, useStore } from "./store";
 
 // Mocks are set up in jest.setup.js
 
 describe("db/store", () => {
+  beforeEach(() => {
+    __resetCachedDeviceIdForTesting();
+    __setCachedDeviceIdForTesting("mock-device-id");
+    jest.clearAllMocks();
+  });
+
   describe("getStoreId", () => {
     test("should return keeptend-{deviceId} format", () => {
       let storeId = getStoreId();
 
-      // Should match UUID pattern or "default"
-      expect(storeId).toMatch(/^keeptend-/);
+      expect(storeId).toBe("keeptend-mock-device-id");
       expect(typeof storeId).toBe("string");
     });
   });
@@ -31,7 +37,7 @@ describe("db/store", () => {
       expect(makePersistedAdapter).toHaveBeenCalledWith(
         expect.objectContaining({
           storage: {
-            subDirectory: expect.stringMatching(/^keeptend-/),
+            subDirectory: "keeptend-mock-device-id",
           },
         })
       );
@@ -71,10 +77,8 @@ describe("db/store", () => {
 
   describe("useStore", () => {
     test("should return result from @livestore/react useStore", () => {
-      // The mock is set up in jest.setup.js to return { store: {} }
       let result = useStore();
 
-      // Verify it returns the mocked value
       expect(result).toEqual({ store: {} });
     });
   });

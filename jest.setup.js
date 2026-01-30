@@ -10,6 +10,8 @@ require("react-native-reanimated").setUpTests();
 jest.mock("uniwind");
 jest.mock("expo-sqlite");
 jest.mock("expo-constants");
+jest.mock("expo-file-system");
+jest.mock("expo-crypto");
 jest.mock("@livestore/adapter-expo");
 jest.mock("@livestore/livestore");
 jest.mock("@livestore/react");
