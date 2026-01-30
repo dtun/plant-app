@@ -89,7 +89,7 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
   }, [loadStoredSettings]);
 
   return (
-    <View className="flex-1 gap-4">
+    <View className="gap-4">
       <FormField label="API Key" required error={errors.apiKey?.message}>
         <Controller
           control={control}

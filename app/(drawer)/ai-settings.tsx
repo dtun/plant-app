@@ -1,7 +1,6 @@
 import "expo-sqlite/localStorage/install";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AISetupForm } from "@/components/ai-setup-form";
 
@@ -18,20 +17,20 @@ export default function AISettingsScreen() {
   }, [checkKeyStatus]);
 
   return (
-    <View className="flex-1 bg-background">
-      <SafeAreaView edges={["bottom"]} className="flex-1">
-        <ScrollView className="flex-1 px-5 pt-4" keyboardShouldPersistTaps="handled">
-          <View className="mb-6">
-            <View className="rounded-xl border border-icon p-4">
-              <Text className="text-sm text-icon">
-                {hasUserKey ? "Using your API key" : "Using default key"}
-              </Text>
-            </View>
-          </View>
+    <ScrollView
+      className="flex-1 bg-background px-5 pt-4"
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ paddingBottom: 40 }}
+    >
+      <View className="mb-6">
+        <View className="rounded-xl border border-icon p-4">
+          <Text className="text-sm text-icon">
+            {hasUserKey ? "Using your API key" : "Using default key"}
+          </Text>
+        </View>
+      </View>
 
-          <AISetupForm onSaved={checkKeyStatus} />
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+      <AISetupForm onSaved={checkKeyStatus} />
+    </ScrollView>
   );
 }
