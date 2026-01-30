@@ -25,7 +25,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Alert,
-  Clipboard,
   FlatList,
   Keyboard,
   Pressable,
@@ -180,11 +179,6 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
       let plantName = await generatePlantName(plantData);
 
       Alert.alert("Your Plant's Name", `"${plantName}"`, [
-        {
-          text: "Copy",
-          style: "default",
-          onPress: () => Clipboard.setString(plantName),
-        },
         {
           text: "Start Chat",
           style: "default",
