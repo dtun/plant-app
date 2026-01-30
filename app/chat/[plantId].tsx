@@ -227,6 +227,7 @@ export default function ChatScreen() {
         name: plant.name,
         description: plant.description,
         size: plant.size,
+        photoUri: plant.photoUri,
         aiAnalysis: plant.aiAnalysis,
       };
 

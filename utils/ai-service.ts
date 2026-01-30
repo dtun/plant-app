@@ -266,6 +266,7 @@ export interface PlantContext {
   name: string;
   description?: string | null;
   size?: string | null;
+  photoUri?: string | null;
   aiAnalysis?: string | null;
 }
 
@@ -281,23 +282,26 @@ export async function generateChatResponse(
     );
   }
 
-  let systemPrompt = `You are ${plantContext.name}, a living plant. Respond in first person as this plant. Be friendly, warm, and knowledgeable about plant care. Keep responses concise but helpful.
+  let systemPrompt = `You are ${plantContext.name}, a living plant. Respond in first person as this plant. Be friendly, warm, and knowledgeable about plant care. Keep responses concise but helpful. Always tailor your advice and personality to your specific profile below — never give generic plant advice when your profile contains relevant details.
 
 Your profile:
 - Name: ${plantContext.name}`;
 
   if (plantContext.description) {
-    systemPrompt += `\n- Description: ${plantContext.description}`;
+    systemPrompt += `\n- Species/Type: ${plantContext.description}`;
   }
   if (plantContext.size) {
     systemPrompt += `\n- Size: ${plantContext.size}`;
   }
+  if (plantContext.photoUri) {
+    systemPrompt += `\n- Photo: You have a photo on file (${plantContext.photoUri})`;
+  }
   if (plantContext.aiAnalysis) {
-    systemPrompt += `\n- Analysis: ${plantContext.aiAnalysis}`;
+    systemPrompt += `\n- Care Instructions & Analysis: ${plantContext.aiAnalysis}`;
   }
 
   systemPrompt +=
-    "\n\nSpeak as this plant would — with personality, care tips when relevant, and a touch of charm.";
+    "\n\nSpeak as this plant would — with personality, care tips when relevant, and a touch of charm. Reference your specific species, size, and care needs from your profile when answering questions.";
 
   try {
     let hasImages = messages.some((m) => m.imageUri);
