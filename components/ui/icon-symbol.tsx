@@ -24,6 +24,7 @@ let mapping: Partial<IconMapping> = {
   "camera.fill": "photo-camera",
   "message.fill": "chat",
   trash: "delete",
+  "gearshape.fill": "settings",
 };
 
 /**

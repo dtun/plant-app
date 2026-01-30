@@ -32,6 +32,14 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
+        name="ai-settings"
+        options={{
+          drawerIcon: ({ color }) => <IconSymbol size={28} name="gearshape.fill" color={color} />,
+          drawerLabel: "AI Settings",
+          title: "AI Settings",
+        }}
+      />
+      <Drawer.Screen
         name="share"
         options={{
           drawerIcon: ({ color }) => (

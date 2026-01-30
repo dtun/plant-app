@@ -19,7 +19,11 @@ type AISetupFormData = z.infer<typeof aiSetupSchema>;
 
 let providerOptions = ["OpenAI", "Anthropic"] as const;
 
-export function AISetupForm() {
+interface AISetupFormProps {
+  onSaved?: () => void;
+}
+
+export function AISetupForm({ onSaved }: AISetupFormProps) {
   let {
     control,
     handleSubmit,
@@ -36,8 +40,8 @@ export function AISetupForm() {
 
   let loadStoredSettings = useCallback(() => {
     try {
-      let storedApiKey = globalThis.localStorage.getItem("ai_api_key");
-      let storedProvider = globalThis.localStorage.getItem("ai_provider");
+      let storedApiKey = globalThis.localStorage.getItem("ai_user_api_key");
+      let storedProvider = globalThis.localStorage.getItem("ai_user_provider");
 
       if (storedApiKey) {
         setValue("apiKey", storedApiKey);
@@ -52,14 +56,15 @@ export function AISetupForm() {
 
   function onSubmit(data: AISetupFormData) {
     try {
-      globalThis.localStorage.setItem("ai_api_key", data.apiKey);
-      globalThis.localStorage.setItem("ai_provider", data.provider);
+      globalThis.localStorage.setItem("ai_user_api_key", data.apiKey);
+      globalThis.localStorage.setItem("ai_user_provider", data.provider);
 
       console.log("AI Setup saved:", {
         provider: data.provider,
         apiKeyLength: data.apiKey.length,
       });
       Alert.alert("Settings Saved", "Your AI configuration has been saved successfully.");
+      onSaved?.();
     } catch (error) {
       console.error("Error saving settings:", error);
       Alert.alert("Error", "Failed to save settings. Please try again.");
@@ -68,10 +73,11 @@ export function AISetupForm() {
 
   function handleReset() {
     try {
-      globalThis.localStorage.removeItem("ai_api_key");
-      globalThis.localStorage.removeItem("ai_provider");
+      globalThis.localStorage.removeItem("ai_user_api_key");
+      globalThis.localStorage.removeItem("ai_user_provider");
       reset({ apiKey: "", provider: undefined });
       Alert.alert("Settings Reset", "Your AI configuration has been reset.");
+      onSaved?.();
     } catch (error) {
       console.error("Error resetting settings:", error);
       Alert.alert("Error", "Failed to reset settings. Please try again.");

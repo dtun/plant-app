@@ -64,15 +64,28 @@ async function fetchAIConfigFromEndpoint(): Promise<AIConfig | null> {
 
 async function getAIConfig(): Promise<AIConfig | null> {
   try {
-    // First, try to fetch from the public endpoint
+    // First, check if user has configured their own API key
+    let userApiKey = globalThis.localStorage.getItem("ai_user_api_key");
+    let userProvider = globalThis.localStorage.getItem("ai_user_provider");
+
+    if (userApiKey && userProvider) {
+      let userResult = aiConfigSchema.safeParse({
+        apiKey: userApiKey,
+        provider: userProvider,
+      });
+
+      if (userResult.success) {
+        return userResult.data;
+      }
+    }
+
+    // Next, try to fetch from the public endpoint
     let endpointConfig = await fetchAIConfigFromEndpoint();
     if (endpointConfig) {
-      // console.log("Using AI config from endpoint");
       return endpointConfig;
     }
 
     // Fallback to cached localStorage config
-    // console.log("Falling back to cached/env AI config");
     let storedApiKey =
       globalThis.localStorage.getItem("ai_api_key") || process.env.EXPO_PUBLIC_DEFAULT_AI_API_KEY;
     let storedProvider =
