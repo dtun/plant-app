@@ -25,6 +25,7 @@ let mapping: Partial<IconMapping> = {
   "message.fill": "chat",
   trash: "delete",
   "gearshape.fill": "settings",
+  "ellipsis.circle": "pending",
 };
 
 /**

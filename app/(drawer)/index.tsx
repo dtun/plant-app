@@ -9,7 +9,7 @@ export default function HomeScreen() {
   let safeStyle = useResolveClassNames("pb-4");
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-background">
       <KeyboardAvoidingView
         behavior={Platform.select({ default: "height", ios: "padding" })}
         className="flex-1 px-4"

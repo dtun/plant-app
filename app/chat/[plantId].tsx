@@ -1,5 +1,8 @@
 import { ActivityIndicator } from "@/components/ui/activity-indicator";
+import { ChatInput } from "@/components/ui/chat-input";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { PhotoUpload } from "@/components/ui/photo-upload";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { events } from "@/src/livestore/schema";
 import { generateChatResponse, type ChatMessage, type PlantContext } from "@/utils/ai-service";
 import { getDeviceId } from "@/utils/device";
@@ -19,11 +22,13 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useResolveClassNames } from "uniwind";
 
 function formatDayLabel(timestamp: number): string {
   let date = new Date(timestamp);
@@ -165,6 +170,7 @@ export default function ChatScreen() {
   let [pendingImageUri, setPendingImageUri] = useState<string | null>(null);
   let [isGenerating, setIsGenerating] = useState(false);
   let flatListRef = useRef<FlatList>(null);
+  let inputAreaStyle = useResolveClassNames("px-4 pt-2 bg-background");
 
   let scrollToBottom = useCallback(() => {
     if (flatListRef.current && messages.length > 0) {
@@ -321,7 +327,7 @@ export default function ChatScreen() {
           title: plant?.name ?? "Chat",
           headerBackTitle: "Chats",
           headerRight: () => (
-            <View className="flex-row items-center gap-1">
+            <>
               {plant?.photoUri ? (
                 <View className="w-8 h-8 rounded-full overflow-hidden">
                   <Image
@@ -331,16 +337,16 @@ export default function ChatScreen() {
                   />
                 </View>
               ) : null}
-              <TouchableOpacity
+              <Pressable
                 onPress={handleClearChat}
-                className="w-8 h-8 items-center justify-center"
+                className="self-center"
                 accessibilityRole="button"
                 accessibilityLabel="Chat options"
                 accessibilityHint="Opens chat options menu"
               >
-                <IconSymbol name="ellipsis.circle" size={22} colorClassName="text-tint" />
-              </TouchableOpacity>
-            </View>
+                <Text className="text-base px-2 text-color p-1">Reset</Text>
+              </Pressable>
+            </>
           ),
         }}
       />
@@ -379,7 +385,7 @@ export default function ChatScreen() {
         onContentSizeChange={scrollToBottom}
       />
 
-      <View className="border-t border-icon px-4 py-2 bg-background">
+      <SafeAreaView edges={["bottom", "left", "right"]} style={inputAreaStyle}>
         {pendingImageUri ? (
           <View className="flex-row items-center mb-2">
             <View className="relative">
@@ -399,46 +405,20 @@ export default function ChatScreen() {
             </View>
           </View>
         ) : null}
-        <View className="flex-row items-end gap-2">
-          <TouchableOpacity
-            onPress={handleAttachPhoto}
-            disabled={isGenerating}
-            className="rounded-full w-9 h-9 items-center justify-center mb-0.5"
-            style={{ opacity: isGenerating ? 0.5 : 1 }}
-            accessibilityRole="button"
-            accessibilityLabel="Attach photo"
-            accessibilityHint="Open camera or photo library to attach a photo"
-            accessibilityState={{ disabled: isGenerating }}
-          >
-            <IconSymbol name="photo" size={22} colorClassName="text-tint" />
-          </TouchableOpacity>
-          <TextInput
-            className="flex-1 text-base text-color bg-bubble-assistant rounded-2xl px-4 py-2 max-h-24 placeholder:text-placeholder"
-            value={inputText}
-            onChangeText={setInputText}
-            placeholder="Type a message..."
-            multiline
-            editable={!isGenerating}
-            accessibilityLabel="Message input"
-            accessibilityHint="Type a message to send to your plant"
-          />
-          <TouchableOpacity
-            onPress={handleSend}
-            disabled={(!inputText.trim() && !pendingImageUri) || isGenerating}
-            className="rounded-full bg-tint w-9 h-9 items-center justify-center mb-0.5"
-            style={{
-              opacity: (!inputText.trim() && !pendingImageUri) || isGenerating ? 0.5 : 1,
-            }}
-            accessibilityRole="button"
-            accessibilityLabel="Send message"
-            accessibilityState={{
-              disabled: (!inputText.trim() && !pendingImageUri) || isGenerating,
-            }}
-          >
-            <IconSymbol name="arrow.up" size={18} color="#fff" colorClassName={null} />
-          </TouchableOpacity>
-        </View>
-      </View>
+        <ChatInput
+          value={inputText}
+          onChangeText={setInputText}
+          placeholder="Type a message..."
+          leftButton={<PhotoUpload selectedImage={null} onImageSelect={handleAttachPhoto} />}
+          rightButton={
+            <SubmitButton
+              onPress={handleSend}
+              disabled={(!inputText.trim() && !pendingImageUri) || isGenerating}
+              isLoading={isGenerating}
+            />
+          }
+        />
+      </SafeAreaView>
     </KeyboardAvoidingView>
   );
 }
