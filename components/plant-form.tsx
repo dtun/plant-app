@@ -292,7 +292,10 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
                     />
                   }
                   rightButton={
-                    <SubmitButton onPress={handleSubmit(onSubmit)} isLoading={isGenerating} />
+                    <SubmitButton
+                      onPress={handleSubmit(onSubmit)}
+                      isLoading={isGenerating || isAnalyzing}
+                    />
                   }
                 />
               )}
