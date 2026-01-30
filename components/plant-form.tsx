@@ -5,17 +5,21 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { PhotoUpload } from "@/components/ui/photo-upload";
 import { SizeSelector } from "@/components/ui/size-selector";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { events } from "@/src/livestore/schema";
 import {
   analyzePhotoAndSetDescription,
   generatePlantName,
   type PlantData,
 } from "@/utils/ai-service";
+import { getDeviceId } from "@/utils/device";
 import {
   pickImageFromLibrary,
   showPhotoPickerAlert,
   takePhotoWithCamera,
 } from "@/utils/photo-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useStore } from "@livestore/react";
+import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -60,6 +64,8 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
   let [isGenerating, setIsGenerating] = useState(false);
   let [selectedImage, setSelectedImage] = useState<string | null>(null);
   let [isAnalyzing, setIsAnalyzing] = useState(false);
+  let { store } = useStore();
+  let router = useRouter();
 
   let {
     control,
@@ -123,6 +129,40 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
     setValue("photoDescription", "");
   }
 
+  function savePlantAndStartChat(plantName: string, data: PlantFormData): void {
+    try {
+      let plantId = crypto.randomUUID();
+      let userId = getDeviceId();
+      let now = Date.now();
+
+      store.commit(
+        events.plantCreated({
+          id: plantId,
+          userId,
+          name: plantName,
+          description: data.plantInput || data.photoDescription || undefined,
+          size: data.size || undefined,
+          photoUri: selectedImage || undefined,
+          aiAnalysis: data.photoDescription || undefined,
+          createdAt: now,
+          updatedAt: now,
+        })
+      );
+
+      handleReset();
+      router.push(`/chat/${plantId}`);
+    } catch (error) {
+      console.error("Error saving plant:", error);
+
+      let errorMessage = "Failed to save plant. Please try again.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+
+      Alert.alert("Save Error", errorMessage);
+    }
+  }
+
   async function onSubmit(data: PlantFormData) {
     setIsGenerating(true);
 
@@ -144,11 +184,13 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
           style: "default",
           onPress: () => Clipboard.setString(plantName),
         },
-        { text: "Done", style: "cancel" },
+        {
+          text: "Start Chat",
+          style: "default",
+          onPress: () => savePlantAndStartChat(plantName, data),
+        },
+        { text: "Cancel", style: "cancel" },
       ]);
-
-      // console.log("Generated plant name:", plantName);
-      // console.log("Plant data:", plantData);
     } catch (error) {
       console.error("Error generating plant name:", error);
 
@@ -160,11 +202,6 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
       if (errorMessage.includes("configuration not found")) {
         Alert.alert("AI Setup Required", "Please configure your AI settings first.", [
           { text: "Try Again", style: "cancel" },
-          // {
-          //   text: "Go to AI Setup",
-          //   style: "default",
-          //   onPress: () => router.push("/(drawer)/ai-setup"),
-          // },
         ]);
       } else {
         Alert.alert("Error", errorMessage);
