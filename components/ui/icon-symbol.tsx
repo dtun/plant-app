@@ -22,6 +22,7 @@ let mapping: Partial<IconMapping> = {
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
   "camera.fill": "photo-camera",
+  "message.fill": "chat",
   trash: "delete",
 };
 

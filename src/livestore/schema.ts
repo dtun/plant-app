@@ -10,7 +10,7 @@
  * - Materializers: Connect events to state changes
  */
 
-import { Events, makeSchema, Schema, State } from "@livestore/livestore";
+import { Events, makeSchema, queryDb, Schema, sql, State } from "@livestore/livestore";
 
 // ============================================================================
 // Events
@@ -412,6 +412,58 @@ let materializers = State.SQLite.materializers(events, {
       syncedAt: syncedAt ?? null,
     }),
 });
+
+// ============================================================================
+// Queries
+// ============================================================================
+
+/**
+ * Query: Plants with their latest chat message
+ *
+ * Returns all non-deleted named plants joined with their most recent chat message.
+ * Sorted by most recent message first, plants with no messages at the bottom.
+ */
+let PlantWithLastMessage = Schema.Struct({
+  id: Schema.String,
+  name: Schema.String,
+  photoUri: Schema.NullOr(Schema.String),
+  lastMessageContent: Schema.NullOr(Schema.String),
+  lastMessageCreatedAt: Schema.NullOr(Schema.Number),
+});
+
+export type PlantWithLastMessage = typeof PlantWithLastMessage.Type;
+
+export let plantsWithLastMessage$ = queryDb(
+  {
+    query: sql`
+    SELECT
+      p.id,
+      p.name,
+      p.photoUri,
+      m.content AS lastMessageContent,
+      m.createdAt AS lastMessageCreatedAt
+    FROM plants p
+    LEFT JOIN (
+      SELECT plantId, content, createdAt
+      FROM chatMessages cm1
+      WHERE cm1.createdAt = (
+        SELECT MAX(cm2.createdAt)
+        FROM chatMessages cm2
+        WHERE cm2.plantId = cm1.plantId
+      )
+    ) m ON m.plantId = p.id
+    WHERE p.deletedAt IS NULL
+      AND p.name IS NOT NULL
+      AND p.name != ''
+    ORDER BY
+      CASE WHEN m.createdAt IS NULL THEN 1 ELSE 0 END,
+      m.createdAt DESC,
+      p.createdAt DESC
+  `,
+    schema: Schema.Array(PlantWithLastMessage),
+  },
+  { label: "plantsWithLastMessage" }
+);
 
 // ============================================================================
 // Schema Export

@@ -24,6 +24,14 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
+        name="chats"
+        options={{
+          drawerIcon: ({ color }) => <IconSymbol size={28} name="message.fill" color={color} />,
+          drawerLabel: "Chats",
+          title: "Chats",
+        }}
+      />
+      <Drawer.Screen
         name="share"
         options={{
           drawerIcon: ({ color }) => (

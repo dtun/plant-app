@@ -35,6 +35,7 @@ export default function RootLayout() {
         <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(drawer)" />
+            <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>
