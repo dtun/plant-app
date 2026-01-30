@@ -3,6 +3,11 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { events, tables } from "@/src/livestore/schema";
 import { generateChatResponse, type ChatMessage, type PlantContext } from "@/utils/ai-service";
 import { getDeviceId } from "@/utils/device";
+import {
+  pickImageFromLibrary,
+  showPhotoPickerAlert,
+  takePhotoWithCamera,
+} from "@/utils/photo-utils";
 import { queryDb, Schema, sql } from "@livestore/livestore";
 import { useQuery, useStore } from "@livestore/react";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -24,6 +29,7 @@ let ChatMessageSchema = Schema.Struct({
   userId: Schema.String,
   role: Schema.String,
   content: Schema.String,
+  imageUri: Schema.NullOr(Schema.String),
   createdAt: Schema.Number,
 });
 
@@ -59,19 +65,32 @@ function isSameDay(a: number, b: number): boolean {
 interface MessageBubbleProps {
   role: string;
   content: string;
+  imageUri?: string | null;
 }
 
-function MessageBubble({ role, content }: MessageBubbleProps) {
+function MessageBubble({ role, content, imageUri }: MessageBubbleProps) {
   let isUser = role === "user";
 
   return (
     <View className={`px-4 py-1 ${isUser ? "items-end" : "items-start"}`}>
       <View
-        className={`rounded-2xl px-4 py-2.5 max-w-[80%] ${
+        className={`rounded-2xl max-w-[80%] overflow-hidden ${
           isUser ? "bg-bubble-user" : "bg-bubble-assistant"
         }`}
       >
-        <Text className={`text-base ${isUser ? "text-white" : "text-color"}`}>{content}</Text>
+        {imageUri ? (
+          <Image
+            source={{ uri: imageUri }}
+            className="w-56 h-56"
+            accessibilityLabel="Photo sent in chat"
+            resizeMode="cover"
+          />
+        ) : null}
+        {content ? (
+          <Text className={`text-base px-4 py-2.5 ${isUser ? "text-white" : "text-color"}`}>
+            {content}
+          </Text>
+        ) : null}
       </View>
     </View>
   );
@@ -109,7 +128,7 @@ export default function ChatScreen() {
   let messagesQuery = queryDb(
     {
       query: sql`
-        SELECT id, plantId, userId, role, content, createdAt
+        SELECT id, plantId, userId, role, content, imageUri, createdAt
         FROM chatMessages
         WHERE plantId = ${plantId}
         ORDER BY createdAt ASC
@@ -122,6 +141,7 @@ export default function ChatScreen() {
   let messages = useQuery(messagesQuery);
 
   let [inputText, setInputText] = useState("");
+  let [pendingImageUri, setPendingImageUri] = useState<string | null>(null);
   let [isGenerating, setIsGenerating] = useState(false);
   let flatListRef = useRef<FlatList>(null);
 
@@ -137,11 +157,30 @@ export default function ChatScreen() {
     scrollToBottom();
   }, [messages.length, isGenerating, scrollToBottom]);
 
+  function handleAttachPhoto() {
+    showPhotoPickerAlert(
+      async () => {
+        let result = await takePhotoWithCamera();
+        if (!result.cancelled) {
+          setPendingImageUri(result.uri);
+        }
+      },
+      async () => {
+        let result = await pickImageFromLibrary();
+        if (!result.cancelled) {
+          setPendingImageUri(result.uri);
+        }
+      }
+    );
+  }
+
   async function handleSend() {
     let text = inputText.trim();
-    if (!text || isGenerating || !plant) return;
+    let imageUri = pendingImageUri;
+    if ((!text && !imageUri) || isGenerating || !plant) return;
 
     setInputText("");
+    setPendingImageUri(null);
     let deviceId = getDeviceId();
     let now = Date.now();
 
@@ -152,7 +191,8 @@ export default function ChatScreen() {
         plantId,
         userId: deviceId,
         role: "user",
-        content: text,
+        content: text || "",
+        imageUri: imageUri ?? undefined,
         createdAt: now,
       })
     );
@@ -171,8 +211,13 @@ export default function ChatScreen() {
       let chatHistory: ChatMessage[] = messages.map((m) => ({
         role: m.role as "user" | "assistant",
         content: m.content,
+        imageUri: m.imageUri ?? undefined,
       }));
-      chatHistory.push({ role: "user", content: text });
+      chatHistory.push({
+        role: "user",
+        content: text || "What do you see in this photo?",
+        imageUri: imageUri ?? undefined,
+      });
 
       let response = await generateChatResponse(plantContext, chatHistory);
 
@@ -253,7 +298,13 @@ export default function ChatScreen() {
           if (item.type === "separator") {
             return <DaySeparator label={item.label} />;
           }
-          return <MessageBubble role={item.message.role} content={item.message.content} />;
+          return (
+            <MessageBubble
+              role={item.message.role}
+              content={item.message.content}
+              imageUri={item.message.imageUri}
+            />
+          );
         }}
         ListFooterComponent={isGenerating ? <TypingIndicator /> : null}
         ListEmptyComponent={
@@ -274,7 +325,38 @@ export default function ChatScreen() {
       />
 
       <View className="border-t border-icon px-4 py-2 bg-background">
+        {pendingImageUri ? (
+          <View className="flex-row items-center mb-2">
+            <View className="relative">
+              <Image
+                source={{ uri: pendingImageUri }}
+                className="w-16 h-16 rounded-lg"
+                accessibilityLabel="Selected photo preview"
+              />
+              <TouchableOpacity
+                onPress={() => setPendingImageUri(null)}
+                className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center"
+                accessibilityRole="button"
+                accessibilityLabel="Remove selected photo"
+              >
+                <IconSymbol name="xmark" size={10} color="#fff" colorClassName={null} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : null}
         <View className="flex-row items-end gap-2">
+          <TouchableOpacity
+            onPress={handleAttachPhoto}
+            disabled={isGenerating}
+            className="rounded-full w-9 h-9 items-center justify-center mb-0.5"
+            style={{ opacity: isGenerating ? 0.5 : 1 }}
+            accessibilityRole="button"
+            accessibilityLabel="Attach photo"
+            accessibilityHint="Open camera or photo library to attach a photo"
+            accessibilityState={{ disabled: isGenerating }}
+          >
+            <IconSymbol name="photo" size={22} colorClassName="text-tint" />
+          </TouchableOpacity>
           <TextInput
             className="flex-1 text-base text-color bg-bubble-assistant rounded-2xl px-4 py-2 max-h-24 placeholder:text-placeholder"
             value={inputText}
@@ -287,12 +369,16 @@ export default function ChatScreen() {
           />
           <TouchableOpacity
             onPress={handleSend}
-            disabled={!inputText.trim() || isGenerating}
+            disabled={(!inputText.trim() && !pendingImageUri) || isGenerating}
             className="rounded-full bg-tint w-9 h-9 items-center justify-center mb-0.5"
-            style={{ opacity: !inputText.trim() || isGenerating ? 0.5 : 1 }}
+            style={{
+              opacity: (!inputText.trim() && !pendingImageUri) || isGenerating ? 0.5 : 1,
+            }}
             accessibilityRole="button"
             accessibilityLabel="Send message"
-            accessibilityState={{ disabled: !inputText.trim() || isGenerating }}
+            accessibilityState={{
+              disabled: (!inputText.trim() && !pendingImageUri) || isGenerating,
+            }}
           >
             <IconSymbol name="arrow.up" size={18} color="#fff" colorClassName={null} />
           </TouchableOpacity>

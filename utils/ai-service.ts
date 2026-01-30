@@ -246,6 +246,7 @@ export async function generatePhotoDescription(imageUri: string): Promise<string
 export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
+  imageUri?: string;
 }
 
 export interface PlantContext {
@@ -286,12 +287,25 @@ Your profile:
     "\n\nSpeak as this plant would — with personality, care tips when relevant, and a touch of charm.";
 
   try {
-    let model = createAIModel(config, "text");
+    let hasImages = messages.some((m) => m.imageUri);
+    let model = createAIModel(config, hasImages ? "vision" : "text");
+
+    let formattedMessages = messages.map((m) => {
+      if (m.imageUri) {
+        let content: ({ type: "text"; text: string } | { type: "image"; image: string })[] = [];
+        if (m.content) {
+          content.push({ type: "text", text: m.content });
+        }
+        content.push({ type: "image", image: m.imageUri });
+        return { role: "user" as const, content };
+      }
+      return { role: m.role, content: m.content };
+    });
 
     let result = await generateText({
       model,
       system: systemPrompt,
-      messages: messages.map((m) => ({ role: m.role, content: m.content })),
+      messages: formattedMessages,
     });
 
     let response = result.text.trim();

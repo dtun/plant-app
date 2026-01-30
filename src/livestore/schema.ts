@@ -108,6 +108,7 @@ let messageCreated = Events.synced({
     userId: Schema.String,
     role: Schema.String, // 'user' | 'assistant'
     content: Schema.String,
+    imageUri: Schema.optional(Schema.String),
     createdAt: Schema.Number,
     syncedAt: Schema.optional(Schema.Number),
   }),
@@ -216,6 +217,7 @@ let chatMessagesTable = State.SQLite.table({
     userId: State.SQLite.text(),
     role: State.SQLite.text(), // 'user' | 'assistant'
     content: State.SQLite.text(),
+    imageUri: State.SQLite.text({ nullable: true }),
     createdAt: State.SQLite.integer(),
     syncedAt: State.SQLite.integer({ nullable: true }),
   },
@@ -391,6 +393,7 @@ let materializers = State.SQLite.materializers(events, {
     userId,
     role,
     content,
+    imageUri,
     createdAt,
     syncedAt,
   }: {
@@ -399,6 +402,7 @@ let materializers = State.SQLite.materializers(events, {
     userId: string;
     role: string;
     content: string;
+    imageUri?: string;
     createdAt: number;
     syncedAt?: number;
   }) =>
@@ -408,6 +412,7 @@ let materializers = State.SQLite.materializers(events, {
       userId,
       role,
       content,
+      imageUri: imageUri ?? null,
       createdAt,
       syncedAt: syncedAt ?? null,
     }),
