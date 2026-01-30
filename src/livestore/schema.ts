@@ -114,6 +114,17 @@ let messageCreated = Events.synced({
   }),
 });
 
+/**
+ * Chat cleared event - Soft-deletes all messages for a plant
+ */
+let chatCleared = Events.synced({
+  name: "v1.ChatCleared",
+  schema: Schema.Struct({
+    plantId: Schema.String,
+    deletedAt: Schema.Number,
+  }),
+});
+
 export let events = {
   userCreated,
   userUpdated,
@@ -122,6 +133,7 @@ export let events = {
   plantUpdated,
   plantDeleted,
   messageCreated,
+  chatCleared,
 };
 
 // ============================================================================
@@ -220,6 +232,7 @@ let chatMessagesTable = State.SQLite.table({
     imageUri: State.SQLite.text({ nullable: true }),
     createdAt: State.SQLite.integer(),
     syncedAt: State.SQLite.integer({ nullable: true }),
+    deletedAt: State.SQLite.integer({ nullable: true }),
   },
 });
 
@@ -415,7 +428,11 @@ let materializers = State.SQLite.materializers(events, {
       imageUri: imageUri ?? null,
       createdAt,
       syncedAt: syncedAt ?? null,
+      deletedAt: null,
     }),
+
+  "v1.ChatCleared": ({ plantId, deletedAt }: { plantId: string; deletedAt: number }) =>
+    sql`UPDATE chatMessages SET deletedAt = ${deletedAt} WHERE plantId = ${plantId} AND deletedAt IS NULL`,
 });
 
 // ============================================================================
@@ -451,10 +468,12 @@ export let plantsWithLastMessage$ = queryDb(
     LEFT JOIN (
       SELECT plantId, content, createdAt
       FROM chatMessages cm1
-      WHERE cm1.createdAt = (
+      WHERE cm1.deletedAt IS NULL
+        AND cm1.createdAt = (
         SELECT MAX(cm2.createdAt)
         FROM chatMessages cm2
         WHERE cm2.plantId = cm1.plantId
+          AND cm2.deletedAt IS NULL
       )
     ) m ON m.plantId = p.id
     WHERE p.deletedAt IS NULL

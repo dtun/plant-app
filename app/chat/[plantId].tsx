@@ -13,6 +13,7 @@ import { useQuery, useStore } from "@livestore/react";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  Alert,
   FlatList,
   Image,
   KeyboardAvoidingView,
@@ -130,7 +131,7 @@ export default function ChatScreen() {
       query: sql`
         SELECT id, plantId, userId, role, content, imageUri, createdAt
         FROM chatMessages
-        WHERE plantId = ${plantId}
+        WHERE plantId = ${plantId} AND deletedAt IS NULL
         ORDER BY createdAt ASC
       `,
       schema: Schema.Array(ChatMessageSchema),
@@ -156,6 +157,28 @@ export default function ChatScreen() {
   useEffect(() => {
     scrollToBottom();
   }, [messages.length, isGenerating, scrollToBottom]);
+
+  function handleClearChat() {
+    Alert.alert(
+      "Clear Chat",
+      `Are you sure you want to clear all messages with ${plant?.name ?? "this plant"}?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Clear",
+          style: "destructive",
+          onPress: () => {
+            store.commit(
+              events.chatCleared({
+                plantId,
+                deletedAt: Date.now(),
+              })
+            );
+          },
+        },
+      ]
+    );
+  }
 
   function handleAttachPhoto() {
     showPhotoPickerAlert(
@@ -276,17 +299,28 @@ export default function ChatScreen() {
         options={{
           title: plant?.name ?? "Chat",
           headerBackTitle: "Chats",
-          headerRight: plant?.photoUri
-            ? () => (
-                <View className="w-8 h-8 rounded-full overflow-hidden mr-2">
+          headerRight: () => (
+            <View className="flex-row items-center gap-1">
+              {plant?.photoUri ? (
+                <View className="w-8 h-8 rounded-full overflow-hidden">
                   <Image
                     source={{ uri: plant.photoUri! }}
                     className="w-8 h-8"
                     accessibilityLabel={`Photo of ${plant.name}`}
                   />
                 </View>
-              )
-            : undefined,
+              ) : null}
+              <TouchableOpacity
+                onPress={handleClearChat}
+                className="w-8 h-8 items-center justify-center"
+                accessibilityRole="button"
+                accessibilityLabel="Chat options"
+                accessibilityHint="Opens chat options menu"
+              >
+                <IconSymbol name="ellipsis.circle" size={22} colorClassName="text-tint" />
+              </TouchableOpacity>
+            </View>
+          ),
         }}
       />
 
