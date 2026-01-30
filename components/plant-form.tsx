@@ -19,6 +19,7 @@ import {
 } from "@/utils/photo-utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useStore } from "@livestore/react";
+import * as Crypto from "expo-crypto";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -131,7 +132,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
 
   function savePlantAndStartChat(plantName: string, data: PlantFormData): void {
     try {
-      let plantId = crypto.randomUUID();
+      let plantId = Crypto.randomUUID();
       let userId = getDeviceId();
       let now = Date.now();
 
