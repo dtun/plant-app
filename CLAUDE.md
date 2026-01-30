@@ -212,3 +212,15 @@ This project uses Prettier for consistent code formatting:
 - 2-space indentation
 
 The format is enforced through Prettier configuration (.prettierrc.json).
+
+### Commit Conventions
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/). All commits must follow this format:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
