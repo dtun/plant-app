@@ -1,18 +1,303 @@
-import { tables } from "@/src/livestore/schema";
-import { useQuery } from "@livestore/react";
-import { queryDb } from "@livestore/livestore";
+import { ActivityIndicator } from "@/components/ui/activity-indicator";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { events, tables } from "@/src/livestore/schema";
+import { generateChatResponse, type ChatMessage, type PlantContext } from "@/utils/ai-service";
+import { getDeviceId } from "@/utils/device";
+import { queryDb, Schema, sql } from "@livestore/livestore";
+import { useQuery, useStore } from "@livestore/react";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Text, View } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  FlatList,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+let ChatMessageSchema = Schema.Struct({
+  id: Schema.String,
+  plantId: Schema.String,
+  userId: Schema.String,
+  role: Schema.String,
+  content: Schema.String,
+  createdAt: Schema.Number,
+});
+
+function formatDayLabel(timestamp: number): string {
+  let date = new Date(timestamp);
+  let now = new Date();
+  let diffMs = now.getTime() - date.getTime();
+  let diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) {
+    return "Today";
+  }
+  if (diffDays === 1) {
+    return "Yesterday";
+  }
+  return date.toLocaleDateString([], {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function isSameDay(a: number, b: number): boolean {
+  let dateA = new Date(a);
+  let dateB = new Date(b);
+  return (
+    dateA.getFullYear() === dateB.getFullYear() &&
+    dateA.getMonth() === dateB.getMonth() &&
+    dateA.getDate() === dateB.getDate()
+  );
+}
+
+interface MessageBubbleProps {
+  role: string;
+  content: string;
+}
+
+function MessageBubble({ role, content }: MessageBubbleProps) {
+  let isUser = role === "user";
+
+  return (
+    <View className={`px-4 py-1 ${isUser ? "items-end" : "items-start"}`}>
+      <View
+        className={`rounded-2xl px-4 py-2.5 max-w-[80%] ${
+          isUser ? "bg-bubble-user" : "bg-bubble-assistant"
+        }`}
+      >
+        <Text className={`text-base ${isUser ? "text-white" : "text-color"}`}>{content}</Text>
+      </View>
+    </View>
+  );
+}
+
+function TypingIndicator() {
+  return (
+    <View className="px-4 py-1 items-start">
+      <View className="rounded-2xl px-4 py-3 bg-bubble-assistant flex-row items-center gap-1">
+        <ActivityIndicator size="small" colorClassName="text-icon" />
+        <Text className="text-sm text-icon ml-1">typing...</Text>
+      </View>
+    </View>
+  );
+}
+
+interface DaySeparatorProps {
+  label: string;
+}
+
+function DaySeparator({ label }: DaySeparatorProps) {
+  return (
+    <View className="items-center py-3">
+      <Text className="text-xs text-icon">{label}</Text>
+    </View>
+  );
+}
 
 export default function ChatScreen() {
   let { plantId } = useLocalSearchParams<{ plantId: string }>();
+  let { store } = useStore();
   let plants = useQuery(queryDb(tables.plants.where({ id: plantId })));
   let plant = plants[0];
 
+  let messagesQuery = queryDb(
+    {
+      query: sql`
+        SELECT id, plantId, userId, role, content, createdAt
+        FROM chatMessages
+        WHERE plantId = ${plantId}
+        ORDER BY createdAt ASC
+      `,
+      schema: Schema.Array(ChatMessageSchema),
+    },
+    { label: `chatMessages-${plantId}` }
+  );
+
+  let messages = useQuery(messagesQuery);
+
+  let [inputText, setInputText] = useState("");
+  let [isGenerating, setIsGenerating] = useState(false);
+  let flatListRef = useRef<FlatList>(null);
+
+  let scrollToBottom = useCallback(() => {
+    if (flatListRef.current && messages.length > 0) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+      }, 100);
+    }
+  }, [messages.length]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages.length, isGenerating, scrollToBottom]);
+
+  async function handleSend() {
+    let text = inputText.trim();
+    if (!text || isGenerating || !plant) return;
+
+    setInputText("");
+    let deviceId = getDeviceId();
+    let now = Date.now();
+
+    // Commit user message
+    store.commit(
+      events.messageCreated({
+        id: crypto.randomUUID(),
+        plantId,
+        userId: deviceId,
+        role: "user",
+        content: text,
+        createdAt: now,
+      })
+    );
+
+    // Generate AI response
+    setIsGenerating(true);
+    try {
+      let plantContext: PlantContext = {
+        name: plant.name,
+        description: plant.description,
+        size: plant.size,
+        aiAnalysis: plant.aiAnalysis,
+      };
+
+      // Build message history for context
+      let chatHistory: ChatMessage[] = messages.map((m) => ({
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      }));
+      chatHistory.push({ role: "user", content: text });
+
+      let response = await generateChatResponse(plantContext, chatHistory);
+
+      store.commit(
+        events.messageCreated({
+          id: crypto.randomUUID(),
+          plantId,
+          userId: deviceId,
+          role: "assistant",
+          content: response,
+          createdAt: Date.now(),
+        })
+      );
+    } catch (error) {
+      let errorMessage = "Sorry, I couldn't respond right now. Please try again.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      store.commit(
+        events.messageCreated({
+          id: crypto.randomUUID(),
+          plantId,
+          userId: deviceId,
+          role: "assistant",
+          content: errorMessage,
+          createdAt: Date.now(),
+        })
+      );
+    } finally {
+      setIsGenerating(false);
+    }
+  }
+
+  // Build list data with day separators
+  let listData: (
+    | { type: "separator"; label: string }
+    | { type: "message"; message: (typeof messages)[0] }
+  )[] = [];
+  let lastTimestamp: number | null = null;
+
+  for (let msg of messages) {
+    if (lastTimestamp === null || !isSameDay(lastTimestamp, msg.createdAt)) {
+      listData.push({ type: "separator", label: formatDayLabel(msg.createdAt) });
+    }
+    listData.push({ type: "message", message: msg });
+    lastTimestamp = msg.createdAt;
+  }
+
   return (
-    <View className="flex-1 bg-background items-center justify-center px-8">
-      <Stack.Screen options={{ title: plant?.name ?? "Chat", headerBackTitle: "Chats" }} />
-      <Text className="text-icon text-base text-center">Chat coming soon!</Text>
-    </View>
+    <KeyboardAvoidingView
+      className="flex-1 bg-background"
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    >
+      <Stack.Screen
+        options={{
+          title: plant?.name ?? "Chat",
+          headerBackTitle: "Chats",
+          headerRight: plant?.photoUri
+            ? () => (
+                <View className="w-8 h-8 rounded-full overflow-hidden mr-2">
+                  <Image
+                    source={{ uri: plant.photoUri! }}
+                    className="w-8 h-8"
+                    accessibilityLabel={`Photo of ${plant.name}`}
+                  />
+                </View>
+              )
+            : undefined,
+        }}
+      />
+
+      <FlatList
+        ref={flatListRef}
+        data={listData}
+        keyExtractor={(item, index) => (item.type === "message" ? item.message.id : `sep-${index}`)}
+        renderItem={({ item }) => {
+          if (item.type === "separator") {
+            return <DaySeparator label={item.label} />;
+          }
+          return <MessageBubble role={item.message.role} content={item.message.content} />;
+        }}
+        ListFooterComponent={isGenerating ? <TypingIndicator /> : null}
+        ListEmptyComponent={
+          <View className="flex-1 items-center justify-center px-8">
+            <Text className="text-icon text-base text-center">
+              Say hello to {plant?.name ?? "your plant"}!
+            </Text>
+          </View>
+        }
+        contentContainerStyle={{
+          flexGrow: 1,
+          justifyContent: messages.length === 0 ? "center" : "flex-end",
+          paddingVertical: 8,
+        }}
+        keyboardDismissMode="interactive"
+        keyboardShouldPersistTaps="handled"
+        onContentSizeChange={scrollToBottom}
+      />
+
+      <View className="border-t border-icon px-4 py-2 bg-background">
+        <View className="flex-row items-end gap-2">
+          <TextInput
+            className="flex-1 text-base text-color bg-bubble-assistant rounded-2xl px-4 py-2 max-h-24 placeholder:text-placeholder"
+            value={inputText}
+            onChangeText={setInputText}
+            placeholder="Type a message..."
+            multiline
+            editable={!isGenerating}
+            accessibilityLabel="Message input"
+            accessibilityHint="Type a message to send to your plant"
+          />
+          <TouchableOpacity
+            onPress={handleSend}
+            disabled={!inputText.trim() || isGenerating}
+            className="rounded-full bg-tint w-9 h-9 items-center justify-center mb-0.5"
+            style={{ opacity: !inputText.trim() || isGenerating ? 0.5 : 1 }}
+            accessibilityRole="button"
+            accessibilityLabel="Send message"
+            accessibilityState={{ disabled: !inputText.trim() || isGenerating }}
+          >
+            <IconSymbol name="arrow.up" size={18} color="#fff" colorClassName={null} />
+          </TouchableOpacity>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }

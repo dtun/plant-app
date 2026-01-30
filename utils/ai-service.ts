@@ -243,6 +243,69 @@ export async function generatePhotoDescription(imageUri: string): Promise<string
   }
 }
 
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface PlantContext {
+  name: string;
+  description?: string | null;
+  size?: string | null;
+  aiAnalysis?: string | null;
+}
+
+export async function generateChatResponse(
+  plantContext: PlantContext,
+  messages: ChatMessage[]
+): Promise<string> {
+  let config = await getAIConfig();
+
+  if (!config) {
+    throw new Error(
+      "AI configuration not found. Please set up your API key and provider in Settings."
+    );
+  }
+
+  let systemPrompt = `You are ${plantContext.name}, a living plant. Respond in first person as this plant. Be friendly, warm, and knowledgeable about plant care. Keep responses concise but helpful.
+
+Your profile:
+- Name: ${plantContext.name}`;
+
+  if (plantContext.description) {
+    systemPrompt += `\n- Description: ${plantContext.description}`;
+  }
+  if (plantContext.size) {
+    systemPrompt += `\n- Size: ${plantContext.size}`;
+  }
+  if (plantContext.aiAnalysis) {
+    systemPrompt += `\n- Analysis: ${plantContext.aiAnalysis}`;
+  }
+
+  systemPrompt +=
+    "\n\nSpeak as this plant would — with personality, care tips when relevant, and a touch of charm.";
+
+  try {
+    let model = createAIModel(config, "text");
+
+    let result = await generateText({
+      model,
+      system: systemPrompt,
+      messages: messages.map((m) => ({ role: m.role, content: m.content })),
+    });
+
+    let response = result.text.trim();
+
+    if (!response) {
+      throw new Error("No response generated");
+    }
+
+    return response;
+  } catch (error) {
+    handleAIError(error, "generate chat response");
+  }
+}
+
 export async function generatePlantName(plantData: PlantData): Promise<string> {
   let config = await getAIConfig();
 

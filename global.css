@@ -44,4 +44,12 @@
   .text-placeholder {
     color: light-dark(#999, #666);
   }
+
+  .bg-bubble-user {
+    background-color: light-dark(#16a34a, #22c55e);
+  }
+
+  .bg-bubble-assistant {
+    background-color: light-dark(#e5e7eb, #374151);
+  }
 }
