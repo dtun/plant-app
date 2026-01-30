@@ -432,7 +432,7 @@ let materializers = State.SQLite.materializers(events, {
     }),
 
   "v1.ChatCleared": ({ plantId, deletedAt }: { plantId: string; deletedAt: number }) =>
-    sql`UPDATE chatMessages SET deletedAt = ${deletedAt} WHERE plantId = ${plantId} AND deletedAt IS NULL`,
+    sql`UPDATE chatMessages SET deletedAt = ${deletedAt} WHERE plantId = '${plantId}' AND deletedAt IS NULL`,
 });
 
 // ============================================================================

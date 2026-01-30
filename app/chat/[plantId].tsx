@@ -1,6 +1,6 @@
 import { ActivityIndicator } from "@/components/ui/activity-indicator";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { events, tables } from "@/src/livestore/schema";
+import { events } from "@/src/livestore/schema";
 import { generateChatResponse, type ChatMessage, type PlantContext } from "@/utils/ai-service";
 import { getDeviceId } from "@/utils/device";
 import {
@@ -10,6 +10,7 @@ import {
 } from "@/utils/photo-utils";
 import { queryDb, Schema, sql } from "@livestore/livestore";
 import { useQuery, useStore } from "@livestore/react";
+import * as Crypto from "expo-crypto";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -23,16 +24,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-let ChatMessageSchema = Schema.Struct({
-  id: Schema.String,
-  plantId: Schema.String,
-  userId: Schema.String,
-  role: Schema.String,
-  content: Schema.String,
-  imageUri: Schema.NullOr(Schema.String),
-  createdAt: Schema.Number,
-});
 
 function formatDayLabel(timestamp: number): string {
   let date = new Date(timestamp);
@@ -120,21 +111,50 @@ function DaySeparator({ label }: DaySeparatorProps) {
   );
 }
 
+let PlantSchema = Schema.Struct({
+  id: Schema.String,
+  userId: Schema.String,
+  name: Schema.String,
+  description: Schema.NullOr(Schema.String),
+  size: Schema.NullOr(Schema.String),
+  photoUri: Schema.NullOr(Schema.String),
+  aiAnalysis: Schema.NullOr(Schema.String),
+  createdAt: Schema.Number,
+  updatedAt: Schema.Number,
+  syncedAt: Schema.NullOr(Schema.Number),
+  deletedAt: Schema.NullOr(Schema.Number),
+});
+
+let MessageSchema = Schema.Struct({
+  id: Schema.String,
+  plantId: Schema.String,
+  userId: Schema.String,
+  role: Schema.String,
+  content: Schema.String,
+  imageUri: Schema.NullOr(Schema.String),
+  createdAt: Schema.Number,
+});
+
 export default function ChatScreen() {
   let { plantId } = useLocalSearchParams<{ plantId: string }>();
   let { store } = useStore();
-  let plants = useQuery(queryDb(tables.plants.where({ id: plantId })));
+  let plantsQuery = queryDb(
+    {
+      query: sql`SELECT * FROM plants WHERE id = '${plantId}'`,
+      schema: Schema.Array(PlantSchema),
+    },
+    { label: `plant-${plantId}` }
+  );
+  let plants = useQuery(plantsQuery);
   let plant = plants[0];
 
   let messagesQuery = queryDb(
     {
-      query: sql`
-        SELECT id, plantId, userId, role, content, imageUri, createdAt
+      query: sql`SELECT id, plantId, userId, role, content, imageUri, createdAt
         FROM chatMessages
-        WHERE plantId = ${plantId} AND deletedAt IS NULL
-        ORDER BY createdAt ASC
-      `,
-      schema: Schema.Array(ChatMessageSchema),
+        WHERE plantId = '${plantId}' AND deletedAt IS NULL
+        ORDER BY createdAt ASC`,
+      schema: Schema.Array(MessageSchema),
     },
     { label: `chatMessages-${plantId}` }
   );
@@ -210,7 +230,7 @@ export default function ChatScreen() {
     // Commit user message
     store.commit(
       events.messageCreated({
-        id: crypto.randomUUID(),
+        id: Crypto.randomUUID(),
         plantId,
         userId: deviceId,
         role: "user",
@@ -247,7 +267,7 @@ export default function ChatScreen() {
 
       store.commit(
         events.messageCreated({
-          id: crypto.randomUUID(),
+          id: Crypto.randomUUID(),
           plantId,
           userId: deviceId,
           role: "assistant",
@@ -262,7 +282,7 @@ export default function ChatScreen() {
       }
       store.commit(
         events.messageCreated({
-          id: crypto.randomUUID(),
+          id: Crypto.randomUUID(),
           plantId,
           userId: deviceId,
           role: "assistant",
