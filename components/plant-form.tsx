@@ -3,7 +3,6 @@ import { ChatInput } from "@/components/ui/chat-input";
 import { FormField } from "@/components/ui/form-field";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { PhotoUpload } from "@/components/ui/photo-upload";
-import { SizeSelector } from "@/components/ui/size-selector";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { events } from "@/src/livestore/schema";
 import {
@@ -23,15 +22,7 @@ import * as Crypto from "expo-crypto";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Alert,
-  FlatList,
-  Keyboard,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Alert, FlatList, Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import { z } from "zod";
 
 let plantSchema = z
@@ -53,8 +44,6 @@ let plantSchema = z
   );
 
 type PlantFormData = z.infer<typeof plantSchema>;
-
-let sizeOptions = ["Small", "Medium", "Large"] as const;
 
 interface PlantFormProps {
   setOptions?: (options: Partial<object>) => void;
@@ -252,19 +241,6 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
                     value={value || ""}
                     placeholder="e.g., Succulent, Fern, Flowering Plant..."
                   />
-                )}
-              />
-            </FormField>
-          ),
-        },
-        {
-          render: (
-            <FormField label="What size is your plant?" error={errors.size?.message}>
-              <Controller
-                control={control}
-                name="size"
-                render={({ field: { onChange, value } }) => (
-                  <SizeSelector options={sizeOptions} value={value} onChange={onChange} />
                 )}
               />
             </FormField>

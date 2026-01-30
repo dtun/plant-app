@@ -14,13 +14,6 @@ test("renders plant type input field", () => {
   ).toBeOnTheScreen();
 });
 
-test("renders size selector options", () => {
-  render(<PlantForm />);
-  expect(screen.getByText("Small")).toBeOnTheScreen();
-  expect(screen.getByText("Medium")).toBeOnTheScreen();
-  expect(screen.getByText("Large")).toBeOnTheScreen();
-});
-
 test("renders plant description input", () => {
   render(<PlantForm />);
   expect(screen.getByPlaceholderText("Describe your plant...")).toBeOnTheScreen();
