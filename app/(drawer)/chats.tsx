@@ -28,8 +28,8 @@ export default function ChatsScreen() {
   useEffect(() => {
     hopOffset.value = withRepeat(
       withSequence(
-        withTiming(-3.5, { duration: 400, easing: Easing.out(Easing.ease) }),
-        withTiming(0, { duration: 400, easing: Easing.in(Easing.ease) })
+        withTiming(-2.4, { duration: 240, easing: Easing.out(Easing.ease) }),
+        withTiming(0, { duration: 240, easing: Easing.in(Easing.ease) })
       ),
       -1
     );
@@ -51,12 +51,11 @@ export default function ChatsScreen() {
           accessibilityHint="Navigates to the plant naming screen"
         >
           <Text className="text-icon text-base">Name a plant to start chatting!</Text>
-          <Animated.View
-            style={hopStyle}
-            className="rounded-full bg-tint justify-center items-center w-8 h-8"
-          >
-            <IconSymbol colorClassName={null} name="arrow.up.right" size={16} color="#fff" />
-          </Animated.View>
+          <View className="rounded-full bg-tint justify-center items-center w-8 h-8">
+            <Animated.View style={hopStyle}>
+              <IconSymbol colorClassName={null} name="arrow.up.right" size={16} color="#fff" />
+            </Animated.View>
+          </View>
         </TouchableOpacity>
       </View>
     );
