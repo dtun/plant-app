@@ -44,6 +44,7 @@ app-example
 
 # ralph-tui local state
 .ralph-tui/
+tasks/
 
 # generated native folders
 /ios
