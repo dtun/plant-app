@@ -11,13 +11,13 @@ import {
   showPhotoPickerAlert,
   takePhotoWithCamera,
 } from "@/utils/photo-utils";
+import { LegendList, type LegendListRef } from "@legendapp/list";
 import { useQuery, useStore } from "@livestore/react";
 import * as Crypto from "expo-crypto";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
-  FlatList,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -125,7 +125,7 @@ export default function ChatScreen() {
   let [inputText, setInputText] = useState("");
   let [pendingImageUri, setPendingImageUri] = useState<string | null>(null);
   let [isGenerating, setIsGenerating] = useState(false);
-  let flatListRef = useRef<FlatList>(null);
+  let flatListRef = useRef<LegendListRef>(null);
   let inputAreaStyle = useResolveClassNames("px-4 pt-2 bg-background");
 
   let scrollToBottom = useCallback(() => {
@@ -307,9 +307,10 @@ export default function ChatScreen() {
         }}
       />
 
-      <FlatList
+      <LegendList
         ref={flatListRef}
         data={listData}
+        estimatedItemSize={80}
         keyExtractor={(item, index) => (item.type === "message" ? item.message.id : `sep-${index}`)}
         renderItem={({ item }) => {
           if (item.type === "separator") {

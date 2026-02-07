@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "sessionId": "c36ce7d1-3ac3-48d6-94a9-0cac55453fdc",
+  "status": "running",
+  "startedAt": "2026-02-07T15:26:22.251Z",
+  "updatedAt": "2026-02-07T15:32:48.453Z",
+  "currentIteration": 0,
+  "maxIterations": 8,
+  "tasksCompleted": 0,
+  "isPaused": false,
+  "agentPlugin": "claude",
+  "trackerState": {
+    "plugin": "json",
+    "prdPath": "./tasks/prd.json",
+    "totalTasks": 2,
+    "tasks": [
+      {
+        "id": "US-001",
+        "title": "Migrate chat screen FlatList to LegendList",
+        "status": "open",
+        "completedInSession": false
+      },
+      {
+        "id": "US-002",
+        "title": "Migrate chats list screen FlatList to FlashList",
+        "status": "open",
+        "completedInSession": false
+      }
+    ]
+  },
+  "iterations": [],
+  "skippedTaskIds": [],
+  "cwd": "/Users/dtun/Developer/plant-app",
+  "activeTaskIds": [],
+  "subagentPanelVisible": true
+}

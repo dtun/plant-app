@@ -1,0 +1,55 @@
+{
+  "name": "High-Performance List Rendering",
+  "branchName": "feature/high-performance-list-rendering",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Migrate chat screen FlatList to LegendList",
+      "description": "As a developer, I want the chat screen to use LegendList instead of FlatList so that dynamic-height message bubbles render more efficiently.",
+      "acceptanceCriteria": [
+        "@legendapp/list is installed as a dependency",
+        "app/chat/[plantId].tsx imports from @legendapp/list instead of FlatList from react-native",
+        "LegendList receives an estimatedItemSize prop (use a reasonable estimate for mixed message/separator content, e.g. 80)",
+        "Existing ref usage is preserved — scrollToEnd and onContentSizeChange auto-scroll behavior works as before",
+        "keyExtractor, renderItem, ListFooterComponent, ListEmptyComponent, contentContainerStyle, keyboardDismissMode, and keyboardShouldPersistTaps props are all carried over",
+        "Mixed item types (message bubbles + day separators) render correctly",
+        "A basic render test exists for the chat screen (e.g. renders without crashing, shows empty state)"
+      ],
+      "priority": 1,
+      "passes": true,
+      "dependsOn": [],
+      "labels": [
+        "chat",
+        "legendlist",
+        "migration"
+      ],
+      "notes": "LegendList supports the same API surface as FlatList, so migration should be near drop-in. Verify scrollToEnd is available on the LegendList ref. Quality gate: npm run vibecheck must pass.",
+      "completionNotes": "Completed by agent"
+    },
+    {
+      "id": "US-002",
+      "title": "Migrate chats list screen FlatList to FlashList",
+      "description": "As a developer, I want the chats list screen to use FlashList instead of FlatList so that the list of chat conversations renders efficiently with image thumbnails.",
+      "acceptanceCriteria": [
+        "@shopify/flash-list is installed as a dependency",
+        "app/(drawer)/chats.tsx imports FlashList from @shopify/flash-list instead of FlatList from react-native",
+        "FlashList receives an estimatedItemSize prop (approximately 72 based on ChatListItem height)",
+        "keyExtractor and renderItem props are carried over",
+        "ChatListItem components render correctly with name, photo, last message, and timestamp",
+        "A basic render test exists for the chats list screen (e.g. renders without crashing, renders list items)"
+      ],
+      "priority": 1,
+      "passes": false,
+      "dependsOn": [],
+      "labels": [
+        "chats-list",
+        "flashlist",
+        "migration"
+      ],
+      "notes": "FlashList requires estimatedItemSize — ChatListItem is approximately 72px tall. May require items to have a defined height or overrideItemLayout for optimal performance. Quality gate: npm run vibecheck must pass."
+    }
+  ],
+  "metadata": {
+    "updatedAt": "2026-02-07T15:32:48.431Z"
+  }
+}

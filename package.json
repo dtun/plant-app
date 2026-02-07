@@ -24,6 +24,7 @@
     "@effect/sql": "^0.35.8",
     "@expo/vector-icons": "^15.0.2",
     "@hookform/resolvers": "^5.2.2",
+    "@legendapp/list": "^2.0.19",
     "@livestore/adapter-expo": "^0.3.1",
     "@livestore/devtools-expo": "^0.3.1",
     "@livestore/livestore": "^0.3.1",
