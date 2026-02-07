@@ -164,15 +164,15 @@ npm run vibecheck
 
 This script runs the following checks in order:
 
-1. **Format check** (`format:check`) - Verifies code formatting with Prettier
-2. **Lint** (`lint`) - Checks code quality with ESLint
-3. **Type check** (`typecheck`) - Validates TypeScript types
-4. **Test** (`test`) - Runs Jest test suite
+1. **Lint** (`lint`) - Checks code quality with ESLint
+2. **Type check** (`typecheck`) - Validates TypeScript types
+3. **Test** (`test`) - Runs Jest test suite
+
+Formatting is handled automatically by a PostToolUse hook that runs Prettier after every Write/Edit operation (configured in `.claude/settings.json`).
 
 Individual scripts:
 
 - `npm run format` - Auto-format code with Prettier
-- `npm run format:check` - Check formatting without modifying files
 - `npm run lint` - Run ESLint checks
 - `npm run typecheck` - Run TypeScript compiler checks
 - `npm run test` - Run tests
@@ -198,7 +198,7 @@ This project uses **Jest** as the testing framework (not Vitest).
 
 ```bash
 npm run test        # Run all tests
-npm run vibecheck   # Run format, lint, typecheck, and tests
+npm run vibecheck   # Run lint, typecheck, and tests
 ```
 
 ### Code Formatting

@@ -14,7 +14,7 @@
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "vibecheck": "npm run format:check && npm run lint && npm run typecheck && npm run test"
+    "vibecheck": "npm run lint && npm run typecheck && npm run test"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.17",
