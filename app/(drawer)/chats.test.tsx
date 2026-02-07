@@ -1,10 +1,12 @@
-import { render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
 import { useQuery } from "@livestore/react";
 
 import ChatsScreen from "./chats";
 
+let mockPush = jest.fn();
+
 jest.mock("expo-router", () => ({
-  useRouter: () => ({ push: jest.fn() }),
+  useRouter: () => ({ push: mockPush }),
 }));
 
 jest.mock("@shopify/flash-list", () => {
@@ -13,12 +15,30 @@ jest.mock("@shopify/flash-list", () => {
   return { FlashList: FlatList };
 });
 
+jest.mock("@/components/ui/icon-symbol", () => ({
+  IconSymbol: () => null,
+}));
+
+beforeEach(() => {
+  mockPush.mockClear();
+});
+
 test("renders empty state when there are no plants", () => {
   (useQuery as jest.Mock).mockReturnValue([]);
 
   render(<ChatsScreen />);
 
   expect(screen.getByText("Name a plant to start chatting!")).toBeOnTheScreen();
+});
+
+test("empty state navigates to root screen on press", () => {
+  (useQuery as jest.Mock).mockReturnValue([]);
+
+  render(<ChatsScreen />);
+
+  fireEvent.press(screen.getByRole("button", { name: "Name a plant to start chatting" }));
+
+  expect(mockPush).toHaveBeenCalledWith("/");
 });
 
 test("renders list items when plants with messages exist", () => {

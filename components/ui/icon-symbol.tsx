@@ -26,6 +26,7 @@ let mapping: Partial<IconMapping> = {
   trash: "delete",
   "gearshape.fill": "settings",
   "ellipsis.circle": "pending",
+  "arrow.up.right": "north-east",
 };
 
 /**

@@ -1,56 +1,47 @@
 {
-  "name": "High-Performance List Rendering",
-  "branchName": "feature/high-performance-list-rendering",
+  "name": "Empty State CTA on Chats List Screen",
+  "branchName": "feature/empty-state-cta-chats",
   "userStories": [
     {
       "id": "US-001",
-      "title": "Migrate chat screen FlatList to LegendList",
-      "description": "As a developer, I want the chat screen to use LegendList instead of FlatList so that dynamic-height message bubbles render more efficiently.",
+      "title": "Pressable Empty State Row with Navigation",
+      "description": "As a new user viewing the chats list with no plants, I want to tap the \"Name a plant to start chatting!\" area so that I'm taken to the screen where I can name my first plant.",
       "acceptanceCriteria": [
-        "@legendapp/list is installed as a dependency",
-        "app/chat/[plantId].tsx imports from @legendapp/list instead of FlatList from react-native",
-        "LegendList receives an estimatedItemSize prop (use a reasonable estimate for mixed message/separator content, e.g. 80)",
-        "Existing ref usage is preserved — scrollToEnd and onContentSizeChange auto-scroll behavior works as before",
-        "keyExtractor, renderItem, ListFooterComponent, ListEmptyComponent, contentContainerStyle, keyboardDismissMode, and keyboardShouldPersistTaps props are all carried over",
-        "Mixed item types (message bubbles + day separators) render correctly",
-        "A basic render test exists for the chat screen (e.g. renders without crashing, shows empty state)"
+        "The empty state renders a horizontally-laid-out row: text on the left, circular icon button on the right",
+        "The row is vertically centered on the screen (matching current empty state positioning)",
+        "The entire row (text + icon) is a single pressable area using TouchableOpacity or Pressable",
+        "Pressing anywhere on the row navigates to the root screen (/) via router.push(\"/\")",
+        "The circular icon contains an \"arrow.up.right\" SF Symbol (or equivalent) matching the existing IconSymbol pattern",
+        "The circle button matches the existing SubmitButton visual style (rounded, bg-tint background, appropriate size)",
+        "The text \"Name a plant to start chatting!\" is preserved",
+        "Accessibility: the pressable area has accessibilityRole=\"button\", an appropriate accessibilityLabel, and accessibilityHint describing the navigation destination"
       ],
       "priority": 1,
       "passes": true,
       "dependsOn": [],
-      "labels": [
-        "chat",
-        "legendlist",
-        "migration"
-      ],
-      "notes": "LegendList supports the same API surface as FlatList, so migration should be near drop-in. Verify scrollToEnd is available on the LegendList ref. Quality gate: npm run vibecheck must pass.",
       "completionNotes": "Completed by agent"
     },
     {
       "id": "US-002",
-      "title": "Migrate chats list screen FlatList to FlashList",
-      "description": "As a developer, I want the chats list screen to use FlashList instead of FlatList so that the list of chat conversations renders efficiently with image thumbnails.",
+      "title": "Subtle Hop Animation on Arrow Icon",
+      "description": "As a user seeing the empty state, I want the arrow icon to do a small repeating hop animation so that it subtly draws my attention to the call-to-action.",
       "acceptanceCriteria": [
-        "@shopify/flash-list is installed as a dependency",
-        "app/(drawer)/chats.tsx imports FlashList from @shopify/flash-list instead of FlatList from react-native",
-        "FlashList receives an estimatedItemSize prop (approximately 72 based on ChatListItem height)",
-        "keyExtractor and renderItem props are carried over",
-        "ChatListItem components render correctly with name, photo, last message, and timestamp",
-        "A basic render test exists for the chats list screen (e.g. renders without crashing, renders list items)"
+        "The arrow icon performs a small vertical hop animation (translate Y, roughly 3-4px upward and back)",
+        "The animation uses react-native-reanimated (consistent with existing animation patterns in the app)",
+        "The animation loops continuously with a gentle easing (not jarring or fast)",
+        "The animation is subtle — it should catch the eye without being distracting",
+        "The animation does not interfere with the pressable behavior of the row",
+        "The animation uses useNativeDriver equivalent (Reanimated worklets) for smooth performance"
       ],
-      "priority": 1,
+      "priority": 2,
       "passes": true,
-      "dependsOn": [],
-      "labels": [
-        "chats-list",
-        "flashlist",
-        "migration"
+      "dependsOn": [
+        "US-001"
       ],
-      "notes": "FlashList requires estimatedItemSize — ChatListItem is approximately 72px tall. May require items to have a defined height or overrideItemLayout for optimal performance. Quality gate: npm run vibecheck must pass.",
       "completionNotes": "Completed by agent"
     }
   ],
   "metadata": {
-    "updatedAt": "2026-02-07T15:35:48.354Z"
+    "updatedAt": "2026-02-07T16:15:14.906Z"
   }
 }
