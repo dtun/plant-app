@@ -14,7 +14,8 @@
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "vibecheck": "npm run lint && npm run typecheck && npm run test"
+    "vibecheck": "npm run lint && npm run typecheck && npm run test",
+    "prepare": "husky"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.17",
@@ -75,6 +76,8 @@
   },
   "devDependencies": {
     "@babel/plugin-syntax-import-attributes": "^7.27.1",
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "^30.0.0",
@@ -85,6 +88,7 @@
     "eslint-config-expo": "~10.0.0",
     "eslint-config-prettier": "^9.1.2",
     "eslint-plugin-jest": "^29.2.1",
+    "husky": "^9.1.7",
     "jest": "~29.7.0",
     "jest-expo": "~54.0.12",
     "prettier": "^3.7.4",
