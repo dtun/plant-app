@@ -1,8 +1,9 @@
 import { ChatListItem } from "@/components/chat-list-item";
 import { plantsWithLastMessage$ } from "@/src/livestore/queries";
+import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@livestore/react";
 import { useRouter } from "expo-router";
-import { FlatList, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 export default function ChatsScreen() {
   let plants = useQuery(plantsWithLastMessage$);
@@ -22,7 +23,7 @@ export default function ChatsScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <FlatList
+      <FlashList
         data={plants}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
