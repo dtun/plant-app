@@ -28,6 +28,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useResolveClassNames } from "uniwind";
 
@@ -282,43 +283,47 @@ export default function ChatScreen() {
         }}
       />
 
-      <LegendList
-        ref={flatListRef}
-        data={listData}
-        estimatedItemSize={80}
-        keyExtractor={(item, index) => (item.type === "message" ? item.message.id : `sep-${index}`)}
-        renderItem={({ item }) => {
-          if (item.type === "separator") {
-            return <DaySeparator label={item.label} />;
+      <Animated.View entering={FadeIn.duration(200)} style={{ flex: 1 }}>
+        <LegendList
+          ref={flatListRef}
+          data={listData}
+          estimatedItemSize={80}
+          keyExtractor={(item, index) =>
+            item.type === "message" ? item.message.id : `sep-${index}`
           }
-          let animationType = getAnimationType(item.message.id, item.message.role);
-          return (
-            <AnimatedMessageBubble
-              animationType={animationType}
-              animationDelay={item.message.role === "assistant" ? 200 : 0}
-              role={item.message.role}
-              content={item.message.content}
-              imageUri={item.message.imageUri}
-            />
-          );
-        }}
-        ListFooterComponent={isGenerating ? <TypingIndicator /> : null}
-        ListEmptyComponent={
-          <View className="flex-1 items-center justify-center px-8">
-            <Text className="text-icon text-base text-center">
-              Say hello to {plant?.name ?? "your plant"}!
-            </Text>
-          </View>
-        }
-        contentContainerStyle={{
-          flexGrow: 1,
-          justifyContent: messages.length === 0 ? "center" : "flex-end",
-          paddingVertical: 8,
-        }}
-        keyboardDismissMode="interactive"
-        keyboardShouldPersistTaps="handled"
-        onContentSizeChange={scrollToBottom}
-      />
+          renderItem={({ item }) => {
+            if (item.type === "separator") {
+              return <DaySeparator label={item.label} />;
+            }
+            let animationType = getAnimationType(item.message.id, item.message.role);
+            return (
+              <AnimatedMessageBubble
+                animationType={animationType}
+                animationDelay={item.message.role === "assistant" ? 200 : 0}
+                role={item.message.role}
+                content={item.message.content}
+                imageUri={item.message.imageUri}
+              />
+            );
+          }}
+          ListFooterComponent={isGenerating ? <TypingIndicator /> : null}
+          ListEmptyComponent={
+            <View className="flex-1 items-center justify-center px-8">
+              <Text className="text-icon text-base text-center">
+                Say hello to {plant?.name ?? "your plant"}!
+              </Text>
+            </View>
+          }
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: messages.length === 0 ? "center" : "flex-end",
+            paddingVertical: 8,
+          }}
+          keyboardDismissMode="interactive"
+          keyboardShouldPersistTaps="handled"
+          onContentSizeChange={scrollToBottom}
+        />
+      </Animated.View>
 
       <SafeAreaView edges={["bottom", "left", "right"]} style={inputAreaStyle}>
         {pendingImageUri ? (
