@@ -1,4 +1,4 @@
-import { MessageBubble } from "@/components/message-bubble";
+import { AnimatedMessageBubble } from "@/components/animated-message-bubble";
 import { ChatInput } from "@/components/ui/chat-input";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { PhotoUpload } from "@/components/ui/photo-upload";
@@ -7,6 +7,7 @@ import { plantById$, messagesByPlant$ } from "@/src/livestore/queries";
 import { events } from "@/src/livestore/schema";
 import { generateChatResponse, type ChatMessage, type PlantContext } from "@/utils/ai-service";
 import { getDeviceId } from "@/utils/device";
+import { useMessageAnimation } from "@/hooks/use-message-animation";
 import {
   pickImageFromLibrary,
   showPhotoPickerAlert,
@@ -93,6 +94,7 @@ export default function ChatScreen() {
   let [pendingImageUri, setPendingImageUri] = useState<string | null>(null);
   let [isGenerating, setIsGenerating] = useState(false);
   let flatListRef = useRef<LegendListRef>(null);
+  let { markAsNew, getAnimationType } = useMessageAnimation();
   let inputAreaStyle = useResolveClassNames("px-4 pt-2 bg-background");
 
   let scrollToBottom = useCallback(() => {
@@ -157,9 +159,11 @@ export default function ChatScreen() {
     let now = Date.now();
 
     // Commit user message
+    let userMessageId = Crypto.randomUUID();
+    markAsNew(userMessageId);
     store.commit(
       events.messageCreated({
-        id: Crypto.randomUUID(),
+        id: userMessageId,
         plantId,
         userId: deviceId,
         role: "user",
@@ -194,9 +198,11 @@ export default function ChatScreen() {
 
       let response = await generateChatResponse(plantContext, chatHistory);
 
+      let assistantMessageId = Crypto.randomUUID();
+      markAsNew(assistantMessageId);
       store.commit(
         events.messageCreated({
-          id: Crypto.randomUUID(),
+          id: assistantMessageId,
           plantId,
           userId: deviceId,
           role: "assistant",
@@ -209,9 +215,11 @@ export default function ChatScreen() {
       if (error instanceof Error) {
         errorMessage = error.message;
       }
+      let errorMessageId = Crypto.randomUUID();
+      markAsNew(errorMessageId);
       store.commit(
         events.messageCreated({
-          id: Crypto.randomUUID(),
+          id: errorMessageId,
           plantId,
           userId: deviceId,
           role: "assistant",
@@ -283,8 +291,11 @@ export default function ChatScreen() {
           if (item.type === "separator") {
             return <DaySeparator label={item.label} />;
           }
+          let animationType = getAnimationType(item.message.id, item.message.role);
           return (
-            <MessageBubble
+            <AnimatedMessageBubble
+              animationType={animationType}
+              animationDelay={item.message.role === "assistant" ? 200 : 0}
               role={item.message.role}
               content={item.message.content}
               imageUri={item.message.imageUri}

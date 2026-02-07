@@ -44,13 +44,21 @@ jest.mock("@/components/ui/icon-symbol", () => ({
   IconSymbol: () => null,
 }));
 
-jest.mock("@/components/message-bubble", () => {
+jest.mock("@/components/animated-message-bubble", () => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   let { Text } = require("react-native");
   return {
-    MessageBubble: ({ content }: { content: string }) => <Text>{content}</Text>,
+    AnimatedMessageBubble: ({ content }: { content: string }) => <Text>{content}</Text>,
   };
 });
+
+jest.mock("@/hooks/use-message-animation", () => ({
+  useMessageAnimation: () => ({
+    markAsNew: jest.fn(),
+    isNewMessage: jest.fn(() => false),
+    getAnimationType: jest.fn(() => "none"),
+  }),
+}));
 
 jest.mock("react-native-safe-area-context", () => ({
   SafeAreaView: ({ children }: { children: React.ReactNode }) => children,
