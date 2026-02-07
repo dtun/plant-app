@@ -2,6 +2,7 @@ import { ChatInput } from "@/components/ui/chat-input";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { PhotoUpload } from "@/components/ui/photo-upload";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { plantById$, messagesByPlant$ } from "@/src/livestore/queries";
 import { events } from "@/src/livestore/schema";
 import { generateChatResponse, type ChatMessage, type PlantContext } from "@/utils/ai-service";
 import { getDeviceId } from "@/utils/device";
@@ -10,7 +11,6 @@ import {
   showPhotoPickerAlert,
   takePhotoWithCamera,
 } from "@/utils/photo-utils";
-import { queryDb, Schema, sql } from "@livestore/livestore";
 import { useQuery, useStore } from "@livestore/react";
 import * as Crypto from "expo-crypto";
 import { Stack, useLocalSearchParams } from "expo-router";
@@ -114,55 +114,13 @@ function DaySeparator({ label }: DaySeparatorProps) {
   );
 }
 
-let PlantSchema = Schema.Struct({
-  id: Schema.String,
-  userId: Schema.String,
-  name: Schema.String,
-  description: Schema.NullOr(Schema.String),
-  size: Schema.NullOr(Schema.String),
-  photoUri: Schema.NullOr(Schema.String),
-  aiAnalysis: Schema.NullOr(Schema.String),
-  createdAt: Schema.Number,
-  updatedAt: Schema.Number,
-  syncedAt: Schema.NullOr(Schema.Number),
-  deletedAt: Schema.NullOr(Schema.Number),
-});
-
-let MessageSchema = Schema.Struct({
-  id: Schema.String,
-  plantId: Schema.String,
-  userId: Schema.String,
-  role: Schema.String,
-  content: Schema.String,
-  imageUri: Schema.NullOr(Schema.String),
-  createdAt: Schema.Number,
-});
-
 export default function ChatScreen() {
   let { plantId } = useLocalSearchParams<{ plantId: string }>();
   let { store } = useStore();
-  let plantsQuery = queryDb(
-    {
-      query: sql`SELECT * FROM plants WHERE id = '${plantId}'`,
-      schema: Schema.Array(PlantSchema),
-    },
-    { label: `plant-${plantId}` }
-  );
-  let plants = useQuery(plantsQuery);
+  let plants = useQuery(plantById$(plantId));
   let plant = plants[0];
 
-  let messagesQuery = queryDb(
-    {
-      query: sql`SELECT id, plantId, userId, role, content, imageUri, createdAt
-        FROM chatMessages
-        WHERE plantId = '${plantId}' AND deletedAt IS NULL
-        ORDER BY createdAt ASC`,
-      schema: Schema.Array(MessageSchema),
-    },
-    { label: `chatMessages-${plantId}` }
-  );
-
-  let messages = useQuery(messagesQuery);
+  let messages = useQuery(messagesByPlant$(plantId));
 
   let [inputText, setInputText] = useState("");
   let [pendingImageUri, setPendingImageUri] = useState<string | null>(null);

@@ -1,5 +1,5 @@
 import { ChatListItem } from "@/components/chat-list-item";
-import { plantsWithLastMessage$ } from "@/src/livestore/schema";
+import { plantsWithLastMessage$ } from "@/src/livestore/queries";
 import { useQuery } from "@livestore/react";
 import { useRouter } from "expo-router";
 import { FlatList, Text, View } from "react-native";

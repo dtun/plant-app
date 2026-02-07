@@ -10,6 +10,8 @@ export let Schema = {
   Number: "number",
   Boolean: "boolean",
   optional: jest.fn((type: any) => ({ optional: true, type })),
+  NullOr: jest.fn((type: any) => ({ nullable: true, type })),
+  Array: jest.fn((itemSchema: any) => ({ array: true, itemSchema })),
 };
 
 export let State = {
@@ -23,4 +25,12 @@ export let State = {
   },
 };
 
-export const makeSchema = jest.fn((config: any) => config);
+export let makeSchema = jest.fn((config: any) => config);
+
+export function queryDb(config: any, options?: any) {
+  return { ...config, ...options };
+}
+
+export function sql(strings: TemplateStringsArray, ...values: any[]) {
+  return strings.reduce((result, str, i) => result + str + (values[i] ?? ""), "");
+}
