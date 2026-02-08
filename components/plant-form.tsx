@@ -280,6 +280,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
               name="plantInput"
               render={({ field: { onChange, onBlur, value } }) => (
                 <ChatInput
+                  autoFocus
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
