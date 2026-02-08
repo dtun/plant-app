@@ -73,14 +73,14 @@ test("renders empty state when there are no messages", () => {
 });
 
 test("renders without crashing when plant and messages exist", () => {
-  let callCount = 0;
+  let callIndex = 0;
   (useQuery as jest.Mock).mockImplementation(() => {
-    callCount++;
-    // First call: plantById$ query returns plant
-    if (callCount % 2 === 1) {
+    callIndex++;
+    // Odd calls: plantById$ query (from ChatProvider)
+    // Even calls: messagesByPlant$ query (from MessageListProvider)
+    if (callIndex % 2 === 1) {
       return [{ id: "plant-1", name: "Fern" }];
     }
-    // Second call: messagesByPlant$ query returns messages
     return [
       {
         id: "msg-1",
