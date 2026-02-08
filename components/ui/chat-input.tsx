@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Text, TextInput, View } from "react-native";
+import { LayoutChangeEvent, Text, TextInput, View } from "react-native";
 
 interface ChatInputProps {
   error?: string;
@@ -8,6 +8,7 @@ interface ChatInputProps {
   numberOfLines?: number;
   onBlur?: () => void;
   onChangeText: (text: string) => void;
+  onLayout?: (event: LayoutChangeEvent) => void;
   placeholder?: string;
   rightButton?: ReactNode;
   value?: string;
@@ -20,13 +21,17 @@ export function ChatInput({
   numberOfLines = 4,
   onBlur,
   onChangeText,
+  onLayout,
   placeholder,
   rightButton,
   value,
 }: ChatInputProps) {
   return (
     <>
-      <View className="border border-icon rounded-xl gap-2 p-2 pt-3 pb-2 bg-background">
+      <View
+        className="border border-icon rounded-xl gap-2 p-2 pt-3 pb-2 bg-background"
+        onLayout={onLayout}
+      >
         <View className="flex-row min-h-12">
           <TextInput
             className="flex-1 text-base text-color pr-3 mb-1 max-h-12 py-0 placeholder:text-placeholder"

@@ -1,6 +1,7 @@
 import { PlantForm } from "@/components/plant-form";
 import { useNavigation } from "@react-navigation/native";
-import { KeyboardAvoidingView, Platform, View } from "react-native";
+import { View } from "react-native";
+import { KeyboardStickyView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useResolveClassNames } from "uniwind";
 
@@ -10,14 +11,10 @@ export default function HomeScreen() {
 
   return (
     <View className="flex-1 bg-background">
-      <KeyboardAvoidingView
-        behavior={Platform.select({ default: "height", ios: "padding" })}
-        className="flex-1 px-4"
-        keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
-      >
+      <KeyboardStickyView style={{ flex: 1, paddingHorizontal: 16 }}>
         <PlantForm setOptions={setOptions} />
         <SafeAreaView edges={["bottom"]} style={safeStyle} />
-      </KeyboardAvoidingView>
+      </KeyboardStickyView>
     </View>
   );
 }

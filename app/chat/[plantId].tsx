@@ -21,14 +21,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Alert,
   Image,
-  KeyboardAvoidingView,
-  Platform,
+  LayoutChangeEvent,
   Pressable,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
+import { KeyboardStickyView, useKeyboardHandler } from "react-native-keyboard-controller";
+import Animated, { FadeIn, runOnJS, useSharedValue } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useResolveClassNames } from "uniwind";
 
@@ -97,6 +97,15 @@ export default function ChatScreen() {
   let flatListRef = useRef<LegendListRef>(null);
   let { markAsNew, getAnimationType } = useMessageAnimation();
   let inputAreaStyle = useResolveClassNames("px-4 pt-2 bg-background");
+  let composerHeight = useSharedValue(0);
+  let [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  let handleComposerLayout = useCallback(
+    (event: LayoutChangeEvent) => {
+      composerHeight.value = event.nativeEvent.layout.height;
+    },
+    [composerHeight]
+  );
 
   let scrollToBottom = useCallback(() => {
     if (flatListRef.current && messages.length > 0) {
@@ -109,6 +118,16 @@ export default function ChatScreen() {
   useEffect(() => {
     scrollToBottom();
   }, [messages.length, isGenerating, scrollToBottom]);
+
+  useKeyboardHandler({
+    onEnd(e) {
+      "worklet";
+      runOnJS(setKeyboardHeight)(e.height);
+      if (e.height > 0) {
+        runOnJS(scrollToBottom)();
+      }
+    },
+  });
 
   function handleClearChat() {
     Alert.alert(
@@ -249,11 +268,7 @@ export default function ChatScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      className="flex-1 bg-background"
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-    >
+    <View className="flex-1 bg-background">
       <Stack.Screen
         options={{
           title: plant?.name ?? "Chat",
@@ -317,7 +332,8 @@ export default function ChatScreen() {
           contentContainerStyle={{
             flexGrow: 1,
             justifyContent: messages.length === 0 ? "center" : "flex-end",
-            paddingVertical: 8,
+            paddingTop: 8,
+            paddingBottom: keyboardHeight > 0 ? keyboardHeight + 8 : 8,
           }}
           keyboardDismissMode="interactive"
           keyboardShouldPersistTaps="handled"
@@ -325,40 +341,43 @@ export default function ChatScreen() {
         />
       </Animated.View>
 
-      <SafeAreaView edges={["bottom", "left", "right"]} style={inputAreaStyle}>
-        {pendingImageUri ? (
-          <View className="flex-row items-center mb-2">
-            <View className="relative">
-              <Image
-                source={{ uri: pendingImageUri }}
-                className="w-16 h-16 rounded-lg"
-                accessibilityLabel="Selected photo preview"
-              />
-              <TouchableOpacity
-                onPress={() => setPendingImageUri(null)}
-                className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center"
-                accessibilityRole="button"
-                accessibilityLabel="Remove selected photo"
-              >
-                <IconSymbol name="xmark" size={10} color="#fff" colorClassName={null} />
-              </TouchableOpacity>
+      <KeyboardStickyView>
+        <SafeAreaView edges={["bottom", "left", "right"]} style={inputAreaStyle}>
+          {pendingImageUri ? (
+            <View className="flex-row items-center mb-2">
+              <View className="relative">
+                <Image
+                  source={{ uri: pendingImageUri }}
+                  className="w-16 h-16 rounded-lg"
+                  accessibilityLabel="Selected photo preview"
+                />
+                <TouchableOpacity
+                  onPress={() => setPendingImageUri(null)}
+                  className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center"
+                  accessibilityRole="button"
+                  accessibilityLabel="Remove selected photo"
+                >
+                  <IconSymbol name="xmark" size={10} color="#fff" colorClassName={null} />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        ) : null}
-        <ChatInput
-          value={inputText}
-          onChangeText={setInputText}
-          placeholder="Type a message..."
-          leftButton={<PhotoUpload selectedImage={null} onImageSelect={handleAttachPhoto} />}
-          rightButton={
-            <SubmitButton
-              onPress={handleSend}
-              disabled={(!inputText.trim() && !pendingImageUri) || isGenerating}
-              isLoading={isGenerating}
-            />
-          }
-        />
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+          ) : null}
+          <ChatInput
+            onLayout={handleComposerLayout}
+            value={inputText}
+            onChangeText={setInputText}
+            placeholder="Type a message..."
+            leftButton={<PhotoUpload selectedImage={null} onImageSelect={handleAttachPhoto} />}
+            rightButton={
+              <SubmitButton
+                onPress={handleSend}
+                disabled={(!inputText.trim() && !pendingImageUri) || isGenerating}
+                isLoading={isGenerating}
+              />
+            }
+          />
+        </SafeAreaView>
+      </KeyboardStickyView>
+    </View>
   );
 }
