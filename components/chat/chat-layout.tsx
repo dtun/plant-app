@@ -8,6 +8,7 @@ import { SubmitButton } from "@/components/ui/submit-button";
 import { useChatContext } from "@/contexts/chat-context";
 import { useComposer } from "@/contexts/composer-context";
 import { useMessageList } from "@/contexts/message-list-context";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { LegendList } from "@legendapp/list";
 import { Stack } from "expo-router";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
@@ -17,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useResolveClassNames } from "uniwind";
 
 export function ChatLayout() {
+  let { t } = useLingui();
   let { plant, handleClearChat } = useChatContext();
   let {
     messages,
@@ -43,8 +45,8 @@ export function ChatLayout() {
     <View className="flex-1 bg-background">
       <Stack.Screen
         options={{
-          title: plant?.name ?? "Chat",
-          headerBackTitle: "Chats",
+          title: plant?.name ?? t`Chat`,
+          headerBackTitle: t`Chats`,
           headerRight: () => (
             <>
               {plant?.photoUri ? (
@@ -52,7 +54,7 @@ export function ChatLayout() {
                   <Image
                     source={{ uri: plant.photoUri! }}
                     className="w-8 h-8"
-                    accessibilityLabel={`Photo of ${plant.name}`}
+                    accessibilityLabel={t`Photo of ${plant.name}`}
                   />
                 </View>
               ) : null}
@@ -60,10 +62,12 @@ export function ChatLayout() {
                 onPress={handleClearChat}
                 className="self-center"
                 accessibilityRole="button"
-                accessibilityLabel="Chat options"
-                accessibilityHint="Opens chat options menu"
+                accessibilityLabel={t`Chat options`}
+                accessibilityHint={t`Opens chat options menu`}
               >
-                <Text className="text-base px-2 text-color p-1">Reset</Text>
+                <Text className="text-base px-2 text-color p-1">
+                  <Trans>Reset</Trans>
+                </Text>
               </Pressable>
             </>
           ),
@@ -97,7 +101,7 @@ export function ChatLayout() {
           ListEmptyComponent={
             <View className="flex-1 items-center justify-center px-8">
               <Text className="text-icon text-base text-center">
-                Say hello to {plant?.name ?? "your plant"}!
+                {t`Say hello to ${plant?.name ?? t`your plant`}!`}
               </Text>
             </View>
           }
@@ -121,13 +125,13 @@ export function ChatLayout() {
                 <Image
                   source={{ uri: pendingImageUri }}
                   className="w-16 h-16 rounded-lg"
-                  accessibilityLabel="Selected photo preview"
+                  accessibilityLabel={t`Selected photo preview`}
                 />
                 <TouchableOpacity
                   onPress={() => setPendingImageUri(null)}
                   className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center"
                   accessibilityRole="button"
-                  accessibilityLabel="Remove selected photo"
+                  accessibilityLabel={t`Remove selected photo`}
                 >
                   <IconSymbol name="xmark" size={10} color="#fff" colorClassName={null} />
                 </TouchableOpacity>
@@ -138,7 +142,7 @@ export function ChatLayout() {
             onLayout={handleComposerLayout}
             value={inputText}
             onChangeText={setInputText}
-            placeholder="Type a message..."
+            placeholder={t`Type a message...`}
             leftButton={<PhotoUpload selectedImage={null} onImageSelect={handleAttachPhoto} />}
             rightButton={
               <SubmitButton

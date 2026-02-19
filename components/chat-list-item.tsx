@@ -1,3 +1,6 @@
+import { msg } from "@lingui/core/macro";
+import { i18n } from "@/src/i18n";
+import { useLingui } from "@lingui/react/macro";
 import { Image, Pressable, Text, View } from "react-native";
 
 interface ChatListItemProps {
@@ -19,7 +22,7 @@ function formatTimestamp(timestamp: number): string {
     return date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   }
   if (diffDays === 1) {
-    return "Yesterday";
+    return i18n._(msg`Yesterday`);
   }
   if (diffDays < 7) {
     return date.toLocaleDateString([], { weekday: "short" });
@@ -35,20 +38,21 @@ export function ChatListItem({
   lastMessageCreatedAt,
   onPress,
 }: ChatListItemProps) {
+  let { t } = useLingui();
   return (
     <Pressable
       onPress={() => onPress(id)}
       className="flex-row items-center px-4 py-3 border-b border-icon"
       accessibilityRole="button"
-      accessibilityLabel={`Chat with ${name}`}
-      accessibilityHint="Opens chat conversation with this plant"
+      accessibilityLabel={t`Chat with ${name}`}
+      accessibilityHint={t`Opens chat conversation with this plant`}
     >
       <View className="w-12 h-12 rounded-full bg-background overflow-hidden mr-3 border border-icon items-center justify-center">
         {photoUri ? (
           <Image
             source={{ uri: photoUri }}
             className="w-12 h-12"
-            accessibilityLabel={`Photo of ${name}`}
+            accessibilityLabel={t`Photo of ${name}`}
           />
         ) : (
           <Text className="text-xl">🌱</Text>
@@ -60,7 +64,7 @@ export function ChatListItem({
           {name}
         </Text>
         <Text className="text-icon text-sm mt-0.5" numberOfLines={1}>
-          {lastMessageContent ?? "No messages yet"}
+          {lastMessageContent ?? t`No messages yet`}
         </Text>
       </View>
 

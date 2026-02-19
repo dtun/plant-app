@@ -18,7 +18,15 @@ jest.mock("@livestore/react");
 jest.mock("@/src/livestore/schema");
 
 jest.mock("@lingui/react", () => {
-  let passthrough = (d) => d?.message ?? d?.id ?? String(d);
+  let passthrough = (d) => {
+    let message = d?.message ?? d?.id ?? String(d);
+    if (d?.values) {
+      Object.keys(d.values).forEach((key) => {
+        message = message.replace(`{${key}}`, String(d.values[key]));
+      });
+    }
+    return message;
+  };
   return {
     I18nProvider: ({ children }) => children,
     useLingui: () => ({
