@@ -1,5 +1,6 @@
 import { ActivityIndicator } from "@/components/ui/activity-indicator";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { useLingui } from "@lingui/react/macro";
 import { ReactNode } from "react";
 import { TouchableOpacity, View } from "react-native";
 
@@ -22,6 +23,7 @@ export function SubmitButton({
   size = 32,
   variant = "primary",
 }: SubmitButtonProps) {
+  let { t } = useLingui();
   let isDisabled = disabled || isLoading;
 
   return (
@@ -41,7 +43,7 @@ export function SubmitButton({
         disabled={isDisabled}
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel={isLoading ? "Loading" : "Submit"}
+        accessibilityLabel={isLoading ? t`Loading` : t`Submit`}
         accessibilityState={{ disabled: isDisabled }}
       >
         {isLoading ? (

@@ -1,3 +1,4 @@
+import { useLingui } from "@lingui/react/macro";
 import { Text, TouchableOpacity, View } from "react-native";
 
 interface SizeSelectorProps<T extends string> {
@@ -13,6 +14,7 @@ export function SizeSelector<T extends string>({
   options,
   value,
 }: SizeSelectorProps<T>) {
+  let { t } = useLingui();
   return (
     <View className="flex-row gap-2">
       {options.map((option) => (
@@ -26,7 +28,7 @@ export function SizeSelector<T extends string>({
           onPress={() => onChange(option)}
           accessible={true}
           accessibilityRole="button"
-          accessibilityLabel={`Select ${option.toLowerCase()}`}
+          accessibilityLabel={t`Select ${option.toLowerCase()}`}
           accessibilityState={{ selected: value === option }}
         >
           <Text

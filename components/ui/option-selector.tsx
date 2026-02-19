@@ -1,3 +1,4 @@
+import { useLingui } from "@lingui/react/macro";
 import { Text, TouchableOpacity, View } from "react-native";
 
 interface OptionSelectorProps<T extends string> {
@@ -13,6 +14,7 @@ export function OptionSelector<T extends string>({
   options,
   value,
 }: OptionSelectorProps<T>) {
+  let { t } = useLingui();
   return (
     <View className="flex-row gap-3">
       {options.map((option) => (
@@ -26,7 +28,7 @@ export function OptionSelector<T extends string>({
           onPress={() => onChange(option)}
           accessible={true}
           accessibilityRole="button"
-          accessibilityLabel={`Select ${option}`}
+          accessibilityLabel={t`Select ${option}`}
           accessibilityState={{ selected: value === option }}
         >
           <Text

@@ -1,4 +1,5 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { useLingui } from "@lingui/react/macro";
 import { Image } from "expo-image";
 import { TouchableOpacity, View } from "react-native";
 
@@ -15,6 +16,7 @@ export function PhotoUpload({
   selectedImage,
   size = 32,
 }: PhotoUploadProps) {
+  let { t } = useLingui();
   return (
     <View className="flex-row items-center gap-2">
       <TouchableOpacity
@@ -23,8 +25,8 @@ export function PhotoUpload({
         onPress={onImageSelect}
         accessible={true}
         accessibilityRole="button"
-        accessibilityLabel="Add plant photo"
-        accessibilityHint="Take a photo or select from library"
+        accessibilityLabel={t`Add plant photo`}
+        accessibilityHint={t`Take a photo or select from library`}
       >
         <IconSymbol colorClassName={null} name="camera.fill" size={20} color="#fff" />
       </TouchableOpacity>
