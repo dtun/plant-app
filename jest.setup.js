@@ -24,3 +24,7 @@ jest.mock("@lingui/react", () => ({
   }),
   Trans: ({ children }) => children,
 }));
+
+// Activate the real i18n singleton so utility functions using i18n._() work in tests
+let { i18n } = require("@lingui/core");
+i18n.loadAndActivate({ locale: "en", messages: {} });

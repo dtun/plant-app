@@ -1,3 +1,5 @@
+import { msg } from "@lingui/core/macro";
+import { i18n } from "@/src/i18n";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
@@ -146,17 +148,17 @@ function handleAIError(error: unknown, operation: string): never {
 
   if (error instanceof Error) {
     if (error.message.includes("API key")) {
-      throw new Error("Invalid API key. Please check your AI settings.");
+      throw new Error(i18n._(msg`Invalid API key. Please check your AI settings.`));
     }
     if (error.message.includes("quota") || error.message.includes("billing")) {
-      throw new Error("API quota exceeded. Please check your account billing.");
+      throw new Error(i18n._(msg`API quota exceeded. Please check your account billing.`));
     }
     if (error.message.includes("network") || error.message.includes("fetch")) {
-      throw new Error("Network error. Please check your internet connection.");
+      throw new Error(i18n._(msg`Network error. Please check your internet connection.`));
     }
   }
 
-  throw new Error(`Failed to ${operation}. Please try again.`);
+  throw new Error(i18n._(msg`Failed to ${operation}. Please try again.`));
 }
 
 function createPlantNamingPrompt(plantData: PlantData): string {
@@ -201,7 +203,7 @@ export async function analyzePhotoAndSetDescription(
     setDescription(description);
   } catch (error) {
     console.error("Error analyzing photo:", error);
-    let errorMessage = "Failed to analyze photo. Please try again.";
+    let errorMessage = i18n._(msg`Failed to analyze photo. Please try again.`);
     if (error instanceof Error) {
       errorMessage = error.message;
     }
@@ -218,7 +220,7 @@ export async function generatePhotoDescription(imageUri: string): Promise<string
 
   if (!config) {
     throw new Error(
-      "AI configuration not found. Please set up your API key and provider in Settings."
+      i18n._(msg`AI configuration not found. Please set up your API key and provider in Settings.`)
     );
   }
 
@@ -278,7 +280,7 @@ export async function generateChatResponse(
 
   if (!config) {
     throw new Error(
-      "AI configuration not found. Please set up your API key and provider in Settings."
+      i18n._(msg`AI configuration not found. Please set up your API key and provider in Settings.`)
     );
   }
 
@@ -342,7 +344,7 @@ export async function generatePlantName(plantData: PlantData): Promise<string> {
 
   if (!config) {
     throw new Error(
-      "AI configuration not found. Please set up your API key and provider in Settings."
+      i18n._(msg`AI configuration not found. Please set up your API key and provider in Settings.`)
     );
   }
 

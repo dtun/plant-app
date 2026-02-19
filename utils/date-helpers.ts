@@ -1,3 +1,6 @@
+import { msg } from "@lingui/core/macro";
+import { i18n } from "@/src/i18n";
+
 export function formatDayLabel(timestamp: number): string {
   let date = new Date(timestamp);
   let now = new Date();
@@ -5,10 +8,10 @@ export function formatDayLabel(timestamp: number): string {
   let diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
   if (diffDays === 0) {
-    return "Today";
+    return i18n._(msg`Today`);
   }
   if (diffDays === 1) {
-    return "Yesterday";
+    return i18n._(msg`Yesterday`);
   }
   return date.toLocaleDateString([], {
     weekday: "long",
