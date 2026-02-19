@@ -1,7 +1,12 @@
 let { getDefaultConfig } = require("expo/metro-config");
 let { withUniwindConfig } = require("uniwind/metro");
 
+let { transformerOptions } = require("@lingui/metro-transformer");
+
 let config = getDefaultConfig(__dirname);
+
+config.resolver.sourceExts = [...(config.resolver?.sourceExts ?? []), "po", "pot"];
+config.transformer = { ...config.transformer, ...transformerOptions };
 
 // Exclude test files from the bundle so test-only dependencies
 // (e.g. @testing-library/react-native) don't get resolved at runtime

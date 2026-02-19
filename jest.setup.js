@@ -16,3 +16,11 @@ jest.mock("@livestore/adapter-expo");
 jest.mock("@livestore/livestore");
 jest.mock("@livestore/react");
 jest.mock("@/src/livestore/schema");
+
+jest.mock("@lingui/react", () => ({
+  I18nProvider: ({ children }) => children,
+  useLingui: () => ({
+    i18n: { _: (d) => d?.message ?? d?.id ?? String(d), locale: "en" },
+  }),
+  Trans: ({ children }) => children,
+}));

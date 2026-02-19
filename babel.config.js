@@ -9,6 +9,10 @@ module.exports = function (api) {
         },
       ],
     ],
-    plugins: ["babel-plugin-transform-vite-meta-env", "@babel/plugin-syntax-import-attributes"],
+    plugins: [
+      "@lingui/babel-plugin-lingui-macro",
+      "babel-plugin-transform-vite-meta-env",
+      "@babel/plugin-syntax-import-attributes",
+    ],
   };
 };

@@ -1,10 +1,14 @@
 import { createAdapter, getStoreId } from "@/db/store";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import "@/polyfills/crypto";
+import "@/polyfills/intl";
+import { activateLocale, i18n } from "@/src/i18n";
 import { schema } from "@/src/livestore/schema";
 import { initializeDeviceId } from "@/utils/device";
+import { I18nProvider } from "@lingui/react";
 import { LiveStoreProvider } from "@livestore/react";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { getLocales } from "expo-localization";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useMemo, useState } from "react";
@@ -21,7 +25,8 @@ export default function RootLayout() {
   let colorScheme = useColorScheme();
 
   useEffect(() => {
-    initializeDeviceId().then(() => setIsReady(true));
+    let deviceLocale = getLocales()[0]?.languageCode ?? "en";
+    Promise.all([initializeDeviceId(), activateLocale(deviceLocale)]).then(() => setIsReady(true));
   }, []);
 
   // Create device-specific adapter only after device ID is initialized
@@ -36,21 +41,23 @@ export default function RootLayout() {
   }
 
   return (
-    <LiveStoreProvider
-      schema={schema}
-      storeId={storeId}
-      adapter={adapter}
-      batchUpdates={batchUpdates}
-    >
-      <KeyboardProvider>
-        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(drawer)" />
-            <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
-          </Stack>
-          <StatusBar style="auto" />
-        </ThemeProvider>
-      </KeyboardProvider>
-    </LiveStoreProvider>
+    <I18nProvider i18n={i18n}>
+      <LiveStoreProvider
+        schema={schema}
+        storeId={storeId}
+        adapter={adapter}
+        batchUpdates={batchUpdates}
+      >
+        <KeyboardProvider>
+          <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="(drawer)" />
+              <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
+            </Stack>
+            <StatusBar style="auto" />
+          </ThemeProvider>
+        </KeyboardProvider>
+      </LiveStoreProvider>
+    </I18nProvider>
   );
 }
