@@ -1,5 +1,6 @@
 import { plantById$, type Plant } from "@/src/livestore/queries";
 import { events } from "@/src/livestore/schema";
+import { useLingui } from "@lingui/react/macro";
 import { useQuery, useStore } from "@livestore/react";
 import { useLocalSearchParams } from "expo-router";
 import { createContext, useContext, useCallback } from "react";
@@ -19,28 +20,26 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   let { store } = useStore();
   let plants = useQuery(plantById$(plantId));
   let plant = plants[0];
+  let { t } = useLingui();
 
   let handleClearChat = useCallback(() => {
-    Alert.alert(
-      "Clear Chat",
-      `Are you sure you want to clear all messages with ${plant?.name ?? "this plant"}?`,
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Clear",
-          style: "destructive",
-          onPress: () => {
-            store.commit(
-              events.chatCleared({
-                plantId,
-                deletedAt: Date.now(),
-              })
-            );
-          },
+    let name = plant?.name ?? t`this plant`;
+    Alert.alert(t`Clear Chat`, t`Are you sure you want to clear all messages with ${name}?`, [
+      { text: t`Cancel`, style: "cancel" },
+      {
+        text: t`Clear`,
+        style: "destructive",
+        onPress: () => {
+          store.commit(
+            events.chatCleared({
+              plantId,
+              deletedAt: Date.now(),
+            })
+          );
         },
-      ]
-    );
-  }, [plant?.name, plantId, store]);
+      },
+    ]);
+  }, [plant?.name, plantId, store, t]);
 
   return (
     <ChatContext.Provider value={{ plantId, store, plant, handleClearChat }}>

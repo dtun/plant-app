@@ -8,6 +8,7 @@ import {
   showPhotoPickerAlert,
   takePhotoWithCamera,
 } from "@/utils/photo-utils";
+import { useLingui } from "@lingui/react/macro";
 import * as Crypto from "expo-crypto";
 import { createContext, useCallback, useContext, useState } from "react";
 import { LayoutChangeEvent } from "react-native";
@@ -30,6 +31,7 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
   let { plantId, store, plant } = useChatContext();
   let { messages, markAsNew, setIsGenerating, isGenerating } = useMessageList();
 
+  let { t } = useLingui();
   let [inputText, setInputText] = useState("");
   let [pendingImageUri, setPendingImageUri] = useState<string | null>(null);
   let composerHeight = useSharedValue(0);
@@ -102,7 +104,7 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
       }));
       chatHistory.push({
         role: "user",
-        content: text || "What do you see in this photo?",
+        content: text || t`What do you see in this photo?`,
         imageUri: imageUri ?? undefined,
       });
 
@@ -121,7 +123,7 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
         })
       );
     } catch (error) {
-      let errorMessage = "Sorry, I couldn't respond right now. Please try again.";
+      let errorMessage = t`Sorry, I couldn't respond right now. Please try again.`;
       if (error instanceof Error) {
         errorMessage = error.message;
       }
