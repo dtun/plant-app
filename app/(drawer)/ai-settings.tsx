@@ -1,10 +1,11 @@
+import { AISetupForm } from "@/components/ai-setup-form";
+import { useLingui } from "@lingui/react/macro";
 import "expo-sqlite/localStorage/install";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
-import { AISetupForm } from "@/components/ai-setup-form";
-
 export default function AISettingsScreen() {
+  let { t } = useLingui();
   let [hasUserKey, setHasUserKey] = useState(false);
 
   let checkKeyStatus = useCallback(() => {
@@ -25,7 +26,7 @@ export default function AISettingsScreen() {
       <View className="mb-6">
         <View className="rounded-xl border border-icon p-4">
           <Text className="text-sm text-icon">
-            {hasUserKey ? "Using your API key" : "Using default key"}
+            {hasUserKey ? t`Using your API key` : t`Using default key`}
           </Text>
         </View>
       </View>

@@ -1,6 +1,7 @@
 import { ChatListItem } from "@/components/chat-list-item";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { plantsWithLastMessage$ } from "@/src/livestore/queries";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { FlashList } from "@shopify/flash-list";
 import { useQuery } from "@livestore/react";
 import { useRouter } from "expo-router";
@@ -16,6 +17,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 export default function ChatsScreen() {
+  let { t } = useLingui();
   let plants = useQuery(plantsWithLastMessage$);
   let router = useRouter();
 
@@ -47,10 +49,12 @@ export default function ChatsScreen() {
           onPress={() => router.push("/")}
           activeOpacity={0.7}
           accessibilityRole="button"
-          accessibilityLabel="Name a plant to start chatting"
-          accessibilityHint="Navigates to the plant naming screen"
+          accessibilityLabel={t`Name a plant to start chatting`}
+          accessibilityHint={t`Navigates to the plant naming screen`}
         >
-          <Text className="text-icon text-base">Name a plant to start chatting!</Text>
+          <Text className="text-icon text-base">
+            <Trans>Name a plant to start chatting!</Trans>
+          </Text>
           <View className="rounded-full bg-tint justify-center items-center w-8 h-8">
             <Animated.View style={hopStyle}>
               <IconSymbol colorClassName={null} name="arrow.up.right" size={16} color="#fff" />
