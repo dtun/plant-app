@@ -1,21 +1,13 @@
+import { Trans, useLingui } from "@lingui/react/macro";
 import { zodResolver } from "@hookform/resolvers/zod";
 import "expo-sqlite/localStorage/install";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { z } from "zod";
 
 import { FormField } from "./ui/form-field";
 import { OptionSelector } from "./ui/option-selector";
-
-let aiSetupSchema = z.object({
-  apiKey: z.string().min(1, "API key is required"),
-  provider: z.enum(["OpenAI", "Anthropic"], {
-    required_error: "Provider is required",
-  }),
-});
-
-type AISetupFormData = z.infer<typeof aiSetupSchema>;
 
 let providerOptions = ["OpenAI", "Anthropic"] as const;
 
@@ -24,6 +16,20 @@ interface AISetupFormProps {
 }
 
 export function AISetupForm({ onSaved }: AISetupFormProps) {
+  let { t } = useLingui();
+
+  let aiSetupSchema = useMemo(
+    () =>
+      z.object({
+        apiKey: z.string().min(1, t`API key is required`),
+        provider: z.enum(["OpenAI", "Anthropic"], {
+          required_error: t`Provider is required`,
+        }),
+      }),
+    [t]
+  );
+
+  type AISetupFormData = z.infer<typeof aiSetupSchema>;
   let {
     control,
     handleSubmit,
@@ -63,11 +69,11 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
         provider: data.provider,
         apiKeyLength: data.apiKey.length,
       });
-      Alert.alert("Settings Saved", "Your AI configuration has been saved successfully.");
+      Alert.alert(t`Settings Saved`, t`Your AI configuration has been saved successfully.`);
       onSaved?.();
     } catch (error) {
       console.error("Error saving settings:", error);
-      Alert.alert("Error", "Failed to save settings. Please try again.");
+      Alert.alert(t`Error`, t`Failed to save settings. Please try again.`);
     }
   }
 
@@ -76,11 +82,11 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
       globalThis.localStorage.removeItem("ai_user_api_key");
       globalThis.localStorage.removeItem("ai_user_provider");
       reset({ apiKey: "", provider: undefined });
-      Alert.alert("Settings Reset", "Your AI configuration has been reset.");
+      Alert.alert(t`Settings Reset`, t`Your AI configuration has been reset.`);
       onSaved?.();
     } catch (error) {
       console.error("Error resetting settings:", error);
-      Alert.alert("Error", "Failed to reset settings. Please try again.");
+      Alert.alert(t`Error`, t`Failed to reset settings. Please try again.`);
     }
   }
 
@@ -90,7 +96,7 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
 
   return (
     <View className="gap-4">
-      <FormField label="API Key" required error={errors.apiKey?.message}>
+      <FormField label={t`API Key`} required error={errors.apiKey?.message}>
         <Controller
           control={control}
           name="apiKey"
@@ -100,7 +106,7 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              placeholder="Enter your API key"
+              placeholder={t`Enter your API key`}
               secureTextEntry
               autoCapitalize="none"
               autoCorrect={false}
@@ -109,7 +115,7 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
         />
       </FormField>
 
-      <FormField label="Provider" required error={errors.provider?.message}>
+      <FormField label={t`Provider`} required error={errors.provider?.message}>
         <Controller
           control={control}
           name="provider"
@@ -124,11 +130,15 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
           className="rounded-xl p-4 items-center bg-tint"
           onPress={handleSubmit(onSubmit)}
         >
-          <Text className="text-white text-base font-semibold">Save Settings</Text>
+          <Text className="text-white text-base font-semibold">
+            <Trans>Save Settings</Trans>
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity className="rounded-xl p-4 items-center" onPress={handleReset}>
-          <Text className="text-base font-semibold text-color">Reset All</Text>
+          <Text className="text-base font-semibold text-color">
+            <Trans>Reset All</Trans>
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -16,45 +16,50 @@ import {
   showPhotoPickerAlert,
   takePhotoWithCamera,
 } from "@/utils/photo-utils";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useStore } from "@livestore/react";
 import * as Crypto from "expo-crypto";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, FlatList, Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import { z } from "zod";
-
-let plantSchema = z
-  .object({
-    plantInput: z.string().optional(),
-    photoDescription: z.string().optional(),
-    plantType: z.string().optional(),
-    size: z.enum(["Small", "Medium", "Large"]).optional(),
-  })
-  .refine(
-    (data) => {
-      // Plant input is required only if photoDescription is not provided
-      return !!(data.plantInput || data.photoDescription);
-    },
-    {
-      message: "Please describe your plant or add a photo",
-      path: ["plantInput"], // Error shows on plant input field
-    }
-  );
-
-type PlantFormData = z.infer<typeof plantSchema>;
 
 interface PlantFormProps {
   setOptions?: (options: Partial<object>) => void;
 }
 
 export function PlantForm({ setOptions }: PlantFormProps = {}) {
+  let { t } = useLingui();
   let [isGenerating, setIsGenerating] = useState(false);
   let [selectedImage, setSelectedImage] = useState<string | null>(null);
   let [isAnalyzing, setIsAnalyzing] = useState(false);
   let { store } = useStore();
   let router = useRouter();
+
+  let plantSchema = useMemo(
+    () =>
+      z
+        .object({
+          plantInput: z.string().optional(),
+          photoDescription: z.string().optional(),
+          plantType: z.string().optional(),
+          size: z.enum(["Small", "Medium", "Large"]).optional(),
+        })
+        .refine(
+          (data) => {
+            return !!(data.plantInput || data.photoDescription);
+          },
+          {
+            message: t`Please describe your plant or add a photo`,
+            path: ["plantInput"],
+          }
+        ),
+    [t]
+  );
+
+  type PlantFormData = z.infer<typeof plantSchema>;
 
   let {
     control,
@@ -90,7 +95,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
         result.uri,
         setIsAnalyzing,
         (description) => setValue("photoDescription", description),
-        (error) => Alert.alert("Photo Analysis Error", error)
+        (error) => Alert.alert(t`Photo Analysis Error`, error)
       );
     }
   }
@@ -103,7 +108,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
         result.uri,
         setIsAnalyzing,
         (description) => setValue("photoDescription", description),
-        (error) => Alert.alert("Photo Analysis Error", error)
+        (error) => Alert.alert(t`Photo Analysis Error`, error)
       );
     }
   }
@@ -143,12 +148,12 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
     } catch (error) {
       console.error("Error saving plant:", error);
 
-      let errorMessage = "Failed to save plant. Please try again.";
+      let errorMessage = t`Failed to save plant. Please try again.`;
       if (error instanceof Error) {
         errorMessage = error.message;
       }
 
-      Alert.alert("Save Error", errorMessage);
+      Alert.alert(t`Save Error`, errorMessage);
     }
   }
 
@@ -167,28 +172,28 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
 
       let plantName = await generatePlantName(plantData);
 
-      Alert.alert("Your Plant's Name", `"${plantName}"`, [
+      Alert.alert(t`Your Plant's Name`, `"${plantName}"`, [
         {
-          text: "Start Chat",
+          text: t`Start Chat`,
           style: "default",
           onPress: () => savePlantAndStartChat(plantName, data),
         },
-        { text: "Cancel", style: "cancel" },
+        { text: t`Cancel`, style: "cancel" },
       ]);
     } catch (error) {
       console.error("Error generating plant name:", error);
 
-      let errorMessage = "Failed to generate plant name. Please try again.";
+      let errorMessage = t`Failed to generate plant name. Please try again.`;
       if (error instanceof Error) {
         errorMessage = error.message;
       }
 
       if (errorMessage.includes("configuration not found")) {
-        Alert.alert("AI Setup Required", "Please configure your AI settings first.", [
-          { text: "Try Again", style: "cancel" },
+        Alert.alert(t`AI Setup Required`, t`Please configure your AI settings first.`, [
+          { text: t`Try Again`, style: "cancel" },
         ]);
       } else {
-        Alert.alert("Error", errorMessage);
+        Alert.alert(t`Error`, errorMessage);
       }
     } finally {
       setIsGenerating(false);
@@ -208,16 +213,18 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
               onPress={handleReset}
               accessible={true}
               accessibilityRole="button"
-              accessibilityLabel="Reset form"
-              accessibilityHint="Clear all form fields and start over"
+              accessibilityLabel={t`Reset form`}
+              accessibilityHint={t`Clear all form fields and start over`}
               className="mr-4"
             >
-              <Text className="text-base py-1 text-color">Reset</Text>
+              <Text className="text-base py-1 text-color">
+                <Trans>Reset</Trans>
+              </Text>
             </Pressable>
           )
         : null,
     });
-  }, [hasFieldsWithValues, handleReset, setOptions]);
+  }, [hasFieldsWithValues, handleReset, setOptions, t]);
 
   return (
     <FlatList
@@ -229,7 +236,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
       data={[
         {
           render: (
-            <FormField label="What type of plant is it?" error={errors.plantType?.message}>
+            <FormField label={t`What type of plant is it?`} error={errors.plantType?.message}>
               <Controller
                 control={control}
                 name="plantType"
@@ -239,7 +246,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value || ""}
-                    placeholder="e.g., Succulent, Fern, Flowering Plant..."
+                    placeholder={t`e.g., Succulent, Fern, Flowering Plant...`}
                   />
                 )}
               />
@@ -250,21 +257,25 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
           render: isAnalyzing ? (
             <View className="flex-row items-center justify-center gap-1 py-2">
               <ActivityIndicator size="small" colorClassName="text-color" />
-              <Text className="text-sm italic text-color">Analyzing photo...</Text>
+              <Text className="text-sm italic text-color">
+                <Trans>Analyzing photo...</Trans>
+              </Text>
             </View>
           ) : null,
         },
         {
           render: watchedFields.photoDescription ? (
             <View className="flex-row justify-between items-center">
-              <Text className="text-base font-semibold text-color">Photo Analysis</Text>
+              <Text className="text-base font-semibold text-color">
+                <Trans>Photo Analysis</Trans>
+              </Text>
               {selectedImage ? (
                 <Pressable
                   onPress={removePhoto}
                   accessible={true}
                   accessibilityRole="button"
-                  accessibilityLabel="Remove photo"
-                  accessibilityHint="Remove the selected plant photo"
+                  accessibilityLabel={t`Remove photo`}
+                  accessibilityHint={t`Remove the selected plant photo`}
                   className="flex-row items-center gap-1 py-1 px-2"
                 >
                   <IconSymbol name="trash" size={20} />
@@ -284,7 +295,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
-                  placeholder={selectedImage ? "Anything else?" : "Describe your plant..."}
+                  placeholder={selectedImage ? t`Anything else?` : t`Describe your plant...`}
                   error={errors.plantInput?.message}
                   leftButton={
                     <PhotoUpload
@@ -307,7 +318,9 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
       keyboardDismissMode="interactive"
       keyboardShouldPersistTaps="handled"
       ListHeaderComponent={
-        <Text className="text-center text-2xl font-light text-color">About your plant</Text>
+        <Text className="text-center text-2xl font-light text-color">
+          <Trans>About your plant</Trans>
+        </Text>
       }
       renderItem={({ item: { render } }) => render}
       className="flex-1"

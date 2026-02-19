@@ -17,13 +17,17 @@ jest.mock("@livestore/livestore");
 jest.mock("@livestore/react");
 jest.mock("@/src/livestore/schema");
 
-jest.mock("@lingui/react", () => ({
-  I18nProvider: ({ children }) => children,
-  useLingui: () => ({
-    i18n: { _: (d) => d?.message ?? d?.id ?? String(d), locale: "en" },
-  }),
-  Trans: ({ children }) => children,
-}));
+jest.mock("@lingui/react", () => {
+  let passthrough = (d) => d?.message ?? d?.id ?? String(d);
+  return {
+    I18nProvider: ({ children }) => children,
+    useLingui: () => ({
+      i18n: { _: passthrough, locale: "en" },
+      _: passthrough,
+    }),
+    Trans: ({ children, id, message }) => message ?? id ?? children,
+  };
+});
 
 // Activate the real i18n singleton so utility functions using i18n._() work in tests
 let { i18n } = require("@lingui/core");
