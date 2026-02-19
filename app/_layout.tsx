@@ -26,7 +26,8 @@ export default function RootLayout() {
 
   useEffect(() => {
     let deviceLocale = getLocales()[0]?.languageCode ?? "en";
-    Promise.all([initializeDeviceId(), activateLocale(deviceLocale)]).then(() => setIsReady(true));
+    activateLocale(deviceLocale);
+    initializeDeviceId().then(() => setIsReady(true));
   }, []);
 
   // Create device-specific adapter only after device ID is initialized

@@ -37,6 +37,10 @@ jest.mock("@lingui/react", () => {
   };
 });
 
-// Activate the real i18n singleton so utility functions using i18n._() work in tests
-let { i18n } = require("@lingui/core");
-i18n.loadAndActivate({ locale: "en", messages: {} });
+// Mock @/src/i18n to avoid importing .po files in tests.
+// Activate the real i18n singleton so utility functions using i18n._() work.
+jest.mock("@/src/i18n", () => {
+  let { i18n: mockI18n } = require("@lingui/core");
+  mockI18n.loadAndActivate({ locale: "en", messages: {} });
+  return { i18n: mockI18n, activateLocale: () => {} };
+});
