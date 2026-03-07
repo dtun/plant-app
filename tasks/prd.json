@@ -1,0 +1,103 @@
+{
+  "name": "Replace KeyboardAvoidingView with KeyboardStickyView",
+  "branchName": "feature/replace-keyboardavoidingview-with-keyboardstickyview",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Add composer height tracking via shared value",
+      "description": "As a developer, I want to track the chat composer's height in a Reanimated shared value so that the message list's contentInset can react to composer size changes.",
+      "acceptanceCriteria": [
+        "components/ui/chat-input.tsx reports its height via an onLayout callback",
+        "A Reanimated shared value holds the current composer height",
+        "The shared value updates when the composer height changes (e.g., multiline expansion)",
+        "No hardcoded height values are introduced"
+      ],
+      "priority": 1,
+      "passes": true,
+      "dependsOn": []
+    },
+    {
+      "id": "US-002",
+      "title": "Replace KeyboardAvoidingView with KeyboardStickyView on chat screen",
+      "description": "As a user, I want the chat composer to stick to the top of the keyboard so that I can always see what I'm typing without overlap or offset bugs.",
+      "acceptanceCriteria": [
+        "KeyboardAvoidingView is removed from app/chat/[plantId].tsx",
+        "KeyboardStickyView from react-native-keyboard-controller wraps the composer input",
+        "The composer animates smoothly with the keyboard open/close",
+        "No hardcoded vertical offset values remain in the chat screen",
+        "Works correctly on iOS (the primary platform with keyboard issues)"
+      ],
+      "priority": 2,
+      "passes": true,
+      "dependsOn": [
+        "US-001"
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "Use native contentInset for message list keyboard adjustment",
+      "description": "As a user, I want the message list to naturally make room for the composer and keyboard so that messages aren't hidden behind the input area.",
+      "acceptanceCriteria": [
+        "The message list (FlashList or FlatList) uses contentInset.bottom driven by the composer height shared value",
+        "When the keyboard opens, the list content inset adjusts so messages remain visible",
+        "When the keyboard closes, the inset returns to the composer-only height",
+        "No layout hacks or absolute positioning workarounds are used"
+      ],
+      "priority": 3,
+      "passes": true,
+      "dependsOn": [
+        "US-001",
+        "US-002"
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "Auto-scroll message list to bottom on keyboard open",
+      "description": "As a user, I want the message list to scroll to the latest message when the keyboard opens so that I can see the conversation context while typing.",
+      "acceptanceCriteria": [
+        "When the keyboard opens, the message list scrolls to the bottom",
+        "The scroll is animated (not a jarring jump)",
+        "This works on both initial keyboard open and subsequent opens"
+      ],
+      "priority": 4,
+      "passes": true,
+      "dependsOn": [
+        "US-002",
+        "US-003"
+      ]
+    },
+    {
+      "id": "US-005",
+      "title": "Replace KeyboardAvoidingView on home screen",
+      "description": "As a user, I want the home screen to handle keyboard appearance smoothly without hardcoded offsets.",
+      "acceptanceCriteria": [
+        "KeyboardAvoidingView is removed from app/(drawer)/index.tsx",
+        "KeyboardStickyView (or equivalent from react-native-keyboard-controller) wraps the relevant input area",
+        "No hardcoded vertical offset values remain on the home screen",
+        "Existing home screen functionality is preserved"
+      ],
+      "priority": 5,
+      "passes": true,
+      "dependsOn": []
+    },
+    {
+      "id": "US-006",
+      "title": "Remove all KeyboardAvoidingView imports and dead code",
+      "description": "As a developer, I want all traces of KeyboardAvoidingView removed from the codebase so that there's no confusion about which keyboard handling approach to use.",
+      "acceptanceCriteria": [
+        "No file in the project imports KeyboardAvoidingView from react-native",
+        "Any unused keyboard-related constants or helpers (e.g., hardcoded offset values) are removed",
+        "The project passes npm run vibecheck with no regressions"
+      ],
+      "priority": 6,
+      "passes": true,
+      "dependsOn": [
+        "US-002",
+        "US-005"
+      ]
+    }
+  ],
+  "metadata": {
+    "updatedAt": "2026-02-08T00:32:11.219Z"
+  }
+}
