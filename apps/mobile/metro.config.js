@@ -1,7 +1,20 @@
 let { getDefaultConfig } = require("expo/metro-config");
 let { withUniwindConfig } = require("uniwind/metro");
+let path = require("path");
 
-let config = getDefaultConfig(__dirname);
+let projectRoot = __dirname;
+let monorepoRoot = path.resolve(projectRoot, "../..");
+
+let config = getDefaultConfig(projectRoot);
+
+// Monorepo: watch root for shared packages
+config.watchFolders = [monorepoRoot];
+
+// Monorepo: resolve node_modules from both app and root
+config.resolver.nodeModulesPaths = [
+  path.resolve(projectRoot, "node_modules"),
+  path.resolve(monorepoRoot, "node_modules"),
+];
 
 config.resolver.sourceExts = [...(config.resolver?.sourceExts ?? []), "po", "pot"];
 config.transformer.babelTransformerPath = require.resolve("@lingui/metro-transformer/expo");
