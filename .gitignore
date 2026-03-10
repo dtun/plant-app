@@ -46,5 +46,5 @@ app-example
 .ralph-tui/
 
 # generated native folders
-/ios
-/android
+ios/
+android/
