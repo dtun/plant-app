@@ -159,7 +159,7 @@ let calculateTotal = function (items) {
 Before committing code, run the vibecheck script to ensure code quality:
 
 ```bash
-npm run vibecheck
+cd apps/mobile && npm run vibecheck
 ```
 
 This script runs the following checks in order:
@@ -170,12 +170,22 @@ This script runs the following checks in order:
 
 Formatting is handled automatically by a PostToolUse hook that runs Prettier after every Write/Edit operation (configured in `.claude/settings.json`).
 
-Individual scripts:
+Individual scripts (run from `apps/mobile/`):
 
-- `npm run format` - Auto-format code with Prettier
+- `npm run format` - Auto-format code with Prettier (also available from root)
 - `npm run lint` - Run ESLint checks
 - `npm run typecheck` - Run TypeScript compiler checks
 - `npm run test` - Run tests
+
+### Monorepo Structure
+
+This project uses npm workspaces. The root `package.json` defines workspaces at `apps/*` and `packages/*`.
+
+- **`apps/mobile/`** - Expo React Native app (`@keeptend/mobile`)
+- **`apps/web/`** - Web app placeholder (`@keeptend/web`)
+- **`packages/`** - Shared packages (future)
+
+Shared devDeps (prettier, eslint, husky, commitlint) live at the root. App-specific deps live in each workspace.
 
 ### Testing
 
@@ -183,20 +193,21 @@ This project uses **Jest** as the testing framework (not Vitest).
 
 **Test Configuration:**
 
-- Jest is configured in `package.json` and `jest.setup.js`
-- Test setup file: `jest.setup.js` (runs before all tests)
+- Jest is configured in `apps/mobile/package.json` and `apps/mobile/jest.setup.js`
+- Test setup file: `apps/mobile/jest.setup.js` (runs before all tests)
 - Uses `jest-expo` preset for React Native compatibility
-- Manual mocks are placed in `__mocks__/` directories
+- Manual mocks are placed in `apps/mobile/__mocks__/` directories
 
 **Mock Structure:**
 
-- External package mocks: `__mocks__/package-name.ts`
-- Scoped package mocks: `__mocks__/@scope/package-name.ts`
-- Local module mocks: `src/path/__mocks__/module.ts`
+- External package mocks: `apps/mobile/__mocks__/package-name.ts`
+- Scoped package mocks: `apps/mobile/__mocks__/@scope/package-name.ts`
+- Local module mocks: `apps/mobile/src/path/__mocks__/module.ts`
 
 **Running Tests:**
 
 ```bash
+cd apps/mobile
 npm run test        # Run all tests
 npm run vibecheck   # Run lint, typecheck, and tests
 ```
