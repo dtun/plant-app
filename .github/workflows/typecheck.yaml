@@ -24,6 +24,8 @@ jobs:
 
       - name: 🎨 Generate uniwind types
         run: npx expo export --platform ios --output-dir .expo-export --clear
+        working-directory: apps/mobile
 
       - name: 🧪 Run typecheck
         run: npm run typecheck
+        working-directory: apps/mobile

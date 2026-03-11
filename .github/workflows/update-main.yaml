@@ -26,3 +26,4 @@ jobs:
 
       - name: 🚀 Create update
         run: eas update --auto --non-interactive --platform=ios
+        working-directory: apps/mobile

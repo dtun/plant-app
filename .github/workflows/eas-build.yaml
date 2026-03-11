@@ -53,5 +53,5 @@ jobs:
         run: npm ci
 
       - name: Build with EAS
-        run: |
-          eas build --platform ${{ github.event.inputs.platform }} --profile ${{ github.event.inputs.profile }} --non-interactive
+        run: eas build --platform ${{ github.event.inputs.platform }} --profile ${{ github.event.inputs.profile }} --non-interactive
+        working-directory: apps/mobile
