@@ -48,3 +48,7 @@ app-example
 # generated native folders
 ios/
 android/
+
+# Next.js
+.next/
+next-env.d.ts
