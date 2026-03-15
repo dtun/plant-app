@@ -254,35 +254,28 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
           ),
         },
         {
-          render: isAnalyzing ? (
-            <View className="flex-row items-center justify-center gap-1 py-2">
-              <ActivityIndicator size="small" colorClassName="text-color" />
-              <Text className="text-sm italic text-color">
-                <Trans>Analyzing photo...</Trans>
-              </Text>
-            </View>
-          ) : null,
-        },
-        {
-          render: watchedFields.photoDescription ? (
-            <View className="flex-row justify-between items-center">
-              <Text className="text-base font-semibold text-color">
-                <Trans>Photo Analysis</Trans>
-              </Text>
-              {selectedImage ? (
-                <Pressable
-                  onPress={removePhoto}
-                  accessible={true}
-                  accessibilityRole="button"
-                  accessibilityLabel={t`Remove photo`}
-                  accessibilityHint={t`Remove the selected plant photo`}
-                  className="flex-row items-center gap-1 py-1 px-2"
-                >
-                  <IconSymbol name="trash" size={20} />
-                </Pressable>
-              ) : null}
-            </View>
-          ) : null,
+          render:
+            isAnalyzing || watchedFields.photoDescription ? (
+              <View className="flex-row justify-between items-center">
+                <Text className="text-base font-semibold text-color">
+                  {isAnalyzing ? <Trans>Analyzing photo...</Trans> : <Trans>Photo Analysis</Trans>}
+                </Text>
+                {isAnalyzing ? (
+                  <ActivityIndicator size="small" colorClassName="text-color" />
+                ) : (
+                  <Pressable
+                    onPress={removePhoto}
+                    accessible={true}
+                    accessibilityRole="button"
+                    accessibilityLabel={t`Remove photo`}
+                    accessibilityHint={t`Remove the selected plant photo`}
+                    className="flex-row items-center gap-1 py-1 px-2"
+                  >
+                    <IconSymbol name="trash" size={20} />
+                  </Pressable>
+                )}
+              </View>
+            ) : null,
         },
         {
           render: (
