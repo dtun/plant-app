@@ -11,7 +11,7 @@ module.exports = defineConfig([
     ignores: ["dist/*"],
   },
   {
-    files: ["**/*.test.ts", "**/*.test.tsx", "jest.setup.js"],
+    files: ["**/*.test.ts", "**/*.test.tsx", "**/jest.setup.js"],
     plugins: {
       jest: jestPlugin,
     },
