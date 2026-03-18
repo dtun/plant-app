@@ -44,3 +44,7 @@ jest.mock("@/src/i18n", () => {
   mockI18n.loadAndActivate({ locale: "en", messages: {} });
   return { i18n: mockI18n, activateLocale: () => {} };
 });
+
+jest.mock("react-native-keyboard-controller", () =>
+  require("react-native-keyboard-controller/jest")
+);
