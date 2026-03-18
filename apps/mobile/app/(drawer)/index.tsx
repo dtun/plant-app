@@ -10,8 +10,8 @@ export default function HomeScreen() {
   let safeStyle = useResolveClassNames("pb-4");
 
   return (
-    <View className="flex-1 bg-background">
-      <KeyboardStickyView style={{ flex: 1, paddingHorizontal: 16 }}>
+    <View className="flex-1 bg-background px-4">
+      <KeyboardStickyView style={{ flex: 1 }}>
         <PlantForm setOptions={setOptions} />
         <SafeAreaView edges={["bottom"]} style={safeStyle} />
       </KeyboardStickyView>
