@@ -23,8 +23,9 @@ import * as Crypto from "expo-crypto";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Alert, FlatList, Keyboard, Pressable, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, Text, TextInput, View, Keyboard } from "react-native";
 import { z } from "zod";
+import { KeyboardAwareScrollView, KeyboardStickyView } from "react-native-keyboard-controller";
 
 interface PlantFormProps {
   setOptions?: (options: Partial<object>) => void;
@@ -227,96 +228,75 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
   }, [hasFieldsWithValues, handleReset, setOptions, t]);
 
   return (
-    <FlatList
-      contentContainerStyle={{
-        flexGrow: 1,
-        justifyContent: "flex-end",
-        gap: 16,
-      }}
-      data={[
-        {
-          render: (
-            <FormField label={t`What type of plant is it?`} error={errors.plantType?.message}>
-              <Controller
-                control={control}
-                name="plantType"
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    className="border border-icon rounded-xl px-3 py-3 text-base text-color bg-background placeholder:text-placeholder"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value || ""}
-                    placeholder={t`e.g., Succulent, Fern, Flowering Plant...`}
-                  />
-                )}
-              />
-            </FormField>
-          ),
-        },
-        {
-          render:
-            isAnalyzing || watchedFields.photoDescription ? (
-              <View className="flex-row justify-between items-center">
-                <Text className="text-base font-semibold text-color">
-                  {isAnalyzing ? <Trans>Analyzing photo...</Trans> : <Trans>Photo Analysis</Trans>}
-                </Text>
-                {isAnalyzing ? (
-                  <ActivityIndicator size="small" colorClassName="text-color" />
-                ) : (
-                  <Pressable
-                    onPress={removePhoto}
-                    accessible={true}
-                    accessibilityRole="button"
-                    accessibilityLabel={t`Remove photo`}
-                    accessibilityHint={t`Remove the selected plant photo`}
-                    className="flex-row items-center gap-1 py-1 px-2"
-                  >
-                    <IconSymbol name="trash" size={20} />
-                  </Pressable>
-                )}
-              </View>
-            ) : null,
-        },
-        {
-          render: (
-            <Controller
-              control={control}
-              name="plantInput"
-              render={({ field: { onChange, onBlur, value } }) => (
-                <ChatInput
-                  autoFocus
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  placeholder={selectedImage ? t`Anything else?` : t`Describe your plant...`}
-                  error={errors.plantInput?.message}
-                  leftButton={
-                    <PhotoUpload
-                      selectedImage={selectedImage}
-                      onImageSelect={handleShowImagePicker}
-                    />
-                  }
-                  rightButton={
-                    <SubmitButton
-                      onPress={handleSubmit(onSubmit)}
-                      isLoading={isGenerating || isAnalyzing}
-                    />
-                  }
-                />
-              )}
-            />
-          ),
-        },
-      ].filter((item) => item.render)}
-      keyboardDismissMode="interactive"
-      keyboardShouldPersistTaps="handled"
-      ListHeaderComponent={
+    <>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{ flex: 1, gap: 16, justifyContent: "flex-end" }}
+      >
         <Text className="text-center text-2xl font-light text-color">
           <Trans>About your plant</Trans>
         </Text>
-      }
-      renderItem={({ item: { render } }) => render}
-      className="flex-1"
-    />
+        <FormField label={t`What type of plant is it?`} error={errors.plantType?.message}>
+          <Controller
+            control={control}
+            name="plantType"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                className="border border-icon rounded-xl px-3 py-3 text-base text-color bg-background placeholder:text-placeholder"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value || ""}
+                placeholder={t`e.g., Succulent, Fern, Flowering Plant...`}
+              />
+            )}
+          />
+          {isAnalyzing || watchedFields.photoDescription ? (
+            <View className="flex-row justify-between items-center">
+              <Text className="text-base font-semibold text-color">
+                {isAnalyzing ? <Trans>Analyzing photo...</Trans> : <Trans>Photo Analysis</Trans>}
+              </Text>
+              {isAnalyzing ? (
+                <ActivityIndicator size="small" colorClassName="text-color" />
+              ) : (
+                <Pressable
+                  onPress={removePhoto}
+                  accessible={true}
+                  accessibilityRole="button"
+                  accessibilityLabel={t`Remove photo`}
+                  accessibilityHint={t`Remove the selected plant photo`}
+                  className="flex-row items-center gap-1 py-1 px-2"
+                >
+                  <IconSymbol name="trash" size={20} />
+                </Pressable>
+              )}
+            </View>
+          ) : null}
+        </FormField>
+      </KeyboardAwareScrollView>
+      <KeyboardStickyView>
+        <Controller
+          control={control}
+          name="plantInput"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <ChatInput
+              autoFocus
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              placeholder={selectedImage ? t`Anything else?` : t`Describe your plant...`}
+              error={errors.plantInput?.message}
+              leftButton={
+                <PhotoUpload selectedImage={selectedImage} onImageSelect={handleShowImagePicker} />
+              }
+              rightButton={
+                <SubmitButton
+                  onPress={handleSubmit(onSubmit)}
+                  isLoading={isGenerating || isAnalyzing}
+                />
+              }
+            />
+          )}
+        />
+      </KeyboardStickyView>
+    </>
   );
 }
