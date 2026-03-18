@@ -230,6 +230,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
   return (
     <>
       <KeyboardAwareScrollView
+        bounces={false}
         contentContainerStyle={{ flex: 1, gap: 16, justifyContent: "flex-end" }}
       >
         <Text className="text-center text-2xl font-light text-color">
