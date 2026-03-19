@@ -6,7 +6,10 @@ import { ComponentProps } from "react";
 import { OpaqueColorValue, type StyleProp, type TextStyle } from "react-native";
 import { useResolveClassNames } from "uniwind";
 
-type IconMapping = Record<SymbolViewProps["name"], ComponentProps<typeof MaterialIcons>["name"]>;
+type IconMapping = Record<
+  Extract<SymbolViewProps["name"], string>,
+  ComponentProps<typeof MaterialIcons>["name"]
+>;
 
 type IconSymbolName = keyof typeof mapping;
 type ThemeColorClassName = "text-color" | "text-tint" | "text-icon" | null;

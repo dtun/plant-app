@@ -2,6 +2,9 @@
 // Note: @testing-library/react-native v12.4+ has built-in Jest matchers
 // No need to import extend-expect separately
 
+// Mock react-native-worklets before importing reanimated
+jest.mock("react-native-worklets", () => require("react-native-worklets/lib/module/mock"));
+
 // Mock react-native-reanimated
 require("react-native-reanimated").setUpTests();
 
