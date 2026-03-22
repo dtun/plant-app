@@ -20,34 +20,6 @@ jest.mock("@livestore/livestore");
 jest.mock("@livestore/react");
 jest.mock("@/src/livestore/schema");
 
-jest.mock("@lingui/react", () => {
-  let passthrough = (d) => {
-    let message = d?.message ?? d?.id ?? String(d);
-    if (d?.values) {
-      Object.keys(d.values).forEach((key) => {
-        message = message.replace(`{${key}}`, String(d.values[key]));
-      });
-    }
-    return message;
-  };
-  return {
-    I18nProvider: ({ children }) => children,
-    useLingui: () => ({
-      i18n: { _: passthrough, locale: "en" },
-      _: passthrough,
-    }),
-    Trans: ({ children, id, message }) => message ?? id ?? children,
-  };
-});
-
-// Mock @/src/i18n to avoid importing .po files in tests.
-// Activate the real i18n singleton so utility functions using i18n._() work.
-jest.mock("@/src/i18n", () => {
-  let { i18n: mockI18n } = require("@lingui/core");
-  mockI18n.loadAndActivate({ locale: "en", messages: {} });
-  return { i18n: mockI18n, activateLocale: () => {} };
-});
-
-jest.mock("react-native-keyboard-controller", () =>
-  require("react-native-keyboard-controller/jest")
-);
+jest.mock("@lingui/react");
+jest.mock("@/src/i18n");
+jest.mock("react-native-keyboard-controller");
