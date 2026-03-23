@@ -6,8 +6,6 @@ interface InitialsAvatarProps {
   size?: number;
 }
 
-const TEXT_COLOR = "#333333";
-
 export function InitialsAvatar({ name, size = 48 }: InitialsAvatarProps) {
   let initials = getInitials(name);
   let backgroundColor = getAvatarColor(name);
@@ -26,13 +24,7 @@ export function InitialsAvatar({ name, size = 48 }: InitialsAvatarProps) {
         justifyContent: "center",
       }}
     >
-      <Text
-        style={{
-          color: TEXT_COLOR,
-          fontSize,
-          fontWeight: "600",
-        }}
-      >
+      <Text className="text-color font-semibold" style={{ fontSize }}>
         {initials}
       </Text>
     </View>

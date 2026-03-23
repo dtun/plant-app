@@ -38,10 +38,10 @@ describe("InitialsAvatar", () => {
     expect(avatar.props.style).toEqual(expect.objectContaining({ borderRadius: 20 }));
   });
 
-  test("text color is dark for sufficient contrast against pastel backgrounds", () => {
+  test("uses themed text-color class for proper light/dark mode support", () => {
     render(<InitialsAvatar name="Monstera" />);
     let text = screen.getByText("M");
-    expect(text.props.style).toEqual(expect.objectContaining({ color: "#333333" }));
+    expect(text.props.className).toContain("text-color");
   });
 
   test("has correct accessibility label", () => {

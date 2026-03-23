@@ -8,7 +8,7 @@ export function getInitials(name: string): string {
   return words.map((word) => word[0].toUpperCase()).join("");
 }
 
-const PASTEL_COLORS = [
+let PASTEL_COLORS = [
   "#FFB3BA", // pastel pink
   "#FFDFBA", // pastel peach
   "#FFFFBA", // pastel yellow
