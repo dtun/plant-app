@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react-native";
+import { render, screen, fireEvent } from "@testing-library/react-native";
 
 import { ChatListItem } from "./chat-list-item";
 
@@ -31,4 +31,23 @@ test("InitialsAvatar size matches the chat list image size of 48px", () => {
   let avatar = screen.getByTestId("initials-avatar");
   expect(avatar.props.style.width).toBe(48);
   expect(avatar.props.style.height).toBe(48);
+});
+
+test("shows InitialsAvatar when image onError fires", () => {
+  render(<ChatListItem {...defaultProps} photoUri="https://example.com/photo.jpg" />);
+
+  let image = screen.getByLabelText("Photo of Snake Plant");
+  fireEvent(image, "error");
+
+  expect(screen.getByTestId("initials-avatar")).toBeOnTheScreen();
+  expect(screen.queryByLabelText("Photo of Snake Plant")).toBeNull();
+});
+
+test("fallback InitialsAvatar receives correct name after error", () => {
+  render(<ChatListItem {...defaultProps} photoUri="https://example.com/photo.jpg" />);
+
+  let image = screen.getByLabelText("Photo of Snake Plant");
+  fireEvent(image, "error");
+
+  expect(screen.getByText("SP")).toBeOnTheScreen();
 });
