@@ -1,4 +1,4 @@
-import { getInitials } from "./avatar-helpers";
+import { getInitials, getAvatarColor } from "./avatar-helpers";
 
 describe("utils/avatar-helpers", () => {
   describe("getInitials", () => {
@@ -28,6 +28,42 @@ describe("utils/avatar-helpers", () => {
 
     test("handles already capitalized single word", () => {
       expect(getInitials("Monstera")).toBe("M");
+    });
+  });
+
+  describe("getAvatarColor", () => {
+    test("returns a hex color string", () => {
+      let color = getAvatarColor("Monstera");
+      expect(color).toMatch(/^#[0-9A-Fa-f]{6}$/);
+    });
+
+    test("returns the same color for the same name", () => {
+      let color1 = getAvatarColor("Snake Plant");
+      let color2 = getAvatarColor("Snake Plant");
+      expect(color1).toBe(color2);
+    });
+
+    test("is case-insensitive", () => {
+      let color1 = getAvatarColor("Monstera");
+      let color2 = getAvatarColor("monstera");
+      expect(color1).toBe(color2);
+    });
+
+    test("trims whitespace before hashing", () => {
+      let color1 = getAvatarColor("  Monstera  ");
+      let color2 = getAvatarColor("Monstera");
+      expect(color1).toBe(color2);
+    });
+
+    test("returns default color for empty string", () => {
+      let color = getAvatarColor("");
+      expect(color).toMatch(/^#[0-9A-Fa-f]{6}$/);
+    });
+
+    test("returns different colors for different names", () => {
+      let color1 = getAvatarColor("Monstera");
+      let color2 = getAvatarColor("Snake Plant");
+      expect(color1).not.toBe(color2);
     });
   });
 });
