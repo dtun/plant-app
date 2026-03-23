@@ -1,7 +1,9 @@
 import { msg } from "@lingui/core/macro";
 import { i18n } from "@/src/i18n";
 import { useLingui } from "@lingui/react/macro";
+import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
+import { InitialsAvatar } from "./initials-avatar";
 
 interface ChatListItemProps {
   id: string;
@@ -39,6 +41,8 @@ export function ChatListItem({
   onPress,
 }: ChatListItemProps) {
   let { t } = useLingui();
+  let [imageError, setImageError] = useState(false);
+
   return (
     <Pressable
       onPress={() => onPress(id)}
@@ -48,14 +52,15 @@ export function ChatListItem({
       accessibilityHint={t`Opens chat conversation with this plant`}
     >
       <View className="w-12 h-12 rounded-full bg-background overflow-hidden mr-3 border border-icon items-center justify-center">
-        {photoUri ? (
+        {photoUri && !imageError ? (
           <Image
             source={{ uri: photoUri }}
             className="w-12 h-12"
             accessibilityLabel={t`Photo of ${name}`}
+            onError={() => setImageError(true)}
           />
         ) : (
-          <Text className="text-xl">🌱</Text>
+          <InitialsAvatar name={name} size={48} />
         )}
       </View>
 
