@@ -2,6 +2,7 @@ import { msg } from "@lingui/core/macro";
 import { i18n } from "@/src/i18n";
 import { useLingui } from "@lingui/react/macro";
 import { Image, Pressable, Text, View } from "react-native";
+import { InitialsAvatar } from "./initials-avatar";
 
 interface ChatListItemProps {
   id: string;
@@ -47,17 +48,19 @@ export function ChatListItem({
       accessibilityLabel={t`Chat with ${name}`}
       accessibilityHint={t`Opens chat conversation with this plant`}
     >
-      <View className="w-12 h-12 rounded-full bg-background overflow-hidden mr-3 border border-icon items-center justify-center">
-        {photoUri ? (
+      {photoUri ? (
+        <View className="w-12 h-12 rounded-full bg-background overflow-hidden mr-3 border border-icon items-center justify-center">
           <Image
             source={{ uri: photoUri }}
             className="w-12 h-12"
             accessibilityLabel={t`Photo of ${name}`}
           />
-        ) : (
-          <Text className="text-xl">🌱</Text>
-        )}
-      </View>
+        </View>
+      ) : (
+        <View className="mr-3">
+          <InitialsAvatar name={name} size={48} />
+        </View>
+      )}
 
       <View className="flex-1 mr-2">
         <Text className="text-color text-base font-semibold" numberOfLines={1}>
