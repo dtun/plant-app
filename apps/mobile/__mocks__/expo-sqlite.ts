@@ -9,7 +9,7 @@ let mockDatabase = {
   runSync: jest.fn(),
 };
 
-export const openDatabaseSync = jest.fn(() => mockDatabase);
+export let openDatabaseSync = jest.fn(() => mockDatabase);
 
 // Mock NativeDatabase class as a constructor
 export class NativeDatabase {

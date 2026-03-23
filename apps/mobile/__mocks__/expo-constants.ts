@@ -6,4 +6,4 @@ let mockConstants = {
 };
 
 export default mockConstants;
-export const Constants = mockConstants;
+export let Constants = mockConstants;

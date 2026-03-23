@@ -1,9 +1,9 @@
 // Mock LiveStore React hooks and components
 
-export const LiveStoreProvider = ({ children }: { children: React.ReactNode }) => children;
+export let LiveStoreProvider = ({ children }: { children: React.ReactNode }) => children;
 
-export const useQuery = jest.fn(() => []);
+export let useQuery = jest.fn(() => []);
 
-export const useClientDocument = jest.fn(() => ({}));
+export let useClientDocument = jest.fn(() => ({}));
 
-export const useStore = jest.fn(() => ({ store: {} }));
+export let useStore = jest.fn(() => ({ store: {} }));
