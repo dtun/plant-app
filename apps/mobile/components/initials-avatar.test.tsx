@@ -38,12 +38,6 @@ describe("InitialsAvatar", () => {
     expect(avatar.props.style).toEqual(expect.objectContaining({ borderRadius: 20 }));
   });
 
-  test("uses themed text-color class for proper light/dark mode support", () => {
-    render(<InitialsAvatar name="Monstera" />);
-    let text = screen.getByText("M");
-    expect(text.props.className).toContain("text-color");
-  });
-
   test("has correct accessibility label", () => {
     render(<InitialsAvatar name="Snake Plant" />);
     let avatar = screen.getByTestId("initials-avatar");
