@@ -42,9 +42,6 @@ uniwind-types.d.ts
 
 app-example
 
-# ralph-tui local state
-.ralph-tui/
-
 # generated native folders
 ios/
 android/
