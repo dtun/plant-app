@@ -192,17 +192,22 @@ Please provide just the plant name, nothing else.`;
   return prompt;
 }
 
-async function imageToDataUrl(imageUri: string, base64Data?: string | null): Promise<string> {
+async function imageToBase64(imageUri: string, base64Data?: string | null): Promise<string> {
   if (base64Data) {
-    return `data:image/jpeg;base64,${base64Data}`;
+    return base64Data;
   }
 
-  // Fallback: fetch the local file URI and convert to data URL
+  // Fallback: fetch the local file URI and convert to base64
   let response = await fetch(imageUri);
   let blob = await response.blob();
   return new Promise((resolve, reject) => {
     let reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
+    reader.onloadend = () => {
+      let result = reader.result as string;
+      // Strip the data URL prefix to get raw base64
+      let base64 = result.split(",")[1] ?? result;
+      resolve(base64);
+    };
     reader.onerror = reject;
     reader.readAsDataURL(blob);
   });
@@ -247,7 +252,7 @@ export async function generatePhotoDescription(
 
   try {
     let model = createAIModel(config, "vision");
-    let dataUrl = await imageToDataUrl(imageUri, base64Data);
+    let base64 = await imageToBase64(imageUri, base64Data);
 
     let result = await generateText({
       model,
@@ -261,7 +266,8 @@ export async function generatePhotoDescription(
             },
             {
               type: "image",
-              image: dataUrl,
+              image: base64,
+              mimeType: "image/jpeg",
             },
           ],
         },
@@ -335,12 +341,15 @@ Your profile:
     let formattedMessages = await Promise.all(
       messages.map(async (m) => {
         if (m.imageUri) {
-          let content: ({ type: "text"; text: string } | { type: "image"; image: string })[] = [];
+          let content: (
+            | { type: "text"; text: string }
+            | { type: "image"; image: string; mimeType: string }
+          )[] = [];
           if (m.content) {
             content.push({ type: "text", text: m.content });
           }
-          let dataUrl = await imageToDataUrl(m.imageUri, m.imageBase64);
-          content.push({ type: "image", image: dataUrl });
+          let base64 = await imageToBase64(m.imageUri, m.imageBase64);
+          content.push({ type: "image", image: base64, mimeType: "image/jpeg" });
           return { role: "user" as const, content };
         }
         return { role: m.role, content: m.content };
