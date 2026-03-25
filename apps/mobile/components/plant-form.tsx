@@ -96,7 +96,8 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
         result.uri,
         setIsAnalyzing,
         (description) => setValue("photoDescription", description),
-        (error) => Alert.alert(t`Photo Analysis Error`, error)
+        (error) => Alert.alert(t`Photo Analysis Error`, error),
+        result.base64
       );
     }
   }
@@ -109,7 +110,8 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
         result.uri,
         setIsAnalyzing,
         (description) => setValue("photoDescription", description),
-        (error) => Alert.alert(t`Photo Analysis Error`, error)
+        (error) => Alert.alert(t`Photo Analysis Error`, error),
+        result.base64
       );
     }
   }
