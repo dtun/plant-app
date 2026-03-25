@@ -159,7 +159,7 @@ function handleAIError(error: unknown, operation: string): never {
   }
 
   let detail = error instanceof Error ? error.message : String(error);
-  throw new Error(i18n._(msg`Failed to ${operation}: ${detail}`));
+  throw new Error(`Failed to ${operation}: ${detail}`);
 }
 
 function createPlantNamingPrompt(plantData: PlantData): string {
