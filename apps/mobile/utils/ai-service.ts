@@ -117,7 +117,7 @@ let modelMappings = {
     text: "gpt-4o-mini",
   },
   Anthropic: {
-    vision: "claude-sonnet-4-5-20250929",
+    vision: "claude-sonnet-4-6",
     text: "claude-haiku-4-5-20251001",
   },
 } as const;
@@ -158,7 +158,8 @@ function handleAIError(error: unknown, operation: string): never {
     }
   }
 
-  throw new Error(i18n._(msg`Failed to ${operation}. Please try again.`));
+  let detail = error instanceof Error ? error.message : String(error);
+  throw new Error(i18n._(msg`Failed to ${operation}: ${detail}`));
 }
 
 function createPlantNamingPrompt(plantData: PlantData): string {
