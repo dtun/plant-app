@@ -191,15 +191,32 @@ Please provide just the plant name, nothing else.`;
   return prompt;
 }
 
+async function imageToDataUrl(imageUri: string, base64Data?: string | null): Promise<string> {
+  if (base64Data) {
+    return `data:image/jpeg;base64,${base64Data}`;
+  }
+
+  // Fallback: fetch the local file URI and convert to data URL
+  let response = await fetch(imageUri);
+  let blob = await response.blob();
+  return new Promise((resolve, reject) => {
+    let reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
 export async function analyzePhotoAndSetDescription(
   imageUri: string,
   setIsAnalyzing: (analyzing: boolean) => void,
   setDescription: (description: string) => void,
-  onError?: (error: string) => void
+  onError?: (error: string) => void,
+  base64Data?: string | null
 ): Promise<void> {
   setIsAnalyzing(true);
   try {
-    let description = await generatePhotoDescription(imageUri);
+    let description = await generatePhotoDescription(imageUri, base64Data);
     setDescription(description);
   } catch (error) {
     console.error("Error analyzing photo:", error);
@@ -215,7 +232,10 @@ export async function analyzePhotoAndSetDescription(
   }
 }
 
-export async function generatePhotoDescription(imageUri: string): Promise<string> {
+export async function generatePhotoDescription(
+  imageUri: string,
+  base64Data?: string | null
+): Promise<string> {
   let config = await getAIConfig();
 
   if (!config) {
@@ -226,6 +246,7 @@ export async function generatePhotoDescription(imageUri: string): Promise<string
 
   try {
     let model = createAIModel(config, "vision");
+    let dataUrl = await imageToDataUrl(imageUri, base64Data);
 
     let result = await generateText({
       model,
@@ -239,7 +260,7 @@ export async function generatePhotoDescription(imageUri: string): Promise<string
             },
             {
               type: "image",
-              image: imageUri,
+              image: dataUrl,
             },
           ],
         },
@@ -262,6 +283,7 @@ export interface ChatMessage {
   role: "user" | "assistant";
   content: string;
   imageUri?: string;
+  imageBase64?: string | null;
 }
 
 export interface PlantContext {
@@ -309,17 +331,20 @@ Your profile:
     let hasImages = messages.some((m) => m.imageUri);
     let model = createAIModel(config, hasImages ? "vision" : "text");
 
-    let formattedMessages = messages.map((m) => {
-      if (m.imageUri) {
-        let content: ({ type: "text"; text: string } | { type: "image"; image: string })[] = [];
-        if (m.content) {
-          content.push({ type: "text", text: m.content });
+    let formattedMessages = await Promise.all(
+      messages.map(async (m) => {
+        if (m.imageUri) {
+          let content: ({ type: "text"; text: string } | { type: "image"; image: string })[] = [];
+          if (m.content) {
+            content.push({ type: "text", text: m.content });
+          }
+          let dataUrl = await imageToDataUrl(m.imageUri, m.imageBase64);
+          content.push({ type: "image", image: dataUrl });
+          return { role: "user" as const, content };
         }
-        content.push({ type: "image", image: m.imageUri });
-        return { role: "user" as const, content };
-      }
-      return { role: m.role, content: m.content };
-    });
+        return { role: m.role, content: m.content };
+      })
+    );
 
     let result = await generateText({
       model,

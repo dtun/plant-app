@@ -34,6 +34,7 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
   let { t } = useLingui();
   let [inputText, setInputText] = useState("");
   let [pendingImageUri, setPendingImageUri] = useState<string | null>(null);
+  let [pendingImageBase64, setPendingImageBase64] = useState<string | null>(null);
   let composerHeight = useSharedValue(0);
 
   let handleComposerLayout = useCallback(
@@ -49,12 +50,14 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
         let result = await takePhotoWithCamera();
         if (!result.cancelled) {
           setPendingImageUri(result.uri);
+          setPendingImageBase64(result.base64);
         }
       },
       async () => {
         let result = await pickImageFromLibrary();
         if (!result.cancelled) {
           setPendingImageUri(result.uri);
+          setPendingImageBase64(result.base64);
         }
       }
     );
@@ -63,10 +66,12 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
   async function handleSend() {
     let text = inputText.trim();
     let imageUri = pendingImageUri;
+    let imageBase64 = pendingImageBase64;
     if ((!text && !imageUri) || isGenerating || !plant) return;
 
     setInputText("");
     setPendingImageUri(null);
+    setPendingImageBase64(null);
     let deviceId = getDeviceId();
     let now = Date.now();
 
@@ -106,6 +111,7 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
         role: "user",
         content: text || t`What do you see in this photo?`,
         imageUri: imageUri ?? undefined,
+        imageBase64: imageBase64 ?? undefined,
       });
 
       let response = await generateChatResponse(plantContext, chatHistory);
