@@ -41,7 +41,7 @@ export function ChatListItem({
   onPress,
 }: ChatListItemProps) {
   let { t } = useLingui();
-  let [imageError, setImageError] = useState(false);
+  let [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <Pressable
@@ -52,16 +52,17 @@ export function ChatListItem({
       accessibilityHint={t`Opens chat conversation with this plant`}
     >
       <View className="w-12 h-12 rounded-full bg-background overflow-hidden mr-3 border border-icon items-center justify-center">
-        {photoUri && !imageError ? (
+        <InitialsAvatar name={name} size={48} />
+        {photoUri ? (
           <Image
             source={{ uri: photoUri }}
-            className="w-12 h-12"
+            className="w-12 h-12 absolute"
             accessibilityLabel={t`Photo of ${name}`}
-            onError={() => setImageError(true)}
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageLoaded(false)}
+            style={{ opacity: imageLoaded ? 1 : 0 }}
           />
-        ) : (
-          <InitialsAvatar name={name} size={48} />
-        )}
+        ) : null}
       </View>
 
       <View className="flex-1 mr-2">

@@ -21,7 +21,7 @@ test("renders InitialsAvatar when plant has no image", () => {
 test("renders plant image when photoUri is provided", () => {
   render(<ChatListItem {...defaultProps} photoUri="https://example.com/photo.jpg" />);
 
-  expect(screen.queryByTestId("initials-avatar")).not.toBeOnTheScreen();
+  expect(screen.getByTestId("initials-avatar")).toBeOnTheScreen();
   expect(screen.getByLabelText("Photo of Snake Plant")).toBeOnTheScreen();
 });
 
@@ -33,21 +33,29 @@ test("InitialsAvatar size matches the chat list image size of 48px", () => {
   expect(avatar.props.style.height).toBe(48);
 });
 
-test("shows InitialsAvatar when image onError fires", () => {
+test("image starts hidden and shows after onLoad", () => {
   render(<ChatListItem {...defaultProps} photoUri="https://example.com/photo.jpg" />);
 
   let image = screen.getByLabelText("Photo of Snake Plant");
-  fireEvent(image, "error");
+  expect(image.props.style).toEqual(expect.objectContaining({ opacity: 0 }));
 
-  expect(screen.getByTestId("initials-avatar")).toBeOnTheScreen();
-  expect(screen.queryByLabelText("Photo of Snake Plant")).toBeNull();
+  fireEvent(image, "load");
+
+  expect(image.props.style).toEqual(expect.objectContaining({ opacity: 1 }));
 });
 
-test("fallback InitialsAvatar receives correct name after error", () => {
+test("image stays hidden when onError fires", () => {
   render(<ChatListItem {...defaultProps} photoUri="https://example.com/photo.jpg" />);
 
   let image = screen.getByLabelText("Photo of Snake Plant");
   fireEvent(image, "error");
+
+  expect(image.props.style).toEqual(expect.objectContaining({ opacity: 0 }));
+  expect(screen.getByTestId("initials-avatar")).toBeOnTheScreen();
+});
+
+test("fallback InitialsAvatar is always visible with correct name", () => {
+  render(<ChatListItem {...defaultProps} photoUri="https://example.com/photo.jpg" />);
 
   expect(screen.getByText("SP")).toBeOnTheScreen();
 });
