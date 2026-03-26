@@ -108,9 +108,25 @@ let calculateTotal = function (items) {
 
 ### Model Selection Strategy
 
-- **Photo Analysis**: Use vision-capable models (GPT-4o, Claude-3.5-Sonnet)
-- **Name Generation**: Use lighter models (GPT-4o-mini, Claude-3-Haiku) for cost efficiency
+- **Photo Analysis**: Use vision-capable models (gpt-4o, claude-sonnet-4-6)
+- **Name Generation**: Use lighter models (gpt-4o-mini, claude-haiku-4-5-20251001) for cost efficiency
 - Structured error handling with user-friendly messages for common API issues
+
+## Internationalization (Lingui v5)
+
+- All user-facing strings must use Lingui for i18n support
+- In components: `let { t } = useLingui()` then `` t`translatable string` `` for template literals
+- In JSX: `<Trans>translatable text</Trans>` for inline translations
+- Imports: `useLingui` from `@lingui/react/macro`, `Trans` from `@lingui/react/macro`
+- Utility files use `msg` + `i18n._()` from `@lingui/core/macro`
+- Zod schemas using `t` must be inside components with `useMemo` keyed on `[t]`
+
+## Context Provider Pattern
+
+- Contexts live in `apps/mobile/contexts/` directory
+- Follow `{Name}Provider` + `use{Name}()` hook pattern
+- Example: `ComposerProvider` component + `useComposer()` hook
+- Chat screen uses stacked providers: ChatProvider > MessageListProvider > ComposerProvider > ChatLayout
 
 ## Form & Validation Strategy
 
@@ -120,18 +136,26 @@ let calculateTotal = function (items) {
 - Controller components for controlled form inputs
 - Schema-first validation with TypeScript inference using `z.infer`
 
-## State Management Philosophy
+## State Management
 
-### Local State Only
+### LiveStore (Persistent App Data)
 
-- Use React hooks (`useState`, `useCallback`) for component state
-- localStorage for persistent settings only
+- Plants, messages, and users are stored via LiveStore with event-sourced architecture
+- Schema defined in `apps/mobile/src/livestore/schema.ts` (Events → Tables → Materializers)
+- Queries defined in `apps/mobile/src/livestore/queries.ts` (reactive query factories with `$` suffix)
+- Write data with `store.commit(events.eventName({...}))` via `useStore()`
+- Read data with `useQuery(queryFactory$(params))` from `@livestore/react`
+- `LiveStoreProvider` wraps the app in `app/_layout.tsx`
 
-### State Patterns
+### UI State (Temporary)
 
+- Use React hooks (`useState`, `useCallback`) for component-level UI state
 - Loading states for async operations (`isGenerating`, `isAnalyzing`)
-- Error boundaries handled at component level
 - Form state managed by React Hook Form
+
+### Settings (Simple Persistent)
+
+- AI API keys and provider choice stored in localStorage via expo-sqlite polyfill
 
 ## UI/UX Patterns
 
