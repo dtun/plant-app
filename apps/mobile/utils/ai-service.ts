@@ -267,7 +267,7 @@ export async function generatePhotoDescription(
             {
               type: "image",
               image: base64,
-              mimeType: "image/jpeg",
+              mediaType: "image/jpeg",
             },
           ],
         },
