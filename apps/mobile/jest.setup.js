@@ -27,3 +27,4 @@ jest.mock("zeego/context-menu");
 jest.mock("zeego/dropdown-menu");
 jest.mock("expo-haptics");
 jest.mock("expo-clipboard");
+jest.mock("@/utils/haptics");

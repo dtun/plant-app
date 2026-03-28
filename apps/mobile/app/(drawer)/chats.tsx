@@ -5,7 +5,7 @@ import { events } from "@/src/livestore/schema";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { FlashList } from "@shopify/flash-list";
 import { useQuery, useStore } from "@livestore/react";
-import * as Haptics from "expo-haptics";
+import * as haptics from "@/utils/haptics";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
@@ -41,7 +41,7 @@ export default function ChatsScreen() {
           style: "destructive",
           onPress: () => {
             store.commit(events.plantDeleted({ id: plantId, deletedAt: Date.now() }));
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            haptics.success();
           },
         },
       ]

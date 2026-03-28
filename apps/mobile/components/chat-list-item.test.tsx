@@ -45,13 +45,13 @@ test("image starts hidden and shows after onLoad", () => {
   expect(image.props.style).toEqual(expect.objectContaining({ opacity: 1 }));
 });
 
-test("image stays hidden when onError fires", () => {
+test("image is removed from tree when onError fires", () => {
   render(<ChatListItem {...defaultProps} photoUri="https://example.com/photo.jpg" />);
 
   let image = screen.getByLabelText("Photo of Snake Plant");
   fireEvent(image, "error");
 
-  expect(image.props.style).toEqual(expect.objectContaining({ opacity: 0 }));
+  expect(screen.queryByLabelText("Photo of Snake Plant")).toBeNull();
   expect(screen.getByTestId("initials-avatar")).toBeOnTheScreen();
 });
 

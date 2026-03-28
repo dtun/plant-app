@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import * as Clipboard from "expo-clipboard";
-import * as Haptics from "expo-haptics";
+import * as haptics from "@/utils/haptics";
 import { Alert } from "react-native";
 import { useStore } from "@livestore/react";
 import { events } from "@/src/livestore/schema";
@@ -32,7 +32,7 @@ test("copy action copies message content to clipboard", () => {
   fireEvent(copyItem!, "touchEnd");
 
   expect(Clipboard.setStringAsync).toHaveBeenCalledWith("Hello world");
-  expect(Haptics.notificationAsync).toHaveBeenCalledWith(Haptics.NotificationFeedbackType.Success);
+  expect(haptics.success).toHaveBeenCalled();
 });
 
 test("delete action shows confirmation alert", () => {
