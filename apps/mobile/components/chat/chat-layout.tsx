@@ -2,6 +2,7 @@ import { AnimatedMessageBubble } from "@/components/animated-message-bubble";
 import { DaySeparator } from "@/components/chat/day-separator";
 import { TypingIndicator } from "@/components/chat/typing-indicator";
 import { ChatInput } from "@/components/ui/chat-input";
+import { ChatHeaderMenu } from "@/components/chat/chat-header-menu";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { PhotoUpload } from "@/components/ui/photo-upload";
 import { SubmitButton } from "@/components/ui/submit-button";
@@ -11,8 +12,7 @@ import { useMessageList } from "@/contexts/message-list-context";
 import { useLingui } from "@lingui/react/macro";
 import { LegendList } from "@legendapp/list";
 import { Stack } from "expo-router";
-import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
-import * as DropdownMenu from "zeego/dropdown-menu";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardStickyView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -59,24 +59,7 @@ export function ChatLayout() {
                   />
                 </View>
               ) : null}
-              <DropdownMenu.Root>
-                <DropdownMenu.Trigger>
-                  <Pressable
-                    className="self-center"
-                    accessibilityRole="button"
-                    accessibilityLabel={t`Chat options`}
-                    accessibilityHint={t`Opens chat options menu`}
-                  >
-                    <IconSymbol name="ellipsis.circle" size={22} colorClassName="text-color" />
-                  </Pressable>
-                </DropdownMenu.Trigger>
-                <DropdownMenu.Content>
-                  <DropdownMenu.Item key="clear" onSelect={handleClearChat} destructive>
-                    <DropdownMenu.ItemTitle>{t`Clear Chat`}</DropdownMenu.ItemTitle>
-                    <DropdownMenu.ItemIcon ios={{ name: "trash" }} />
-                  </DropdownMenu.Item>
-                </DropdownMenu.Content>
-              </DropdownMenu.Root>
+              <ChatHeaderMenu onClearChat={handleClearChat} />
             </>
           ),
         }}

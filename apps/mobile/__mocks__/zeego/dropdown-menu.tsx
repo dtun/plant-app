@@ -37,8 +37,17 @@ function ItemTitle({ children }: { children: React.ReactNode }) {
   return <Text>{children}</Text>;
 }
 
+function ItemSubtitle({ children }: { children: React.ReactNode }) {
+  let { Text } = require("react-native");
+  return <Text>{children}</Text>;
+}
+
 function ItemIcon() {
   return null;
 }
 
-export { Root, Trigger, Content, Item, ItemTitle, ItemIcon };
+function Separator() {
+  return null;
+}
+
+export { Root, Trigger, Content, Item, ItemTitle, ItemSubtitle, ItemIcon, Separator };
