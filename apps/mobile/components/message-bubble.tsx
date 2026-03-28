@@ -40,7 +40,7 @@ export function MessageBubble({ id, role, content, imageUri }: MessageBubbleProp
   return (
     <View className={`px-4 py-1 ${isUser ? "items-end" : "items-start"}`}>
       <View className="max-w-[80%]">
-        <ContextMenu.Root {...({ onOpenWillChange: (open: boolean) => open && haptics.selection() } as any)}>
+        <ContextMenu.Root onOpenWillChange={(open) => open && haptics.selection()}>
           <ContextMenu.Trigger>
             <View
               className={`rounded-2xl overflow-hidden ${

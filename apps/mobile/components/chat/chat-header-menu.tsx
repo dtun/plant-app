@@ -12,7 +12,7 @@ export function ChatHeaderMenu({ onClearChat }: ChatHeaderMenuProps) {
   let { t } = useLingui();
 
   return (
-    <DropdownMenu.Root {...({ onOpenWillChange: (open: boolean) => open && haptics.selection() } as any)}>
+    <DropdownMenu.Root onOpenWillChange={(open) => open && haptics.selection()}>
       <DropdownMenu.Trigger>
         <Pressable
           className="self-center"

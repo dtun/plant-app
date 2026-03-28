@@ -49,7 +49,7 @@ export function ChatListItem({
   let [imageError, setImageError] = useState(false);
 
   return (
-    <ContextMenu.Root {...({ onOpenWillChange: (open: boolean) => open && haptics.selection() } as any)}>
+    <ContextMenu.Root onOpenWillChange={(open) => open && haptics.selection()}>
       <ContextMenu.Trigger>
         <Pressable
           onPress={() => onPress(id)}
