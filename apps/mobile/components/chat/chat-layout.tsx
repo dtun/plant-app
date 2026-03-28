@@ -8,10 +8,11 @@ import { SubmitButton } from "@/components/ui/submit-button";
 import { useChatContext } from "@/contexts/chat-context";
 import { useComposer } from "@/contexts/composer-context";
 import { useMessageList } from "@/contexts/message-list-context";
-import { Trans, useLingui } from "@lingui/react/macro";
+import { useLingui } from "@lingui/react/macro";
 import { LegendList } from "@legendapp/list";
 import { Stack } from "expo-router";
 import { Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import * as DropdownMenu from "zeego/dropdown-menu";
 import { KeyboardStickyView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -58,17 +59,24 @@ export function ChatLayout() {
                   />
                 </View>
               ) : null}
-              <Pressable
-                onPress={handleClearChat}
-                className="self-center"
-                accessibilityRole="button"
-                accessibilityLabel={t`Chat options`}
-                accessibilityHint={t`Opens chat options menu`}
-              >
-                <Text className="text-base px-2 text-color p-1">
-                  <Trans>Reset</Trans>
-                </Text>
-              </Pressable>
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                  <Pressable
+                    className="self-center"
+                    accessibilityRole="button"
+                    accessibilityLabel={t`Chat options`}
+                    accessibilityHint={t`Opens chat options menu`}
+                  >
+                    <IconSymbol name="ellipsis.circle" size={22} colorClassName="text-color" />
+                  </Pressable>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content>
+                  <DropdownMenu.Item key="clear" onSelect={handleClearChat} destructive>
+                    <DropdownMenu.ItemTitle>{t`Clear Chat`}</DropdownMenu.ItemTitle>
+                    <DropdownMenu.ItemIcon ios={{ name: "trash" }} />
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Root>
             </>
           ),
         }}
@@ -89,6 +97,7 @@ export function ChatLayout() {
             let animationType = getAnimationType(item.message.id, item.message.role);
             return (
               <AnimatedMessageBubble
+                id={item.message.id}
                 animationType={animationType}
                 animationDelay={item.message.role === "assistant" ? 200 : 0}
                 role={item.message.role}

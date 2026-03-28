@@ -23,3 +23,7 @@ jest.mock("@/src/livestore/schema");
 jest.mock("@lingui/react");
 jest.mock("@/src/i18n");
 jest.mock("react-native-keyboard-controller");
+jest.mock("zeego/context-menu");
+jest.mock("zeego/dropdown-menu");
+jest.mock("expo-haptics");
+jest.mock("expo-clipboard");

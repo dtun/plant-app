@@ -1,12 +1,14 @@
 import { ChatListItem } from "@/components/chat-list-item";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { plantsWithLastMessage$ } from "@/src/livestore/queries";
+import { events } from "@/src/livestore/schema";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { FlashList } from "@shopify/flash-list";
-import { useQuery } from "@livestore/react";
+import { useQuery, useStore } from "@livestore/react";
+import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -19,10 +21,31 @@ import Animated, {
 export default function ChatsScreen() {
   let { t } = useLingui();
   let plants = useQuery(plantsWithLastMessage$);
+  let { store } = useStore();
   let router = useRouter();
 
   function handlePlantPress(plantId: string) {
     router.push(`/chat/${plantId}` as any);
+  }
+
+  function handleDeletePlant(plantId: string) {
+    let plant = plants.find((p) => p.id === plantId);
+    let name = plant?.name ?? t`this plant`;
+    Alert.alert(
+      t`Delete Plant`,
+      t`Are you sure you want to delete ${name}? This will also delete all chat messages.`,
+      [
+        { text: t`Cancel`, style: "cancel" },
+        {
+          text: t`Delete`,
+          style: "destructive",
+          onPress: () => {
+            store.commit(events.plantDeleted({ id: plantId, deletedAt: Date.now() }));
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          },
+        },
+      ]
+    );
   }
 
   let hopOffset = useSharedValue(0);
@@ -78,6 +101,7 @@ export default function ChatsScreen() {
             lastMessageContent={item.lastMessageContent}
             lastMessageCreatedAt={item.lastMessageCreatedAt}
             onPress={handlePlantPress}
+            onDelete={handleDeletePlant}
           />
         )}
       />

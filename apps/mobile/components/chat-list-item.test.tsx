@@ -9,6 +9,7 @@ let defaultProps = {
   lastMessageContent: "Hello!",
   lastMessageCreatedAt: Date.now(),
   onPress: jest.fn(),
+  onDelete: jest.fn(),
 };
 
 test("renders InitialsAvatar when plant has no image", () => {
@@ -58,4 +59,20 @@ test("fallback InitialsAvatar is always visible with correct name", () => {
   render(<ChatListItem {...defaultProps} photoUri="https://example.com/photo.jpg" />);
 
   expect(screen.getByText("SP")).toBeOnTheScreen();
+});
+
+test("renders Delete context menu item", () => {
+  render(<ChatListItem {...defaultProps} />);
+
+  expect(screen.getByText("Delete")).toBeOnTheScreen();
+});
+
+test("Delete menu item calls onDelete with plant id", () => {
+  let onDelete = jest.fn();
+  render(<ChatListItem {...defaultProps} onDelete={onDelete} />);
+
+  let deleteItem = screen.getByText("Delete").parent?.parent;
+  fireEvent(deleteItem!, "touchEnd");
+
+  expect(onDelete).toHaveBeenCalledWith("plant-1");
 });

@@ -115,6 +115,17 @@ let messageCreated = Events.synced({
 });
 
 /**
+ * Message deleted event - Soft-deletes a single message
+ */
+let messageDeleted = Events.synced({
+  name: "v1.MessageDeleted",
+  schema: Schema.Struct({
+    id: Schema.String,
+    deletedAt: Schema.Number,
+  }),
+});
+
+/**
  * Chat cleared event - Soft-deletes all messages for a plant
  */
 let chatCleared = Events.synced({
@@ -133,6 +144,7 @@ export let events = {
   plantUpdated,
   plantDeleted,
   messageCreated,
+  messageDeleted,
   chatCleared,
 };
 
@@ -429,6 +441,12 @@ let materializers = State.SQLite.materializers(events, {
       createdAt,
       syncedAt: syncedAt ?? null,
       deletedAt: null,
+    }),
+
+  "v1.MessageDeleted": ({ id, deletedAt }: { id: string; deletedAt: number }) =>
+    tables.chatMessages.update({
+      id,
+      deletedAt,
     }),
 
   "v1.ChatCleared": ({ plantId, deletedAt }: { plantId: string; deletedAt: number }) =>

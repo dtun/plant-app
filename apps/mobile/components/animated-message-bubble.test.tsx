@@ -11,19 +11,28 @@ jest.mock("@/components/message-bubble", () => {
 });
 
 test("renders message content with 'none' animation type", () => {
-  render(<AnimatedMessageBubble animationType="none" role="user" content="Hello!" />);
+  render(<AnimatedMessageBubble id="msg-1" animationType="none" role="user" content="Hello!" />);
 
   expect(screen.getByText("Hello!")).toBeOnTheScreen();
 });
 
 test("renders message content with 'slide-up' animation type", () => {
-  render(<AnimatedMessageBubble animationType="slide-up" role="user" content="User message" />);
+  render(
+    <AnimatedMessageBubble id="msg-2" animationType="slide-up" role="user" content="User message" />
+  );
 
   expect(screen.getByText("User message")).toBeOnTheScreen();
 });
 
 test("renders message content with 'fade-in' animation type", () => {
-  render(<AnimatedMessageBubble animationType="fade-in" role="assistant" content="Bot reply" />);
+  render(
+    <AnimatedMessageBubble
+      id="msg-3"
+      animationType="fade-in"
+      role="assistant"
+      content="Bot reply"
+    />
+  );
 
   expect(screen.getByText("Bot reply")).toBeOnTheScreen();
 });
@@ -31,6 +40,7 @@ test("renders message content with 'fade-in' animation type", () => {
 test("renders with animationDelay prop", () => {
   render(
     <AnimatedMessageBubble
+      id="msg-4"
       animationType="fade-in"
       animationDelay={200}
       role="assistant"

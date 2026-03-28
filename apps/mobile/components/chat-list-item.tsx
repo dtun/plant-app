@@ -3,6 +3,7 @@ import { i18n } from "@/src/i18n";
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
+import * as ContextMenu from "zeego/context-menu";
 import { InitialsAvatar } from "./initials-avatar";
 
 interface ChatListItemProps {
@@ -12,6 +13,7 @@ interface ChatListItemProps {
   lastMessageContent: string | null;
   lastMessageCreatedAt: number | null;
   onPress: (plantId: string) => void;
+  onDelete: (plantId: string) => void;
 }
 
 function formatTimestamp(timestamp: number): string {
@@ -39,44 +41,55 @@ export function ChatListItem({
   lastMessageContent,
   lastMessageCreatedAt,
   onPress,
+  onDelete,
 }: ChatListItemProps) {
   let { t } = useLingui();
   let [imageLoaded, setImageLoaded] = useState(false);
 
   return (
-    <Pressable
-      onPress={() => onPress(id)}
-      className="flex-row items-center px-4 py-3 border-b border-icon"
-      accessibilityRole="button"
-      accessibilityLabel={t`Chat with ${name}`}
-      accessibilityHint={t`Opens chat conversation with this plant`}
-    >
-      <View className="w-12 h-12 rounded-full bg-background overflow-hidden mr-3 border border-icon items-center justify-center">
-        <InitialsAvatar name={name} size={48} />
-        {photoUri ? (
-          <Image
-            source={{ uri: photoUri }}
-            className="w-12 h-12 absolute"
-            accessibilityLabel={t`Photo of ${name}`}
-            onLoad={() => setImageLoaded(true)}
-            onError={() => setImageLoaded(false)}
-            style={{ opacity: imageLoaded ? 1 : 0 }}
-          />
-        ) : null}
-      </View>
+    <ContextMenu.Root>
+      <ContextMenu.Trigger>
+        <Pressable
+          onPress={() => onPress(id)}
+          className="flex-row items-center px-4 py-3 border-b border-icon"
+          accessibilityRole="button"
+          accessibilityLabel={t`Chat with ${name}`}
+          accessibilityHint={t`Opens chat conversation with this plant`}
+        >
+          <View className="w-12 h-12 rounded-full bg-background overflow-hidden mr-3 border border-icon items-center justify-center">
+            <InitialsAvatar name={name} size={48} />
+            {photoUri ? (
+              <Image
+                source={{ uri: photoUri }}
+                className="w-12 h-12 absolute"
+                accessibilityLabel={t`Photo of ${name}`}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageLoaded(false)}
+                style={{ opacity: imageLoaded ? 1 : 0 }}
+              />
+            ) : null}
+          </View>
 
-      <View className="flex-1 mr-2">
-        <Text className="text-color text-base font-semibold" numberOfLines={1}>
-          {name}
-        </Text>
-        <Text className="text-icon text-sm mt-0.5" numberOfLines={1}>
-          {lastMessageContent ?? t`No messages yet`}
-        </Text>
-      </View>
+          <View className="flex-1 mr-2">
+            <Text className="text-color text-base font-semibold" numberOfLines={1}>
+              {name}
+            </Text>
+            <Text className="text-icon text-sm mt-0.5" numberOfLines={1}>
+              {lastMessageContent ?? t`No messages yet`}
+            </Text>
+          </View>
 
-      {lastMessageCreatedAt ? (
-        <Text className="text-icon text-xs">{formatTimestamp(lastMessageCreatedAt)}</Text>
-      ) : null}
-    </Pressable>
+          {lastMessageCreatedAt ? (
+            <Text className="text-icon text-xs">{formatTimestamp(lastMessageCreatedAt)}</Text>
+          ) : null}
+        </Pressable>
+      </ContextMenu.Trigger>
+      <ContextMenu.Content>
+        <ContextMenu.Item key="delete" onSelect={() => onDelete(id)} destructive>
+          <ContextMenu.ItemTitle>{t`Delete`}</ContextMenu.ItemTitle>
+          <ContextMenu.ItemIcon ios={{ name: "trash" }} />
+        </ContextMenu.Item>
+      </ContextMenu.Content>
+    </ContextMenu.Root>
   );
 }
