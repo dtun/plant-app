@@ -1,5 +1,5 @@
 import * as Clipboard from "expo-clipboard";
-import * as Haptics from "expo-haptics";
+import * as haptics from "@/utils/haptics";
 import { Alert, Image, Text, View } from "react-native";
 import * as ContextMenu from "zeego/context-menu";
 import { useLingui } from "@lingui/react/macro";
@@ -20,7 +20,7 @@ export function MessageBubble({ id, role, content, imageUri }: MessageBubbleProp
 
   function handleCopy() {
     Clipboard.setStringAsync(content);
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    haptics.success();
   }
 
   function handleDelete() {
@@ -31,7 +31,7 @@ export function MessageBubble({ id, role, content, imageUri }: MessageBubbleProp
         style: "destructive",
         onPress: () => {
           store.commit(events.messageDeleted({ id, deletedAt: Date.now() }));
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          haptics.success();
         },
       },
     ]);
@@ -39,7 +39,7 @@ export function MessageBubble({ id, role, content, imageUri }: MessageBubbleProp
 
   return (
     <View className={`px-4 py-1 ${isUser ? "items-end" : "items-start"}`}>
-      <ContextMenu.Root>
+      <ContextMenu.Root {...({ onOpenWillChange: (open: boolean) => open && haptics.selection() } as any)}>
         <ContextMenu.Trigger>
           <View
             className={`rounded-2xl max-w-[80%] overflow-hidden ${

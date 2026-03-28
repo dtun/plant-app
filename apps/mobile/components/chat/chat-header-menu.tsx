@@ -1,4 +1,5 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import * as haptics from "@/utils/haptics";
 import { useLingui } from "@lingui/react/macro";
 import { Pressable } from "react-native";
 import * as DropdownMenu from "zeego/dropdown-menu";
@@ -11,7 +12,7 @@ export function ChatHeaderMenu({ onClearChat }: ChatHeaderMenuProps) {
   let { t } = useLingui();
 
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root {...({ onOpenWillChange: (open: boolean) => open && haptics.selection() } as any)}>
       <DropdownMenu.Trigger>
         <Pressable
           className="self-center"

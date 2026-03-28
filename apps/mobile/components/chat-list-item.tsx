@@ -1,5 +1,6 @@
 import { msg } from "@lingui/core/macro";
 import { i18n } from "@/src/i18n";
+import * as haptics from "@/utils/haptics";
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
@@ -48,7 +49,7 @@ export function ChatListItem({
   let [imageError, setImageError] = useState(false);
 
   return (
-    <ContextMenu.Root>
+    <ContextMenu.Root {...({ onOpenWillChange: (open: boolean) => open && haptics.selection() } as any)}>
       <ContextMenu.Trigger>
         <Pressable
           onPress={() => onPress(id)}
