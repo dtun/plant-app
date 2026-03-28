@@ -45,6 +45,7 @@ export function ChatListItem({
 }: ChatListItemProps) {
   let { t } = useLingui();
   let [imageLoaded, setImageLoaded] = useState(false);
+  let [imageError, setImageError] = useState(false);
 
   return (
     <ContextMenu.Root>
@@ -58,13 +59,13 @@ export function ChatListItem({
         >
           <View className="w-12 h-12 rounded-full bg-background overflow-hidden mr-3 border border-icon items-center justify-center">
             <InitialsAvatar name={name} size={48} />
-            {photoUri ? (
+            {photoUri && !imageError ? (
               <Image
                 source={{ uri: photoUri }}
                 className="w-12 h-12 absolute"
                 accessibilityLabel={t`Photo of ${name}`}
                 onLoad={() => setImageLoaded(true)}
-                onError={() => setImageLoaded(false)}
+                onError={() => setImageError(true)}
                 style={{ opacity: imageLoaded ? 1 : 0 }}
               />
             ) : null}
