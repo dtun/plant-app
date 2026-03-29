@@ -1,5 +1,6 @@
 import { plantById$, type Plant } from "@/src/livestore/queries";
 import { events } from "@/src/livestore/schema";
+import * as haptics from "@/utils/haptics";
 import { useLingui } from "@lingui/react/macro";
 import { useQuery, useStore } from "@livestore/react";
 import { useLocalSearchParams } from "expo-router";
@@ -36,6 +37,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
               deletedAt: Date.now(),
             })
           );
+          haptics.success();
         },
       },
     ]);
