@@ -62,7 +62,7 @@
     },
     "owner": "paperstreetappllc",
     "runtimeVersion": {
-      "policy": "appVersion"
+      "policy": "fingerprint"
     },
     "updates": {
       "url": "https://u.expo.dev/45fcc294-041e-4bae-98a3-36c66ae8a403"
