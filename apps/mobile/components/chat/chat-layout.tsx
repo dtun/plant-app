@@ -1,4 +1,5 @@
 import { AnimatedMessageBubble } from "@/components/animated-message-bubble";
+import { ChatHeaderAvatar } from "@/components/chat/chat-header-avatar";
 import { DaySeparator } from "@/components/chat/day-separator";
 import { TypingIndicator } from "@/components/chat/typing-indicator";
 import { ChatInput } from "@/components/ui/chat-input";
@@ -50,15 +51,7 @@ export function ChatLayout() {
           headerBackTitle: t`Chats`,
           headerRight: () => (
             <>
-              {plant?.photoUri ? (
-                <View className="w-8 h-8 rounded-full overflow-hidden">
-                  <Image
-                    source={{ uri: plant.photoUri! }}
-                    className="w-8 h-8"
-                    accessibilityLabel={t`Photo of ${plant.name}`}
-                  />
-                </View>
-              ) : null}
+              {plant ? <ChatHeaderAvatar name={plant.name} photoUri={plant.photoUri} /> : null}
               <ChatHeaderMenu onClearChat={handleClearChat} />
             </>
           ),
