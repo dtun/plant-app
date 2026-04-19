@@ -2,7 +2,7 @@ import { msg } from "@lingui/core/macro";
 import { i18n } from "@/src/i18n";
 import * as haptics from "@/utils/haptics";
 import { useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import * as ContextMenu from "zeego/context-menu";
 import { InitialsAvatar } from "./initials-avatar";
@@ -47,6 +47,11 @@ export function ChatListItem({
   let { t } = useLingui();
   let [imageLoaded, setImageLoaded] = useState(false);
   let [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setImageLoaded(false);
+    setImageError(false);
+  }, [photoUri]);
 
   return (
     <ContextMenu.Root onOpenWillChange={(open) => open && haptics.selection()}>

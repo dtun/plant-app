@@ -55,6 +55,35 @@ test("image is removed from tree when onError fires", () => {
   expect(screen.getByTestId("initials-avatar")).toBeOnTheScreen();
 });
 
+test("image error state resets when photoUri changes to a new url", () => {
+  let { rerender } = render(
+    <ChatListItem {...defaultProps} photoUri="https://example.com/broken.jpg" />
+  );
+
+  let image = screen.getByLabelText("Photo of Snake Plant");
+  fireEvent(image, "error");
+  expect(screen.queryByLabelText("Photo of Snake Plant")).toBeNull();
+
+  rerender(<ChatListItem {...defaultProps} photoUri="https://example.com/fresh.jpg" />);
+
+  expect(screen.getByLabelText("Photo of Snake Plant")).toBeOnTheScreen();
+});
+
+test("image loaded state resets when photoUri changes to a new url", () => {
+  let { rerender } = render(
+    <ChatListItem {...defaultProps} photoUri="https://example.com/old.jpg" />
+  );
+
+  let image = screen.getByLabelText("Photo of Snake Plant");
+  fireEvent(image, "load");
+  expect(image.props.style).toEqual(expect.objectContaining({ opacity: 1 }));
+
+  rerender(<ChatListItem {...defaultProps} photoUri="https://example.com/new.jpg" />);
+
+  let nextImage = screen.getByLabelText("Photo of Snake Plant");
+  expect(nextImage.props.style).toEqual(expect.objectContaining({ opacity: 0 }));
+});
+
 test("fallback InitialsAvatar is always visible with correct name", () => {
   render(<ChatListItem {...defaultProps} photoUri="https://example.com/photo.jpg" />);
 
