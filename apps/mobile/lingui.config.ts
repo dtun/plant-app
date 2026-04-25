@@ -6,7 +6,7 @@ export default defineConfig({
   catalogs: [
     {
       path: "<rootDir>/src/locales/{locale}/messages",
-      include: ["app", "components", "contexts", "utils"],
+      include: ["app", "components", "contexts", "src", "utils"],
     },
   ],
 });

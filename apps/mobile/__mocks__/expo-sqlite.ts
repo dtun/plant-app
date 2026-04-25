@@ -1,4 +1,4 @@
-// Mock expo-sqlite native module (used by ai-service.ts for localStorage polyfill)
+// Mock expo-sqlite native module (used by livestore and the localStorage polyfill)
 
 let mockDatabase = {
   execSync: jest.fn(),

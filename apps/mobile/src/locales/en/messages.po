@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: components/plant-form.tsx:239
+#: components/plant-form.tsx:240
 msgid "About your plant"
 msgstr "About your plant"
 
@@ -21,9 +21,7 @@ msgstr "About your plant"
 msgid "Add plant photo"
 msgstr "Add plant photo"
 
-#: utils/ai-service.ts:249
-#: utils/ai-service.ts:312
-#: utils/ai-service.ts:382
+#: src/intelligence/local-intelligence.ts:125
 msgid "AI configuration not found. Please set up your API key and provider in Settings."
 msgstr "AI configuration not found. Please set up your API key and provider in Settings."
 
@@ -32,15 +30,15 @@ msgstr "AI configuration not found. Please set up your API key and provider in S
 msgid "AI Settings"
 msgstr "AI Settings"
 
-#: components/plant-form.tsx:195
+#: components/plant-form.tsx:180
 msgid "AI Setup Required"
 msgstr "AI Setup Required"
 
-#: components/plant-form.tsx:258
+#: components/plant-form.tsx:259
 msgid "Analyzing photo..."
 msgstr "Analyzing photo..."
 
-#: components/plant-form.tsx:288
+#: components/plant-form.tsx:289
 msgid "Anything else?"
 msgstr "Anything else?"
 
@@ -52,11 +50,11 @@ msgstr "API Key"
 msgid "API key is required"
 msgstr "API key is required"
 
-#: utils/ai-service.ts:154
+#: src/intelligence/local-intelligence.ts:141
 msgid "API quota exceeded. Please check your account billing."
 msgstr "API quota exceeded. Please check your account billing."
 
-#: contexts/chat-context.tsx:27
+#: contexts/chat-context.tsx:28
 msgid "Are you sure you want to clear all messages with {name}?"
 msgstr "Are you sure you want to clear all messages with {name}?"
 
@@ -74,8 +72,8 @@ msgstr "Camera"
 
 #: app/(drawer)/chats.tsx:38
 #: components/message-bubble.tsx:28
-#: components/plant-form.tsx:184
-#: contexts/chat-context.tsx:28
+#: components/plant-form.tsx:200
+#: contexts/chat-context.tsx:29
 #: utils/photo-utils.ts:88
 msgid "Cancel"
 msgstr "Cancel"
@@ -84,11 +82,11 @@ msgstr "Cancel"
 msgid "Chat"
 msgstr "Chat"
 
-#: components/chat/chat-header-menu.tsx:19
+#: components/chat/chat-header-menu.tsx:20
 msgid "Chat options"
 msgstr "Chat options"
 
-#: components/chat-list-item.tsx:56
+#: components/chat-list-item.tsx:58
 msgid "Chat with {name}"
 msgstr "Chat with {name}"
 
@@ -102,31 +100,31 @@ msgstr "Chats"
 msgid "Choose how you'd like to add a photo of your plant"
 msgstr "Choose how you'd like to add a photo of your plant"
 
-#: contexts/chat-context.tsx:30
+#: contexts/chat-context.tsx:31
 msgid "Clear"
 msgstr "Clear"
 
-#: components/plant-form.tsx:220
+#: components/plant-form.tsx:221
 msgid "Clear all form fields and start over"
 msgstr "Clear all form fields and start over"
 
-#: components/chat/chat-header-menu.tsx:33
-#: contexts/chat-context.tsx:27
+#: components/chat/chat-header-menu.tsx:34
+#: contexts/chat-context.tsx:28
 msgid "Clear Chat"
 msgstr "Clear Chat"
 
-#: components/chat/chat-header-menu.tsx:28
+#: components/chat/chat-header-menu.tsx:29
 msgid "Coming soon"
 msgstr "Coming soon"
 
-#: components/message-bubble.tsx:66
+#: components/message-bubble.tsx:67
 msgid "Copy"
 msgstr "Copy"
 
 #: app/(drawer)/chats.tsx:40
-#: components/chat-list-item.tsx:89
+#: components/chat-list-item.tsx:91
 #: components/message-bubble.tsx:30
-#: components/message-bubble.tsx:70
+#: components/message-bubble.tsx:71
 msgid "Delete"
 msgstr "Delete"
 
@@ -138,11 +136,11 @@ msgstr "Delete Message"
 msgid "Delete Plant"
 msgstr "Delete Plant"
 
-#: components/plant-form.tsx:288
+#: components/plant-form.tsx:289
 msgid "Describe your plant..."
 msgstr "Describe your plant..."
 
-#: components/plant-form.tsx:251
+#: components/plant-form.tsx:252
 msgid "e.g., Succulent, Fern, Flowering Plant..."
 msgstr "e.g., Succulent, Fern, Flowering Plant..."
 
@@ -152,7 +150,7 @@ msgstr "Enter your API key"
 
 #: components/ai-setup-form.tsx:76
 #: components/ai-setup-form.tsx:89
-#: components/plant-form.tsx:199
+#: components/plant-form.tsx:187
 #: utils/photo-utils.ts:42
 #: utils/photo-utils.ts:76
 msgid "Error"
@@ -163,12 +161,12 @@ msgstr "Error"
 #~ msgstr "Failed to {operation}. Please try again."
 
 #: utils/ai-service.ts:229
-msgid "Failed to analyze photo. Please try again."
-msgstr "Failed to analyze photo. Please try again."
+#~ msgid "Failed to analyze photo. Please try again."
+#~ msgstr "Failed to analyze photo. Please try again."
 
 #: components/plant-form.tsx:189
-msgid "Failed to generate plant name. Please try again."
-msgstr "Failed to generate plant name. Please try again."
+#~ msgid "Failed to generate plant name. Please try again."
+#~ msgstr "Failed to generate plant name. Please try again."
 
 #: utils/photo-utils.ts:42
 msgid "Failed to pick image. Please try again."
@@ -178,7 +176,7 @@ msgstr "Failed to pick image. Please try again."
 msgid "Failed to reset settings. Please try again."
 msgstr "Failed to reset settings. Please try again."
 
-#: components/plant-form.tsx:154
+#: components/plant-form.tsx:152
 msgid "Failed to save plant. Please try again."
 msgstr "Failed to save plant. Please try again."
 
@@ -195,7 +193,11 @@ msgstr "Failed to take photo. Please try again."
 msgid "Home"
 msgstr "Home"
 
-#: utils/ai-service.ts:151
+#: contexts/composer-context.tsx:128
+msgid "I need to be set up first. Please configure your AI settings."
+msgstr "I need to be set up first. Please configure your AI settings."
+
+#: src/intelligence/local-intelligence.ts:135
 msgid "Invalid API key. Please check your AI settings."
 msgstr "Invalid API key. Please check your AI settings."
 
@@ -215,19 +217,19 @@ msgstr "Name a plant to start chatting!"
 msgid "Navigates to the plant naming screen"
 msgstr "Navigates to the plant naming screen"
 
-#: utils/ai-service.ts:157
+#: src/intelligence/local-intelligence.ts:147
 msgid "Network error. Please check your internet connection."
 msgstr "Network error. Please check your internet connection."
 
-#: components/chat-list-item.tsx:78
+#: components/chat-list-item.tsx:80
 msgid "No messages yet"
 msgstr "No messages yet"
 
-#: components/chat-list-item.tsx:57
+#: components/chat-list-item.tsx:59
 msgid "Opens chat conversation with this plant"
 msgstr "Opens chat conversation with this plant"
 
-#: components/chat/chat-header-menu.tsx:20
+#: components/chat/chat-header-menu.tsx:21
 msgid "Opens chat options menu"
 msgstr "Opens chat options menu"
 
@@ -236,12 +238,11 @@ msgstr "Opens chat options menu"
 msgid "Permission Required"
 msgstr "Permission Required"
 
-#: components/plant-form.tsx:258
+#: components/plant-form.tsx:259
 msgid "Photo Analysis"
 msgstr "Photo Analysis"
 
-#: components/plant-form.tsx:99
-#: components/plant-form.tsx:113
+#: components/plant-form.tsx:92
 msgid "Photo Analysis Error"
 msgstr "Photo Analysis Error"
 
@@ -254,7 +255,7 @@ msgstr "Photo Library"
 msgid "Photo of {0}"
 msgstr "Photo of {0}"
 
-#: components/chat-list-item.tsx:65
+#: components/chat-list-item.tsx:67
 msgid "Photo of {name}"
 msgstr "Photo of {name}"
 
@@ -266,11 +267,11 @@ msgstr "Please allow access to your camera to take plant photos."
 msgid "Please allow access to your photo library to select plant photos."
 msgstr "Please allow access to your photo library to select plant photos."
 
-#: components/plant-form.tsx:195
+#: components/plant-form.tsx:180
 msgid "Please configure your AI settings first."
 msgstr "Please configure your AI settings first."
 
-#: components/plant-form.tsx:56
+#: components/plant-form.tsx:52
 msgid "Please describe your plant or add a photo"
 msgstr "Please describe your plant or add a photo"
 
@@ -282,7 +283,7 @@ msgstr "Provider"
 msgid "Provider is required"
 msgstr "Provider is required"
 
-#: components/plant-form.tsx:267
+#: components/plant-form.tsx:268
 msgid "Remove photo"
 msgstr "Remove photo"
 
@@ -290,11 +291,11 @@ msgstr "Remove photo"
 msgid "Remove selected photo"
 msgstr "Remove selected photo"
 
-#: components/plant-form.tsx:268
+#: components/plant-form.tsx:269
 msgid "Remove the selected plant photo"
 msgstr "Remove the selected plant photo"
 
-#: components/plant-form.tsx:224
+#: components/plant-form.tsx:225
 msgid "Reset"
 msgstr "Reset"
 
@@ -302,11 +303,11 @@ msgstr "Reset"
 msgid "Reset All"
 msgstr "Reset All"
 
-#: components/plant-form.tsx:219
+#: components/plant-form.tsx:220
 msgid "Reset form"
 msgstr "Reset form"
 
-#: components/plant-form.tsx:159
+#: components/plant-form.tsx:157
 msgid "Save Error"
 msgstr "Save Error"
 
@@ -346,15 +347,15 @@ msgstr "Settings Saved"
 
 #: app/(drawer)/_layout.tsx:50
 #: app/(drawer)/_layout.tsx:51
-#: components/chat/chat-header-menu.tsx:27
+#: components/chat/chat-header-menu.tsx:28
 msgid "Share"
 msgstr "Share"
 
 #: contexts/composer-context.tsx:132
-msgid "Sorry, I couldn't respond right now. Please try again."
-msgstr "Sorry, I couldn't respond right now. Please try again."
+#~ msgid "Sorry, I couldn't respond right now. Please try again."
+#~ msgstr "Sorry, I couldn't respond right now. Please try again."
 
-#: components/plant-form.tsx:180
+#: components/plant-form.tsx:196
 msgid "Start Chat"
 msgstr "Start Chat"
 
@@ -367,7 +368,7 @@ msgid "Take a photo or select from library"
 msgstr "Take a photo or select from library"
 
 #: app/(drawer)/chats.tsx:33
-#: contexts/chat-context.tsx:26
+#: contexts/chat-context.tsx:27
 msgid "this plant"
 msgstr "this plant"
 
@@ -375,7 +376,7 @@ msgstr "this plant"
 msgid "Today"
 msgstr "Today"
 
-#: components/plant-form.tsx:196
+#: components/plant-form.tsx:181
 msgid "Try Again"
 msgstr "Try Again"
 
@@ -391,15 +392,15 @@ msgstr "Using default key"
 msgid "Using your API key"
 msgstr "Using your API key"
 
-#: contexts/composer-context.tsx:112
+#: contexts/composer-context.tsx:111
 msgid "What do you see in this photo?"
 msgstr "What do you see in this photo?"
 
-#: components/plant-form.tsx:241
+#: components/plant-form.tsx:242
 msgid "What type of plant is it?"
 msgstr "What type of plant is it?"
 
-#: components/chat-list-item.tsx:29
+#: components/chat-list-item.tsx:30
 #: utils/date-helpers.ts:14
 msgid "Yesterday"
 msgstr "Yesterday"
@@ -416,6 +417,6 @@ msgstr "Your AI configuration has been saved successfully."
 msgid "your plant"
 msgstr "your plant"
 
-#: components/plant-form.tsx:178
+#: components/plant-form.tsx:194
 msgid "Your Plant's Name"
 msgstr "Your Plant's Name"
