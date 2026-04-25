@@ -4,12 +4,8 @@ import { FormField } from "@/components/ui/form-field";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { PhotoUpload } from "@/components/ui/photo-upload";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { intelligence, type PlantData } from "@/src/intelligence";
 import { events } from "@/src/livestore/schema";
-import {
-  analyzePhotoAndSetDescription,
-  generatePlantName,
-  type PlantData,
-} from "@/utils/ai-service";
 import { getDeviceId } from "@/utils/device";
 import {
   pickImageFromLibrary,
@@ -88,17 +84,25 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
     selectedImage
   );
 
+  async function analyzePhoto(imageUri: string, base64?: string | null) {
+    setIsAnalyzing(true);
+    try {
+      let result = await intelligence().generatePhotoDescription({ imageUri, base64 });
+      if (!result.ok) {
+        Alert.alert(t`Photo Analysis Error`, result.failure.message);
+        return;
+      }
+      setValue("photoDescription", result.value);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  }
+
   async function handlePickImage() {
     let result = await pickImageFromLibrary();
     if (!result.cancelled) {
       setSelectedImage(result.uri);
-      await analyzePhotoAndSetDescription(
-        result.uri,
-        setIsAnalyzing,
-        (description) => setValue("photoDescription", description),
-        (error) => Alert.alert(t`Photo Analysis Error`, error),
-        result.base64
-      );
+      await analyzePhoto(result.uri, result.base64);
     }
   }
 
@@ -106,13 +110,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
     let result = await takePhotoWithCamera();
     if (!result.cancelled) {
       setSelectedImage(result.uri);
-      await analyzePhotoAndSetDescription(
-        result.uri,
-        setIsAnalyzing,
-        (description) => setValue("photoDescription", description),
-        (error) => Alert.alert(t`Photo Analysis Error`, error),
-        result.base64
-      );
+      await analyzePhoto(result.uri, result.base64);
     }
   }
 
@@ -167,14 +165,32 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
 
     try {
       let plantData: PlantData = {
-        plantType: data.plantType || "Plant", // Use provided type or default
+        plantType: data.plantType || "Plant",
         description: data.plantInput || data.photoDescription || "Unknown",
         photoDescription: data.photoDescription || undefined,
         size: data.size || undefined,
       };
 
-      let plantName = await generatePlantName(plantData);
+      let result = await intelligence().generatePlantName(plantData);
 
+      if (!result.ok) {
+        switch (result.failure.kind) {
+          case "no-config":
+          case "invalid-key":
+            Alert.alert(t`AI Setup Required`, t`Please configure your AI settings first.`, [
+              { text: t`Try Again`, style: "cancel" },
+            ]);
+            break;
+          case "quota":
+          case "network":
+          case "unknown":
+            Alert.alert(t`Error`, result.failure.message);
+            break;
+        }
+        return;
+      }
+
+      let plantName = result.value;
       Alert.alert(t`Your Plant's Name`, `"${plantName}"`, [
         {
           text: t`Start Chat`,
@@ -183,21 +199,6 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
         },
         { text: t`Cancel`, style: "cancel" },
       ]);
-    } catch (error) {
-      console.error("Error generating plant name:", error);
-
-      let errorMessage = t`Failed to generate plant name. Please try again.`;
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
-      if (errorMessage.includes("configuration not found")) {
-        Alert.alert(t`AI Setup Required`, t`Please configure your AI settings first.`, [
-          { text: t`Try Again`, style: "cancel" },
-        ]);
-      } else {
-        Alert.alert(t`Error`, errorMessage);
-      }
     } finally {
       setIsGenerating(false);
     }
