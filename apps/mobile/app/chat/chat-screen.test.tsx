@@ -20,10 +20,6 @@ jest.mock("@/utils/photo-utils", () => ({
   takePhotoWithCamera: jest.fn(),
 }));
 
-jest.mock("@/utils/ai-service", () => ({
-  generateChatResponse: jest.fn(),
-}));
-
 jest.mock("@/utils/device", () => ({
   getDeviceId: () => "test-device",
 }));

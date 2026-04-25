@@ -1,7 +1,7 @@
 import { useChatContext } from "@/contexts/chat-context";
 import { useMessageList } from "@/contexts/message-list-context";
+import { intelligence, type ChatMessage, type PlantContext } from "@/src/intelligence";
 import { events } from "@/src/livestore/schema";
-import { generateChatResponse, type ChatMessage, type PlantContext } from "@/utils/ai-service";
 import { getDeviceId } from "@/utils/device";
 import {
   pickImageFromLibrary,
@@ -101,7 +101,6 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
         aiAnalysis: plant.aiAnalysis,
       };
 
-      // Build message history for context
       let chatHistory: ChatMessage[] = messages.map((m) => ({
         role: m.role as "user" | "assistant",
         content: m.content,
@@ -114,7 +113,27 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
         imageBase64: imageBase64 ?? undefined,
       });
 
-      let response = await generateChatResponse(plantContext, chatHistory);
+      let result = await intelligence().generateChatResponse({
+        plantContext,
+        messages: chatHistory,
+      });
+
+      let messageContent: string;
+      if (result.ok) {
+        messageContent = result.value;
+      } else {
+        switch (result.failure.kind) {
+          case "no-config":
+          case "invalid-key":
+            messageContent = t`I need to be set up first. Please configure your AI settings.`;
+            break;
+          case "quota":
+          case "network":
+          case "unknown":
+            messageContent = result.failure.message;
+            break;
+        }
+      }
 
       let assistantMessageId = Crypto.randomUUID();
       markAsNew(assistantMessageId);
@@ -124,24 +143,7 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
           plantId,
           userId: deviceId,
           role: "assistant",
-          content: response,
-          createdAt: Date.now(),
-        })
-      );
-    } catch (error) {
-      let errorMessage = t`Sorry, I couldn't respond right now. Please try again.`;
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      let errorMessageId = Crypto.randomUUID();
-      markAsNew(errorMessageId);
-      store.commit(
-        events.messageCreated({
-          id: errorMessageId,
-          plantId,
-          userId: deviceId,
-          role: "assistant",
-          content: errorMessage,
+          content: messageContent,
           createdAt: Date.now(),
         })
       );
