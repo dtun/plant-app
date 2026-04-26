@@ -46,22 +46,19 @@ async function fetchAIConfigFromEndpoint(): Promise<AIConfig | null> {
     });
 
     if (!response.ok) {
-      console.error(`Failed to fetch config: ${response.status} ${response.statusText}`);
       return null;
     }
 
     let data = await response.json();
     let validationResult = aiConfigSchema.safeParse(data);
     if (!validationResult.success) {
-      console.error("Invalid config from endpoint:", validationResult.error);
       return null;
     }
 
     globalThis.localStorage.setItem("ai_api_key", validationResult.data.apiKey);
     globalThis.localStorage.setItem("ai_provider", validationResult.data.provider);
     return validationResult.data;
-  } catch (error) {
-    console.error("Error fetching AI config from endpoint:", error);
+  } catch {
     return null;
   }
 }
@@ -100,8 +97,7 @@ async function getAIConfig(): Promise<AIConfig | null> {
     }
 
     return validationResult.data;
-  } catch (error) {
-    console.error("Error getting AI config:", error);
+  } catch {
     return null;
   }
 }
@@ -249,7 +245,6 @@ export function createLocalIntelligence(): PlantIntelligence {
       generatedNames.push(plantName);
       return { ok: true, value: plantName };
     } catch (error) {
-      console.error("Error generating plant name:", error);
       return { ok: false, failure: mapErrorToFailure(error) };
     }
   }
@@ -290,7 +285,6 @@ export function createLocalIntelligence(): PlantIntelligence {
       }
       return { ok: true, value: description };
     } catch (error) {
-      console.error("Error analyzing photo:", error);
       return { ok: false, failure: mapErrorToFailure(error) };
     }
   }
@@ -336,7 +330,6 @@ export function createLocalIntelligence(): PlantIntelligence {
       }
       return { ok: true, value: response };
     } catch (error) {
-      console.error("Error generating chat response:", error);
       return { ok: false, failure: mapErrorToFailure(error) };
     }
   }
