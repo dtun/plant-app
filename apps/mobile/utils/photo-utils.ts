@@ -3,21 +3,21 @@ import { i18n } from "@/src/i18n";
 import * as ImagePicker from "expo-image-picker";
 import { Alert } from "react-native";
 
-export interface PhotoResult {
-  uri: string;
-  base64: string | null;
-  cancelled: boolean;
+export type PhotoFailureKind = "cancelled" | "permission-denied" | "failed";
+
+export interface PhotoFailure {
+  kind: PhotoFailureKind;
 }
+
+export type PhotoResult =
+  | { ok: true; uri: string; base64: string | null }
+  | { ok: false; failure: PhotoFailure };
 
 export async function pickImageFromLibrary(): Promise<PhotoResult> {
   try {
     let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
-      Alert.alert(
-        i18n._(msg`Permission Required`),
-        i18n._(msg`Please allow access to your photo library to select plant photos.`)
-      );
-      return { uri: "", base64: null, cancelled: true };
+      return { ok: false, failure: { kind: "permission-denied" } };
     }
 
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -29,18 +29,17 @@ export async function pickImageFromLibrary(): Promise<PhotoResult> {
     });
 
     if (result.canceled || !result.assets[0]) {
-      return { uri: "", base64: null, cancelled: true };
+      return { ok: false, failure: { kind: "cancelled" } };
     }
 
     return {
+      ok: true,
       uri: result.assets[0].uri,
       base64: result.assets[0].base64 ?? null,
-      cancelled: false,
     };
   } catch (error) {
     console.error("Error picking image:", error);
-    Alert.alert(i18n._(msg`Error`), i18n._(msg`Failed to pick image. Please try again.`));
-    return { uri: "", base64: null, cancelled: true };
+    return { ok: false, failure: { kind: "failed" } };
   }
 }
 
@@ -48,11 +47,7 @@ export async function takePhotoWithCamera(): Promise<PhotoResult> {
   try {
     let permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (!permissionResult.granted) {
-      Alert.alert(
-        i18n._(msg`Permission Required`),
-        i18n._(msg`Please allow access to your camera to take plant photos.`)
-      );
-      return { uri: "", base64: null, cancelled: true };
+      return { ok: false, failure: { kind: "permission-denied" } };
     }
 
     let result = await ImagePicker.launchCameraAsync({
@@ -63,18 +58,17 @@ export async function takePhotoWithCamera(): Promise<PhotoResult> {
     });
 
     if (result.canceled || !result.assets[0]) {
-      return { uri: "", base64: null, cancelled: true };
+      return { ok: false, failure: { kind: "cancelled" } };
     }
 
     return {
+      ok: true,
       uri: result.assets[0].uri,
       base64: result.assets[0].base64 ?? null,
-      cancelled: false,
     };
   } catch (error) {
     console.error("Error taking photo:", error);
-    Alert.alert(i18n._(msg`Error`), i18n._(msg`Failed to take photo. Please try again.`));
-    return { uri: "", base64: null, cancelled: true };
+    return { ok: false, failure: { kind: "failed" } };
   }
 }
 

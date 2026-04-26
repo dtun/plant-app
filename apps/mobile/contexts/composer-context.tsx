@@ -7,11 +7,12 @@ import {
   pickImageFromLibrary,
   showPhotoPickerAlert,
   takePhotoWithCamera,
+  type PhotoFailure,
 } from "@/utils/photo-utils";
 import { useLingui } from "@lingui/react/macro";
 import * as Crypto from "expo-crypto";
 import { createContext, useCallback, useContext, useState } from "react";
-import { LayoutChangeEvent } from "react-native";
+import { Alert, LayoutChangeEvent } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 
 interface ComposerContextValue {
@@ -44,20 +45,43 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
     [composerHeight]
   );
 
+  function notifyPhotoFailure(failure: PhotoFailure, surface: "camera" | "library") {
+    if (failure.kind === "cancelled") return;
+    if (failure.kind === "permission-denied") {
+      Alert.alert(
+        t`Permission Required`,
+        surface === "camera"
+          ? t`Please allow access to your camera to take plant photos.`
+          : t`Please allow access to your photo library to select plant photos.`
+      );
+      return;
+    }
+    Alert.alert(
+      t`Error`,
+      surface === "camera"
+        ? t`Failed to take photo. Please try again.`
+        : t`Failed to pick image. Please try again.`
+    );
+  }
+
   function handleAttachPhoto() {
     showPhotoPickerAlert(
       async () => {
         let result = await takePhotoWithCamera();
-        if (!result.cancelled) {
+        if (result.ok) {
           setPendingImageUri(result.uri);
           setPendingImageBase64(result.base64);
+        } else {
+          notifyPhotoFailure(result.failure, "camera");
         }
       },
       async () => {
         let result = await pickImageFromLibrary();
-        if (!result.cancelled) {
+        if (result.ok) {
           setPendingImageUri(result.uri);
           setPendingImageBase64(result.base64);
+        } else {
+          notifyPhotoFailure(result.failure, "library");
         }
       }
     );

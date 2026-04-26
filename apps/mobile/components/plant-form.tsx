@@ -11,6 +11,7 @@ import {
   pickImageFromLibrary,
   showPhotoPickerAlert,
   takePhotoWithCamera,
+  type PhotoFailure,
 } from "@/utils/photo-utils";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -98,19 +99,42 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
     }
   }
 
+  function notifyPhotoFailure(failure: PhotoFailure, surface: "camera" | "library") {
+    if (failure.kind === "cancelled") return;
+    if (failure.kind === "permission-denied") {
+      Alert.alert(
+        t`Permission Required`,
+        surface === "camera"
+          ? t`Please allow access to your camera to take plant photos.`
+          : t`Please allow access to your photo library to select plant photos.`
+      );
+      return;
+    }
+    Alert.alert(
+      t`Error`,
+      surface === "camera"
+        ? t`Failed to take photo. Please try again.`
+        : t`Failed to pick image. Please try again.`
+    );
+  }
+
   async function handlePickImage() {
     let result = await pickImageFromLibrary();
-    if (!result.cancelled) {
+    if (result.ok) {
       setSelectedImage(result.uri);
       await analyzePhoto(result.uri, result.base64);
+    } else {
+      notifyPhotoFailure(result.failure, "library");
     }
   }
 
   async function handleTakePhoto() {
     let result = await takePhotoWithCamera();
-    if (!result.cancelled) {
+    if (result.ok) {
       setSelectedImage(result.uri);
       await analyzePhoto(result.uri, result.base64);
+    } else {
+      notifyPhotoFailure(result.failure, "camera");
     }
   }
 
