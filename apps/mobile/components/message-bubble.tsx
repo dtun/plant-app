@@ -1,10 +1,11 @@
 import * as Clipboard from "expo-clipboard";
 import * as haptics from "@/utils/haptics";
-import { Alert, Image, Text, View } from "react-native";
+import { Alert, Image, View } from "react-native";
 import * as ContextMenu from "zeego/context-menu";
 import { useLingui } from "@lingui/react/macro";
 import { useStore } from "@livestore/react";
 import { events } from "@/src/livestore/schema";
+import { Markdown } from "@/components/chat/markdown";
 
 export interface MessageBubbleProps {
   id: string;
@@ -56,9 +57,10 @@ export function MessageBubble({ id, role, content, imageUri }: MessageBubbleProp
                 />
               ) : null}
               {content ? (
-                <Text className={`text-base px-4 py-2.5 ${isUser ? "text-white" : "text-color"}`}>
-                  {content}
-                </Text>
+                <Markdown
+                  content={content}
+                  textClassName={`text-base ${isUser ? "text-white" : "text-color"}`}
+                />
               ) : null}
             </View>
           </ContextMenu.Trigger>
