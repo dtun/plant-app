@@ -1,8 +1,9 @@
 import { msg } from "@lingui/core/macro";
 import { i18n } from "@/src/i18n";
 import * as haptics from "@/utils/haptics";
+import { stripMarkdown } from "@/utils/strip-markdown";
 import { useLingui } from "@lingui/react/macro";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Image, Pressable, Text, View } from "react-native";
 import * as ContextMenu from "zeego/context-menu";
 import { InitialsAvatar } from "./initials-avatar";
@@ -47,6 +48,10 @@ export function ChatListItem({
   let { t } = useLingui();
   let [imageLoaded, setImageLoaded] = useState(false);
   let [imageError, setImageError] = useState(false);
+  let preview = useMemo(
+    () => (lastMessageContent ? stripMarkdown(lastMessageContent) : null),
+    [lastMessageContent]
+  );
 
   return (
     <ContextMenu.Root onOpenWillChange={(open) => open && haptics.selection()}>
@@ -77,7 +82,7 @@ export function ChatListItem({
               {name}
             </Text>
             <Text className="text-icon text-sm mt-0.5" numberOfLines={1}>
-              {lastMessageContent ?? t`No messages yet`}
+              {preview ?? t`No messages yet`}
             </Text>
           </View>
 
