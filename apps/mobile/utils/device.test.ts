@@ -1,14 +1,24 @@
 import {
   getDeviceId,
+  initializeDeviceId,
   __resetCachedDeviceIdForTesting,
   __setCachedDeviceIdForTesting,
 } from "./device";
+
+let mockCrypto = jest.requireMock("expo-crypto") as {
+  __resetMockCrypto: () => void;
+};
+let mockFileSystem = jest.requireMock("expo-file-system") as {
+  __resetMockFileSystem: () => void;
+};
 
 // Mocks are configured in jest.setup.js
 
 describe("utils/device", () => {
   beforeEach(() => {
     __resetCachedDeviceIdForTesting();
+    mockCrypto.__resetMockCrypto();
+    mockFileSystem.__resetMockFileSystem();
   });
 
   describe("getDeviceId", () => {
@@ -38,6 +48,33 @@ describe("utils/device", () => {
 
       expect(deviceId).not.toBeNull();
       expect(deviceId).not.toBeUndefined();
+    });
+  });
+
+  describe("initializeDeviceId", () => {
+    test("returns cached ID without re-reading file", async () => {
+      let firstId = await initializeDeviceId();
+      let secondId = await initializeDeviceId();
+
+      expect(firstId).toBe(secondId);
+    });
+
+    test("persists generated ID to storage", async () => {
+      await initializeDeviceId();
+
+      __resetCachedDeviceIdForTesting();
+      let deviceId = await initializeDeviceId();
+
+      expect(deviceId).toBe("mock-uuid-1");
+    });
+
+    test("reads existing ID from storage", async () => {
+      let deviceId = await initializeDeviceId();
+
+      __resetCachedDeviceIdForTesting();
+      let loadedId = await initializeDeviceId();
+
+      expect(loadedId).toBe(deviceId);
     });
   });
 
