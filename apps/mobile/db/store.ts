@@ -7,7 +7,6 @@
 
 import { getDeviceId } from "@/utils/device";
 import { makePersistedAdapter } from "@livestore/adapter-expo";
-import { useStore as useLiveStore } from "@livestore/react";
 
 /**
  * Get device-specific store ID
@@ -44,12 +43,4 @@ function createAdapter() {
   }
 }
 
-/**
- * React hook to access LiveStore instance
- * Must be used within LiveStoreProvider context
- */
-function useStore() {
-  return useLiveStore();
-}
-
-export { createAdapter, getStoreId, useStore };
+export { createAdapter, getStoreId };

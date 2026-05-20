@@ -1,6 +1,6 @@
 import { makePersistedAdapter } from "@livestore/adapter-expo";
 import { __resetCachedDeviceIdForTesting, __setCachedDeviceIdForTesting } from "../utils/device";
-import { createAdapter, getStoreId, useStore } from "./store";
+import { createAdapter, getStoreId } from "./store";
 
 // Mocks are set up in jest.setup.js
 
@@ -75,11 +75,4 @@ describe("db/store", () => {
     });
   });
 
-  describe("useStore", () => {
-    test("should return result from @livestore/react useStore", () => {
-      let result = useStore();
-
-      expect(result).toEqual({ store: {} });
-    });
-  });
 });
