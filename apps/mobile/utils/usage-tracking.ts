@@ -53,16 +53,16 @@ function isValidTier(tier: string): tier is UserTier {
 /**
  * Get or create user record for the current device
  */
-async function getOrCreateUser(
+function getOrCreateUser(
   store: Store<AppSchema>,
   deviceId: string
-): Promise<{ id: string; tier: UserTier }> {
+): { id: string; tier: UserTier } {
   let users = store.query(tables.user.where({ id: deviceId }));
   let user = users[0];
 
   if (!user) {
     let defaultTier: UserTier = "free";
-    await store.commit(
+    store.commit(
       events.userCreated({
         id: deviceId,
         tier: defaultTier,
@@ -97,7 +97,7 @@ function getCurrentMonthUsage(store: Store<AppSchema>, usageId: string): number 
  */
 export async function canGenerateName(store: Store<AppSchema>): Promise<UsageCheckResult> {
   let deviceId = getDeviceId();
-  let user = await getOrCreateUser(store, deviceId);
+  let user = getOrCreateUser(store, deviceId);
 
   // Pro tier has unlimited usage
   if (user.tier === "pro") {
@@ -129,14 +129,14 @@ export async function canGenerateName(store: Store<AppSchema>): Promise<UsageChe
  */
 export async function incrementUsage(store: Store<AppSchema>): Promise<void> {
   let deviceId = getDeviceId();
-  let user = await getOrCreateUser(store, deviceId);
+  let user = getOrCreateUser(store, deviceId);
   let currentMonth = getCurrentMonth();
   let usageId = getUsageId(deviceId, currentMonth);
 
   let currentCount = getCurrentMonthUsage(store, usageId);
   let newCount = currentCount + 1;
 
-  await store.commit(
+  store.commit(
     events.usageRecorded({
       id: usageId,
       userId: user.id,
@@ -155,7 +155,7 @@ export async function incrementUsage(store: Store<AppSchema>): Promise<void> {
  */
 export async function getCurrentUsage(store: Store<AppSchema>): Promise<UsageStats> {
   let deviceId = getDeviceId();
-  let user = await getOrCreateUser(store, deviceId);
+  let user = getOrCreateUser(store, deviceId);
   let currentMonth = getCurrentMonth();
   let usageId = getUsageId(deviceId, currentMonth);
 
@@ -177,11 +177,11 @@ export async function getCurrentUsage(store: Store<AppSchema>): Promise<UsageSta
  */
 export async function resetMonthlyUsage(store: Store<AppSchema>): Promise<void> {
   let deviceId = getDeviceId();
-  let user = await getOrCreateUser(store, deviceId);
+  let user = getOrCreateUser(store, deviceId);
   let currentMonth = getCurrentMonth();
   let usageId = getUsageId(deviceId, currentMonth);
 
-  await store.commit(
+  store.commit(
     events.usageRecorded({
       id: usageId,
       userId: user.id,
