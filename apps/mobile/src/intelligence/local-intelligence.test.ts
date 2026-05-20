@@ -1,3 +1,8 @@
+import { generateText } from "ai";
+
+import { createLocalIntelligence } from "./local-intelligence";
+import type { PlantData } from "./types";
+
 jest.mock("ai", () => ({
   generateText: jest.fn(),
 }));
@@ -9,11 +14,6 @@ jest.mock("@ai-sdk/openai", () => ({
 jest.mock("@ai-sdk/anthropic", () => ({
   createAnthropic: () => () => ({ provider: "anthropic-stub" }),
 }));
-
-import { generateText } from "ai";
-
-import { createLocalIntelligence } from "./local-intelligence";
-import type { PlantData } from "./types";
 
 let mockGenerateText = generateText as jest.Mock;
 
