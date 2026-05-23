@@ -1,9 +1,10 @@
-import { ReactNode } from "react";
+import { ReactNode, Ref } from "react";
 import { LayoutChangeEvent, Text, TextInput, View } from "react-native";
 
 interface ChatInputProps {
   autoFocus?: boolean;
   error?: string;
+  inputRef?: Ref<TextInput>;
   leftButton?: ReactNode;
   multiline?: boolean;
   numberOfLines?: number;
@@ -18,6 +19,7 @@ interface ChatInputProps {
 export function ChatInput({
   autoFocus,
   error,
+  inputRef,
   leftButton,
   multiline = true,
   numberOfLines = 4,
@@ -36,6 +38,7 @@ export function ChatInput({
       >
         <View className="flex-row min-h-12">
           <TextInput
+            ref={inputRef}
             autoFocus={autoFocus}
             className="flex-1 text-base text-color pr-3 mb-1 max-h-12 py-0 placeholder:text-placeholder"
             onBlur={onBlur}
