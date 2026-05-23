@@ -14,6 +14,8 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useMemo, useState } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
+import { RootErrorBoundary } from "@/components/ui/root-error-boundary";
+import { StorageErrorBoundary } from "@/components/ui/storage-error-boundary";
 import "../global.css";
 
 export const unstable_settings = {
@@ -42,23 +44,27 @@ export default function RootLayout() {
   }
 
   return (
-    <I18nProvider i18n={i18n}>
-      <LiveStoreProvider
-        schema={schema}
-        storeId={storeId}
-        adapter={adapter}
-        batchUpdates={batchUpdates}
-      >
-        <KeyboardProvider>
-          <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-            <Stack screenOptions={{ headerShown: false }}>
-              <Stack.Screen name="(drawer)" />
-              <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
-            </Stack>
-            <StatusBar style="auto" />
-          </ThemeProvider>
-        </KeyboardProvider>
-      </LiveStoreProvider>
-    </I18nProvider>
+    <RootErrorBoundary>
+      <I18nProvider i18n={i18n}>
+        <StorageErrorBoundary>
+          <LiveStoreProvider
+            schema={schema}
+            storeId={storeId}
+            adapter={adapter}
+            batchUpdates={batchUpdates}
+          >
+            <KeyboardProvider>
+              <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="(drawer)" />
+                  <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
+                </Stack>
+                <StatusBar style="auto" />
+              </ThemeProvider>
+            </KeyboardProvider>
+          </LiveStoreProvider>
+        </StorageErrorBoundary>
+      </I18nProvider>
+    </RootErrorBoundary>
   );
 }
