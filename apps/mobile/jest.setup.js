@@ -23,6 +23,9 @@ jest.mock("@/src/livestore/schema");
 jest.mock("@lingui/react");
 jest.mock("@/src/i18n");
 jest.mock("react-native-keyboard-controller");
+jest.mock("react-native-safe-area-context", () =>
+  require("react-native-safe-area-context/jest/mock").default
+);
 jest.mock("zeego/context-menu");
 jest.mock("zeego/dropdown-menu");
 jest.mock("expo-haptics");

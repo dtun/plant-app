@@ -171,8 +171,11 @@ async function imageToBase64(input: PhotoInput): Promise<string> {
 function buildPlantNamingPrompt(plantData: PlantData, generatedNames: string[]): string {
   let prompt = `Generate a cute, gentle, and endearing name for a plant with the following characteristics:
 
-Plant Type: ${plantData.plantType}
 Description: ${plantData.description}`;
+
+  if (plantData.plantType) {
+    prompt += `\nPlant Type: ${plantData.plantType}`;
+  }
 
   if (plantData.size) {
     prompt += `\nSize: ${plantData.size}`;

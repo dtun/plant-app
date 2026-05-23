@@ -8,7 +8,7 @@ export interface AIFailure {
 }
 
 export interface PlantData {
-  plantType: string;
+  plantType?: string;
   description: string;
   photoDescription?: string;
   size?: "Small" | "Medium" | "Large";

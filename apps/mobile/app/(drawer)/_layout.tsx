@@ -23,6 +23,7 @@ export default function DrawerLayout() {
           drawerIcon: ({ color }) => <IconSymbol size={28} name="leaf" color={color} />,
           drawerLabel: t`Home`,
           title: t`Home`,
+          headerTitle: () => null,
         }}
       />
       <Drawer.Screen
