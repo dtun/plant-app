@@ -85,8 +85,12 @@ async function getAIConfig(): Promise<AIConfig | null> {
 
     let storedApiKey =
       globalThis.localStorage.getItem("ai_api_key") || process.env.EXPO_PUBLIC_DEFAULT_AI_API_KEY;
+    // Default to Anthropic — claude-haiku (text) + claude-sonnet (vision) are ~95% cheaper
+    // than gpt-4o while providing equivalent quality for plant care use cases.
     let storedProvider =
-      globalThis.localStorage.getItem("ai_provider") || process.env.EXPO_PUBLIC_DEFAULT_AI_PROVIDER;
+      globalThis.localStorage.getItem("ai_provider") ||
+      process.env.EXPO_PUBLIC_DEFAULT_AI_PROVIDER ||
+      "Anthropic";
     let validationResult = aiConfigSchema.safeParse({
       apiKey: storedApiKey,
       provider: storedProvider,
