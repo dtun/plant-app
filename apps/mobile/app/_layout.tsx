@@ -14,8 +14,10 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useMemo, useState } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
+import { PaywallGate } from "@/components/paywall";
 import { RootErrorBoundary } from "@/components/ui/root-error-boundary";
 import { StorageErrorBoundary } from "@/components/ui/storage-error-boundary";
+import { PurchaseProvider } from "@/contexts/purchase-context";
 import "../global.css";
 
 export const unstable_settings = {
@@ -53,15 +55,19 @@ export default function RootLayout() {
             adapter={adapter}
             batchUpdates={batchUpdates}
           >
-            <KeyboardProvider>
-              <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-                <Stack screenOptions={{ headerShown: false }}>
-                  <Stack.Screen name="(drawer)" />
-                  <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
-                </Stack>
-                <StatusBar style="auto" />
-              </ThemeProvider>
-            </KeyboardProvider>
+            <PurchaseProvider>
+              <KeyboardProvider>
+                <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+                  <PaywallGate>
+                    <Stack screenOptions={{ headerShown: false }}>
+                      <Stack.Screen name="(drawer)" />
+                      <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
+                    </Stack>
+                  </PaywallGate>
+                  <StatusBar style="auto" />
+                </ThemeProvider>
+              </KeyboardProvider>
+            </PurchaseProvider>
           </LiveStoreProvider>
         </StorageErrorBoundary>
       </I18nProvider>
