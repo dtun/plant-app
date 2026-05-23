@@ -1,76 +1,53 @@
 import {
-  PRO_ENTITLEMENT_ID,
-  getRevenueCatApiKey,
-  isPaywallConfigured,
-} from "@/src/payments/config";
+  billing,
+  type BillingFailure,
+  type Entitlement,
+  type ProOffer,
+  type Result,
+} from "@/src/payments";
 import { events, tables } from "@/src/livestore/schema";
 import { getDeviceId } from "@/utils/device";
 import { useStore } from "@livestore/react";
 import { createContext, useContext, useEffect, useState } from "react";
-import Purchases, { type CustomerInfo, type PurchasesPackage } from "react-native-purchases";
 
-export interface PurchaseResult {
-  ok: boolean;
-  cancelled?: boolean;
-  error?: string;
-}
+type PurchaseOutcome = Result<Entitlement, BillingFailure>;
 
 interface PurchaseContextValue {
   /** Whether the user owns the lifetime unlock. */
   isPro: boolean;
   /** True while the initial entitlement check is in flight. */
   isLoading: boolean;
-  /** Whether the paywall is enforced (keys present + supported platform). */
-  isConfigured: boolean;
-  /** The unlock package to sell, or null if offerings are unavailable. */
-  proPackage: PurchasesPackage | null;
-  purchasePro: () => Promise<PurchaseResult>;
-  restore: () => Promise<PurchaseResult>;
+  /** The unlock offer to sell, or null if offerings are unavailable. */
+  offer: ProOffer | null;
+  purchasePro: () => Promise<PurchaseOutcome>;
+  restore: () => Promise<PurchaseOutcome>;
 }
 
 let PurchaseContext = createContext<PurchaseContextValue | null>(null);
 
-function hasProEntitlement(info: CustomerInfo): boolean {
-  return info.entitlements.active[PRO_ENTITLEMENT_ID] !== undefined;
-}
-
-function isUserCancelled(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "userCancelled" in error &&
-    (error as { userCancelled?: boolean }).userCancelled === true
-  );
-}
-
-function errorMessage(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
-}
-
 export function PurchaseProvider({ children }: { children: React.ReactNode }) {
   let { store } = useStore();
-  let configured = isPaywallConfigured();
 
-  // When the paywall isn't configured (dev, web, missing keys) the app is open.
-  let [isPro, setIsPro] = useState(!configured);
-  let [isLoading, setIsLoading] = useState(configured);
-  let [proPackage, setProPackage] = useState<PurchasesPackage | null>(null);
+  let [isPro, setIsPro] = useState(false);
+  let [isLoading, setIsLoading] = useState(true);
+  let [offer, setOffer] = useState<ProOffer | null>(null);
 
   // Persist tier to the LiveStore user record for analytics / future gating.
-  // RevenueCat's CustomerInfo remains the source of truth for access.
-  function syncTier(pro: boolean, productId?: string) {
+  // The billing seam remains the source of truth for access.
+  function syncTier(pro: boolean, productId: string | null) {
     let deviceId = getDeviceId();
     let tier = pro ? "pro" : "free";
+    let subscriptionId = productId ?? undefined;
     let existing = store.query(tables.user.where({ id: deviceId }));
 
     if (existing[0]) {
-      store.commit(events.userUpdated({ id: deviceId, tier, subscriptionId: productId }));
+      store.commit(events.userUpdated({ id: deviceId, tier, subscriptionId }));
     } else {
       store.commit(
         events.userCreated({
           id: deviceId,
           tier,
-          subscriptionId: productId,
+          subscriptionId,
           syncEnabled: false,
           createdAt: Date.now(),
         })
@@ -79,100 +56,71 @@ export function PurchaseProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    if (!configured) {
-      return;
-    }
-    let apiKey = getRevenueCatApiKey();
-    if (!apiKey) {
-      return;
-    }
-
+    let api = billing();
     let mounted = true;
 
-    function applyInfo(info: CustomerInfo) {
-      if (!mounted) {
-        return;
-      }
-      let pro = hasProEntitlement(info);
-      setIsPro(pro);
-      syncTier(pro, info.entitlements.active[PRO_ENTITLEMENT_ID]?.productIdentifier);
+    function apply(entitlement: Entitlement) {
+      if (!mounted) return;
+      setIsPro(entitlement.isPro);
+      syncTier(entitlement.isPro, entitlement.productId);
     }
 
     async function initialize() {
-      try {
-        Purchases.configure({ apiKey: apiKey! });
+      let result = await api.getEntitlement();
+      if (!mounted) return;
 
-        let info = await Purchases.getCustomerInfo();
-        applyInfo(info);
+      if (result.ok) {
+        apply(result.value);
+      } else if (result.failure.kind === "no-config") {
+        // Unconfigured (dev, web, missing keys): leave the app open.
+        setIsPro(true);
+      } else {
+        // Fail closed: stay locked so AI costs stay protected. RevenueCat caches
+        // CustomerInfo locally, so legitimate owners still resolve on retry.
+        setIsPro(false);
+      }
 
-        let offerings = await Purchases.getOfferings();
-        if (mounted) {
-          setProPackage(offerings.current?.availablePackages[0] ?? null);
-        }
-      } catch (error) {
-        // Fail closed: leave the user locked on error so AI costs stay protected.
-        // RevenueCat caches CustomerInfo locally, so legitimate owners still resolve.
-        console.warn("RevenueCat init failed:", errorMessage(error));
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
+      let offerResult = await api.getOffer();
+      if (mounted && offerResult.ok) {
+        setOffer(offerResult.value);
+      }
+      if (mounted) {
+        setIsLoading(false);
       }
     }
 
     initialize();
-    Purchases.addCustomerInfoUpdateListener(applyInfo);
+    let unsubscribe = api.subscribe(apply);
 
     return () => {
       mounted = false;
-      Purchases.removeCustomerInfoUpdateListener(applyInfo);
+      unsubscribe();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [configured]);
+  }, []);
 
-  async function purchasePro(): Promise<PurchaseResult> {
-    if (!proPackage) {
-      return { ok: false, error: "No unlock product available" };
-    }
-    try {
-      let { customerInfo } = await Purchases.purchasePackage(proPackage);
-      let pro = hasProEntitlement(customerInfo);
-      setIsPro(pro);
-      if (pro) {
-        syncTier(true, proPackage.product.identifier);
+  async function purchasePro(): Promise<PurchaseOutcome> {
+    let result = await billing().purchase();
+    if (result.ok) {
+      setIsPro(result.value.isPro);
+      if (result.value.isPro) {
+        syncTier(true, result.value.productId);
       }
-      return { ok: pro };
-    } catch (error) {
-      if (isUserCancelled(error)) {
-        return { ok: false, cancelled: true };
-      }
-      return { ok: false, error: errorMessage(error) };
     }
+    return result;
   }
 
-  async function restore(): Promise<PurchaseResult> {
-    try {
-      let info = await Purchases.restorePurchases();
-      let pro = hasProEntitlement(info);
-      setIsPro(pro);
-      syncTier(pro, info.entitlements.active[PRO_ENTITLEMENT_ID]?.productIdentifier);
-      return { ok: pro };
-    } catch (error) {
-      return { ok: false, error: errorMessage(error) };
+  async function restore(): Promise<PurchaseOutcome> {
+    let result = await billing().restore();
+    if (result.ok) {
+      setIsPro(result.value.isPro);
+      syncTier(result.value.isPro, result.value.productId);
     }
+    return result;
   }
 
   return (
-    <PurchaseContext.Provider
-      value={{
-        isPro,
-        isLoading,
-        isConfigured: configured,
-        proPackage,
-        purchasePro,
-        restore,
-      }}
-    >
+    <PurchaseContext.Provider value={{ isPro, isLoading, offer, purchasePro, restore }}>
       {children}
     </PurchaseContext.Provider>
   );

@@ -1,6 +1,7 @@
 import { ActivityIndicator } from "@/components/ui/activity-indicator";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { usePurchase } from "@/contexts/purchase-context";
+import { type BillingFailure } from "@/src/payments";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
@@ -17,17 +18,31 @@ function Feature({ children }: { children: React.ReactNode }) {
 
 export function Paywall() {
   let { t } = useLingui();
-  let { proPackage, purchasePro, restore } = usePurchase();
+  let { offer, purchasePro, restore } = usePurchase();
   let [busy, setBusy] = useState(false);
 
-  let priceLabel = proPackage?.product.priceString;
+  let priceLabel = offer?.priceLabel;
+
+  function failureMessage(failure: BillingFailure): string {
+    switch (failure.kind) {
+      case "network":
+        return t`Network error. Please check your connection and try again.`;
+      case "no-offer":
+        return t`This purchase isn't available right now. Please try again later.`;
+      case "no-config":
+        return t`Purchases aren't available on this device.`;
+      case "cancelled":
+      case "unknown":
+        return t`Something went wrong. Please try again.`;
+    }
+  }
 
   async function handleUnlock() {
     setBusy(true);
     let result = await purchasePro();
     setBusy(false);
-    if (!result.ok && !result.cancelled) {
-      Alert.alert(t`Purchase failed`, result.error ?? t`Something went wrong. Please try again.`);
+    if (!result.ok && result.failure.kind !== "cancelled") {
+      Alert.alert(t`Purchase failed`, failureMessage(result.failure));
     }
   }
 
@@ -35,12 +50,16 @@ export function Paywall() {
     setBusy(true);
     let result = await restore();
     setBusy(false);
-    if (!result.ok) {
-      Alert.alert(
-        t`Nothing to restore`,
-        result.error ?? t`We couldn't find a previous purchase on this account.`
-      );
+    if (result.ok) {
+      if (!result.value.isPro) {
+        Alert.alert(
+          t`Nothing to restore`,
+          t`We couldn't find a previous purchase on this account.`
+        );
+      }
+      return;
     }
+    Alert.alert(t`Restore failed`, failureMessage(result.failure));
   }
 
   return (
@@ -76,12 +95,12 @@ export function Paywall() {
 
         <TouchableOpacity
           className="rounded-xl p-4 items-center bg-tint"
-          style={{ opacity: busy || !proPackage ? 0.7 : 1 }}
+          style={{ opacity: busy || !offer ? 0.7 : 1 }}
           onPress={handleUnlock}
-          disabled={busy || !proPackage}
+          disabled={busy || !offer}
           accessibilityRole="button"
           accessibilityLabel={t`Unlock the full app`}
-          accessibilityState={{ disabled: busy || !proPackage }}
+          accessibilityState={{ disabled: busy || !offer }}
         >
           {busy ? (
             <ActivityIndicator size="small" color="#fff" />

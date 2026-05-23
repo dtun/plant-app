@@ -29,11 +29,3 @@ export function getRevenueCatApiKey(): string | null {
 
   return key && key.length > 0 ? key : null;
 }
-
-/**
- * Whether the paywall should be enforced. When false (no key / unsupported
- * platform), the app stays open so dev, web, and tests are unaffected.
- */
-export function isPaywallConfigured(): boolean {
-  return getRevenueCatApiKey() !== null;
-}
