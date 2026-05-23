@@ -44,7 +44,7 @@ export class StorageErrorBoundary extends Component<Props, State> {
         <SafeAreaView style={styles.container}>
           <View style={styles.content}>
             <Text style={styles.emoji}>🌱</Text>
-            <Text style={styles.title}>Couldn't open your garden</Text>
+            <Text style={styles.title}>Couldn&apos;t open your garden</Text>
             <Text style={styles.message}>
               KeepTend ran into a problem loading your plant data. This is usually temporary.
             </Text>
