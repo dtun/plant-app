@@ -26,7 +26,6 @@ import { Alert, Pressable, Text, TextInput, View, Keyboard } from "react-native"
 import { z } from "zod";
 import {
   KeyboardAwareScrollView,
-  KeyboardStickyView,
   useReanimatedKeyboardAnimation,
 } from "react-native-keyboard-controller";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
@@ -61,8 +60,10 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
   let tagline = useMemo(() => careTaglines[Math.floor(Math.random() * careTaglines.length)], []);
   let insets = useSafeAreaInsets();
   let inputRef = useRef<TextInput>(null);
-  let { progress } = useReanimatedKeyboardAnimation();
+  // Stick the input to the keyboard via Reanimated (height.value is negative when open); KeyboardStickyView's legacy Animated driver fails to track the keyboard on RN 0.83 / Fabric, leaving the input covered.
+  let { height, progress } = useReanimatedKeyboardAnimation();
   let inputAreaStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: height.value }],
     paddingBottom: KEYBOARD_OPEN_GAP + (insets.bottom - KEYBOARD_OPEN_GAP) * (1 - progress.value),
   }));
 
@@ -326,36 +327,31 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
           </View>
         ) : null}
       </KeyboardAwareScrollView>
-      <KeyboardStickyView>
-        <Animated.View style={inputAreaStyle}>
-          <Controller
-            control={control}
-            name="plantInput"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <ChatInput
-                inputRef={inputRef}
-                value={value}
-                onChangeText={onChange}
-                onBlur={onBlur}
-                placeholder={selectedImage ? t`Anything else?` : t`Describe your plant...`}
-                error={errors.plantInput?.message}
-                leftButton={
-                  <PhotoUpload
-                    selectedImage={selectedImage}
-                    onImageSelect={handleShowImagePicker}
-                  />
-                }
-                rightButton={
-                  <SubmitButton
-                    onPress={handleSubmit(onSubmit)}
-                    isLoading={isGenerating || isAnalyzing}
-                  />
-                }
-              />
-            )}
-          />
-        </Animated.View>
-      </KeyboardStickyView>
+      <Animated.View style={inputAreaStyle}>
+        <Controller
+          control={control}
+          name="plantInput"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <ChatInput
+              inputRef={inputRef}
+              value={value}
+              onChangeText={onChange}
+              onBlur={onBlur}
+              placeholder={selectedImage ? t`Anything else?` : t`Describe your plant...`}
+              error={errors.plantInput?.message}
+              leftButton={
+                <PhotoUpload selectedImage={selectedImage} onImageSelect={handleShowImagePicker} />
+              }
+              rightButton={
+                <SubmitButton
+                  onPress={handleSubmit(onSubmit)}
+                  isLoading={isGenerating || isAnalyzing}
+                />
+              }
+            />
+          )}
+        />
+      </Animated.View>
     </>
   );
 }
