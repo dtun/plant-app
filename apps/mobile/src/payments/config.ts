@@ -19,13 +19,10 @@ export const PRO_ENTITLEMENT_ID = "pro";
  * unavailable (web, or key not provided).
  */
 export function getRevenueCatApiKey(): string | null {
-  let key: string | undefined;
-
-  if (Platform.OS === "ios") {
-    key = process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
-  } else if (Platform.OS === "android") {
-    key = process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY;
-  }
+  let key = Platform.select({
+    ios: process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY,
+    android: process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY,
+  });
 
   return key && key.length > 0 ? key : null;
 }
