@@ -13,9 +13,13 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: components/plant-form.tsx:33
+#: components/plant-form.tsx:41
 msgid "A little care goes a long way"
 msgstr "A little care goes a long way"
+
+#: components/paywall.tsx:77
+msgid "A one-time purchase. Yours forever."
+msgstr "A one-time purchase. Yours forever."
 
 #: components/plant-form.tsx:240
 #~ msgid "About your plant"
@@ -25,24 +29,28 @@ msgstr "A little care goes a long way"
 msgid "Add plant photo"
 msgstr "Add plant photo"
 
-#: src/intelligence/local-intelligence.ts:121
+#: src/intelligence/local-intelligence.ts:125
 msgid "AI configuration not found. Please set up your API key and provider in Settings."
 msgstr "AI configuration not found. Please set up your API key and provider in Settings."
+
+#: components/paywall.tsx:83
+msgid "AI photo analysis to identify and describe your plants"
+msgstr "AI photo analysis to identify and describe your plants"
 
 #: app/(drawer)/_layout.tsx:41
 #: app/(drawer)/_layout.tsx:42
 msgid "AI Settings"
 msgstr "AI Settings"
 
-#: components/plant-form.tsx:219
+#: components/plant-form.tsx:232
 msgid "AI Setup Required"
 msgstr "AI Setup Required"
 
-#: components/plant-form.tsx:291
+#: components/plant-form.tsx:304
 msgid "Analyzing photo..."
 msgstr "Analyzing photo..."
 
-#: components/plant-form.tsx:320
+#: components/plant-form.tsx:334
 msgid "Anything else?"
 msgstr "Anything else?"
 
@@ -54,7 +62,7 @@ msgstr "API Key"
 msgid "API key is required"
 msgstr "API key is required"
 
-#: src/intelligence/local-intelligence.ts:137
+#: src/intelligence/local-intelligence.ts:141
 msgid "API quota exceeded. Please check your account billing."
 msgstr "API quota exceeded. Please check your account billing."
 
@@ -76,7 +84,7 @@ msgstr "Camera"
 
 #: app/(drawer)/chats.tsx:38
 #: components/message-bubble.tsx:29
-#: components/plant-form.tsx:239
+#: components/plant-form.tsx:252
 #: contexts/chat-context.tsx:29
 #: utils/photo-utils.ts:82
 msgid "Cancel"
@@ -94,6 +102,10 @@ msgstr "Chat options"
 msgid "Chat with {name}"
 msgstr "Chat with {name}"
 
+#: components/paywall.tsx:89
+msgid "Chat with every plant in your collection"
+msgstr "Chat with every plant in your collection"
+
 #: app/(drawer)/_layout.tsx:33
 #: app/(drawer)/_layout.tsx:34
 #: components/chat/chat-layout.tsx:50
@@ -108,7 +120,7 @@ msgstr "Choose how you'd like to add a photo of your plant"
 msgid "Clear"
 msgstr "Clear"
 
-#: components/plant-form.tsx:260
+#: components/plant-form.tsx:273
 msgid "Clear all form fields and start over"
 msgstr "Clear all form fields and start over"
 
@@ -140,7 +152,7 @@ msgstr "Delete Message"
 msgid "Delete Plant"
 msgstr "Delete Plant"
 
-#: components/plant-form.tsx:320
+#: components/plant-form.tsx:334
 msgid "Describe your plant..."
 msgstr "Describe your plant..."
 
@@ -154,13 +166,13 @@ msgstr "Enter your API key"
 
 #: components/ai-setup-form.tsx:76
 #: components/ai-setup-form.tsx:89
-#: components/plant-form.tsx:130
-#: components/plant-form.tsx:226
+#: components/plant-form.tsx:143
+#: components/plant-form.tsx:239
 #: contexts/composer-context.tsx:60
 msgid "Error"
 msgstr "Error"
 
-#: components/plant-form.tsx:35
+#: components/plant-form.tsx:43
 msgid "Every leaf thanks you"
 msgstr "Every leaf thanks you"
 
@@ -176,7 +188,7 @@ msgstr "Every leaf thanks you"
 #~ msgid "Failed to generate plant name. Please try again."
 #~ msgstr "Failed to generate plant name. Please try again."
 
-#: components/plant-form.tsx:133
+#: components/plant-form.tsx:146
 #: contexts/composer-context.tsx:63
 msgid "Failed to pick image. Please try again."
 msgstr "Failed to pick image. Please try again."
@@ -185,7 +197,7 @@ msgstr "Failed to pick image. Please try again."
 msgid "Failed to reset settings. Please try again."
 msgstr "Failed to reset settings. Please try again."
 
-#: components/plant-form.tsx:192
+#: components/plant-form.tsx:205
 msgid "Failed to save plant. Please try again."
 msgstr "Failed to save plant. Please try again."
 
@@ -193,12 +205,12 @@ msgstr "Failed to save plant. Please try again."
 msgid "Failed to save settings. Please try again."
 msgstr "Failed to save settings. Please try again."
 
-#: components/plant-form.tsx:132
+#: components/plant-form.tsx:145
 #: contexts/composer-context.tsx:62
 msgid "Failed to take photo. Please try again."
 msgstr "Failed to take photo. Please try again."
 
-#: components/plant-form.tsx:34
+#: components/plant-form.tsx:42
 msgid "Happy plants, happy home"
 msgstr "Happy plants, happy home"
 
@@ -211,7 +223,7 @@ msgstr "Home"
 msgid "I need to be set up first. Please configure your AI settings."
 msgstr "I need to be set up first. Please configure your AI settings."
 
-#: src/intelligence/local-intelligence.ts:131
+#: src/intelligence/local-intelligence.ts:135
 msgid "Invalid API key. Please check your AI settings."
 msgstr "Invalid API key. Please check your AI settings."
 
@@ -231,7 +243,11 @@ msgstr "Name a plant to start chatting!"
 msgid "Navigates to the plant naming screen"
 msgstr "Navigates to the plant naming screen"
 
-#: src/intelligence/local-intelligence.ts:143
+#: components/paywall.tsx:29
+msgid "Network error. Please check your connection and try again."
+msgstr "Network error. Please check your connection and try again."
+
+#: src/intelligence/local-intelligence.ts:147
 msgid "Network error. Please check your internet connection."
 msgstr "Network error. Please check your internet connection."
 
@@ -239,7 +255,11 @@ msgstr "Network error. Please check your internet connection."
 msgid "No messages yet"
 msgstr "No messages yet"
 
-#: components/plant-form.tsx:36
+#: components/paywall.tsx:56
+msgid "Nothing to restore"
+msgstr "Nothing to restore"
+
+#: components/plant-form.tsx:44
 msgid "Nurture today, bloom tomorrow"
 msgstr "Nurture today, bloom tomorrow"
 
@@ -251,16 +271,20 @@ msgstr "Opens chat conversation with this plant"
 msgid "Opens chat options menu"
 msgstr "Opens chat options menu"
 
-#: components/plant-form.tsx:122
+#: components/plant-form.tsx:135
 #: contexts/composer-context.tsx:52
 msgid "Permission Required"
 msgstr "Permission Required"
 
-#: components/plant-form.tsx:291
+#: components/paywall.tsx:86
+msgid "Personalized, AI-generated care advice"
+msgstr "Personalized, AI-generated care advice"
+
+#: components/plant-form.tsx:304
 msgid "Photo Analysis"
 msgstr "Photo Analysis"
 
-#: components/plant-form.tsx:109
+#: components/plant-form.tsx:122
 msgid "Photo Analysis Error"
 msgstr "Photo Analysis Error"
 
@@ -277,21 +301,21 @@ msgstr "Photo of {0}"
 msgid "Photo of {name}"
 msgstr "Photo of {name}"
 
-#: components/plant-form.tsx:124
+#: components/plant-form.tsx:137
 #: contexts/composer-context.tsx:54
 msgid "Please allow access to your camera to take plant photos."
 msgstr "Please allow access to your camera to take plant photos."
 
-#: components/plant-form.tsx:125
+#: components/plant-form.tsx:138
 #: contexts/composer-context.tsx:55
 msgid "Please allow access to your photo library to select plant photos."
 msgstr "Please allow access to your photo library to select plant photos."
 
-#: components/plant-form.tsx:219
+#: components/plant-form.tsx:232
 msgid "Please configure your AI settings first."
 msgstr "Please configure your AI settings first."
 
-#: components/plant-form.tsx:71
+#: components/plant-form.tsx:84
 msgid "Please describe your plant or add a photo"
 msgstr "Please describe your plant or add a photo"
 
@@ -303,7 +327,15 @@ msgstr "Provider"
 msgid "Provider is required"
 msgstr "Provider is required"
 
-#: components/plant-form.tsx:300
+#: components/paywall.tsx:45
+msgid "Purchase failed"
+msgstr "Purchase failed"
+
+#: components/paywall.tsx:33
+msgid "Purchases aren't available on this device."
+msgstr "Purchases aren't available on this device."
+
+#: components/plant-form.tsx:313
 msgid "Remove photo"
 msgstr "Remove photo"
 
@@ -311,11 +343,11 @@ msgstr "Remove photo"
 msgid "Remove selected photo"
 msgstr "Remove selected photo"
 
-#: components/plant-form.tsx:301
+#: components/plant-form.tsx:314
 msgid "Remove the selected plant photo"
 msgstr "Remove the selected plant photo"
 
-#: components/plant-form.tsx:264
+#: components/plant-form.tsx:277
 msgid "Reset"
 msgstr "Reset"
 
@@ -323,11 +355,23 @@ msgstr "Reset"
 msgid "Reset All"
 msgstr "Reset All"
 
-#: components/plant-form.tsx:259
+#: components/plant-form.tsx:272
 msgid "Reset form"
 msgstr "Reset form"
 
-#: components/plant-form.tsx:197
+#: components/paywall.tsx:123
+msgid "Restore a previous purchase"
+msgstr "Restore a previous purchase"
+
+#: components/paywall.tsx:62
+msgid "Restore failed"
+msgstr "Restore failed"
+
+#: components/paywall.tsx:126
+msgid "Restore purchase"
+msgstr "Restore purchase"
+
+#: components/plant-form.tsx:210
 msgid "Save Error"
 msgstr "Save Error"
 
@@ -371,15 +415,19 @@ msgstr "Settings Saved"
 msgid "Share"
 msgstr "Share"
 
-#: components/plant-form.tsx:37
+#: components/plant-form.tsx:45
 msgid "Small care, big growth"
 msgstr "Small care, big growth"
+
+#: components/paywall.tsx:36
+msgid "Something went wrong. Please try again."
+msgstr "Something went wrong. Please try again."
 
 #: contexts/composer-context.tsx:132
 #~ msgid "Sorry, I couldn't respond right now. Please try again."
 #~ msgstr "Sorry, I couldn't respond right now. Please try again."
 
-#: components/plant-form.tsx:235
+#: components/plant-form.tsx:248
 msgid "Start Chat"
 msgstr "Start Chat"
 
@@ -391,7 +439,7 @@ msgstr "Submit"
 msgid "Take a photo or select from library"
 msgstr "Take a photo or select from library"
 
-#: components/plant-form.tsx:39
+#: components/plant-form.tsx:47
 msgid "Tend with a little love"
 msgstr "Tend with a little love"
 
@@ -400,17 +448,41 @@ msgstr "Tend with a little love"
 msgid "this plant"
 msgstr "this plant"
 
+#: components/paywall.tsx:31
+msgid "This purchase isn't available right now. Please try again later."
+msgstr "This purchase isn't available right now. Please try again later."
+
 #: utils/date-helpers.ts:11
 msgid "Today"
 msgstr "Today"
 
-#: components/plant-form.tsx:220
+#: components/plant-form.tsx:233
 msgid "Try Again"
 msgstr "Try Again"
 
 #: components/chat/chat-layout.tsx:137
 msgid "Type a message..."
 msgstr "Type a message..."
+
+#: components/paywall.tsx:92
+msgid "Unlimited plants, no monthly fees"
+msgstr "Unlimited plants, no monthly fees"
+
+#: components/paywall.tsx:110
+msgid "Unlock for {priceLabel}"
+msgstr "Unlock for {priceLabel}"
+
+#: components/paywall.tsx:112
+msgid "Unlock full access"
+msgstr "Unlock full access"
+
+#: components/paywall.tsx:74
+msgid "Unlock KeepTend"
+msgstr "Unlock KeepTend"
+
+#: components/paywall.tsx:102
+msgid "Unlock the full app"
+msgstr "Unlock the full app"
 
 #: app/(drawer)/ai-settings.tsx:29
 msgid "Using default key"
@@ -419,6 +491,10 @@ msgstr "Using default key"
 #: app/(drawer)/ai-settings.tsx:29
 msgid "Using your API key"
 msgstr "Using your API key"
+
+#: components/paywall.tsx:57
+msgid "We couldn't find a previous purchase on this account."
+msgstr "We couldn't find a previous purchase on this account."
 
 #: contexts/composer-context.tsx:135
 msgid "What do you see in this photo?"
@@ -441,7 +517,7 @@ msgstr "Your AI configuration has been reset."
 msgid "Your AI configuration has been saved successfully."
 msgstr "Your AI configuration has been saved successfully."
 
-#: components/plant-form.tsx:38
+#: components/plant-form.tsx:46
 msgid "Your green friends are thriving"
 msgstr "Your green friends are thriving"
 
@@ -449,10 +525,10 @@ msgstr "Your green friends are thriving"
 msgid "your plant"
 msgstr "your plant"
 
-#: components/plant-form.tsx:233
+#: components/plant-form.tsx:246
 msgid "Your Plant's Name"
 msgstr "Your Plant's Name"
 
-#: components/plant-form.tsx:32
+#: components/plant-form.tsx:40
 msgid "Your plants are lucky to have you"
 msgstr "Your plants are lucky to have you"

@@ -13,8 +13,12 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: components/plant-form.tsx:33
+#: components/plant-form.tsx:41
 msgid "A little care goes a long way"
+msgstr ""
+
+#: components/paywall.tsx:77
+msgid "A one-time purchase. Yours forever."
 msgstr ""
 
 #: components/plant-form.tsx:240
@@ -25,24 +29,28 @@ msgstr ""
 msgid "Add plant photo"
 msgstr "Agregar foto de planta"
 
-#: src/intelligence/local-intelligence.ts:121
+#: src/intelligence/local-intelligence.ts:125
 msgid "AI configuration not found. Please set up your API key and provider in Settings."
 msgstr "Configuración de IA no encontrada. Configura tu clave API y proveedor en Ajustes."
+
+#: components/paywall.tsx:83
+msgid "AI photo analysis to identify and describe your plants"
+msgstr ""
 
 #: app/(drawer)/_layout.tsx:41
 #: app/(drawer)/_layout.tsx:42
 msgid "AI Settings"
 msgstr "Ajustes de IA"
 
-#: components/plant-form.tsx:219
+#: components/plant-form.tsx:232
 msgid "AI Setup Required"
 msgstr "Configuración de IA requerida"
 
-#: components/plant-form.tsx:291
+#: components/plant-form.tsx:304
 msgid "Analyzing photo..."
 msgstr "Analizando foto..."
 
-#: components/plant-form.tsx:320
+#: components/plant-form.tsx:334
 msgid "Anything else?"
 msgstr "¿Algo más?"
 
@@ -54,7 +62,7 @@ msgstr "Clave API"
 msgid "API key is required"
 msgstr "La clave API es obligatoria"
 
-#: src/intelligence/local-intelligence.ts:137
+#: src/intelligence/local-intelligence.ts:141
 msgid "API quota exceeded. Please check your account billing."
 msgstr "Cuota de API excedida. Revisa la facturación de tu cuenta."
 
@@ -76,7 +84,7 @@ msgstr "Cámara"
 
 #: app/(drawer)/chats.tsx:38
 #: components/message-bubble.tsx:29
-#: components/plant-form.tsx:239
+#: components/plant-form.tsx:252
 #: contexts/chat-context.tsx:29
 #: utils/photo-utils.ts:82
 msgid "Cancel"
@@ -94,6 +102,10 @@ msgstr "Opciones de chat"
 msgid "Chat with {name}"
 msgstr "Chat con {name}"
 
+#: components/paywall.tsx:89
+msgid "Chat with every plant in your collection"
+msgstr ""
+
 #: app/(drawer)/_layout.tsx:33
 #: app/(drawer)/_layout.tsx:34
 #: components/chat/chat-layout.tsx:50
@@ -108,7 +120,7 @@ msgstr "Elige cómo quieres agregar una foto de tu planta"
 msgid "Clear"
 msgstr "Borrar"
 
-#: components/plant-form.tsx:260
+#: components/plant-form.tsx:273
 msgid "Clear all form fields and start over"
 msgstr "Borrar todos los campos y empezar de nuevo"
 
@@ -140,7 +152,7 @@ msgstr "Eliminar mensaje"
 msgid "Delete Plant"
 msgstr "Eliminar planta"
 
-#: components/plant-form.tsx:320
+#: components/plant-form.tsx:334
 msgid "Describe your plant..."
 msgstr "Describe tu planta..."
 
@@ -154,13 +166,13 @@ msgstr "Ingresa tu clave API"
 
 #: components/ai-setup-form.tsx:76
 #: components/ai-setup-form.tsx:89
-#: components/plant-form.tsx:130
-#: components/plant-form.tsx:226
+#: components/plant-form.tsx:143
+#: components/plant-form.tsx:239
 #: contexts/composer-context.tsx:60
 msgid "Error"
 msgstr "Error"
 
-#: components/plant-form.tsx:35
+#: components/plant-form.tsx:43
 msgid "Every leaf thanks you"
 msgstr ""
 
@@ -176,7 +188,7 @@ msgstr ""
 #~ msgid "Failed to generate plant name. Please try again."
 #~ msgstr "Error al generar el nombre de la planta. Inténtalo de nuevo."
 
-#: components/plant-form.tsx:133
+#: components/plant-form.tsx:146
 #: contexts/composer-context.tsx:63
 msgid "Failed to pick image. Please try again."
 msgstr "Error al seleccionar imagen. Inténtalo de nuevo."
@@ -185,7 +197,7 @@ msgstr "Error al seleccionar imagen. Inténtalo de nuevo."
 msgid "Failed to reset settings. Please try again."
 msgstr "Error al restablecer ajustes. Inténtalo de nuevo."
 
-#: components/plant-form.tsx:192
+#: components/plant-form.tsx:205
 msgid "Failed to save plant. Please try again."
 msgstr "Error al guardar la planta. Inténtalo de nuevo."
 
@@ -193,12 +205,12 @@ msgstr "Error al guardar la planta. Inténtalo de nuevo."
 msgid "Failed to save settings. Please try again."
 msgstr "Error al guardar ajustes. Inténtalo de nuevo."
 
-#: components/plant-form.tsx:132
+#: components/plant-form.tsx:145
 #: contexts/composer-context.tsx:62
 msgid "Failed to take photo. Please try again."
 msgstr "Error al tomar la foto. Inténtalo de nuevo."
 
-#: components/plant-form.tsx:34
+#: components/plant-form.tsx:42
 msgid "Happy plants, happy home"
 msgstr ""
 
@@ -211,7 +223,7 @@ msgstr "Inicio"
 msgid "I need to be set up first. Please configure your AI settings."
 msgstr ""
 
-#: src/intelligence/local-intelligence.ts:131
+#: src/intelligence/local-intelligence.ts:135
 msgid "Invalid API key. Please check your AI settings."
 msgstr "Clave API inválida. Revisa tus ajustes de IA."
 
@@ -231,7 +243,11 @@ msgstr "¡Nombra una planta para empezar a chatear!"
 msgid "Navigates to the plant naming screen"
 msgstr "Navega a la pantalla para nombrar plantas"
 
-#: src/intelligence/local-intelligence.ts:143
+#: components/paywall.tsx:29
+msgid "Network error. Please check your connection and try again."
+msgstr ""
+
+#: src/intelligence/local-intelligence.ts:147
 msgid "Network error. Please check your internet connection."
 msgstr "Error de red. Revisa tu conexión a internet."
 
@@ -239,7 +255,11 @@ msgstr "Error de red. Revisa tu conexión a internet."
 msgid "No messages yet"
 msgstr "Sin mensajes aún"
 
-#: components/plant-form.tsx:36
+#: components/paywall.tsx:56
+msgid "Nothing to restore"
+msgstr ""
+
+#: components/plant-form.tsx:44
 msgid "Nurture today, bloom tomorrow"
 msgstr ""
 
@@ -251,16 +271,20 @@ msgstr "Abre la conversación con esta planta"
 msgid "Opens chat options menu"
 msgstr "Abre el menú de opciones del chat"
 
-#: components/plant-form.tsx:122
+#: components/plant-form.tsx:135
 #: contexts/composer-context.tsx:52
 msgid "Permission Required"
 msgstr "Permiso requerido"
 
-#: components/plant-form.tsx:291
+#: components/paywall.tsx:86
+msgid "Personalized, AI-generated care advice"
+msgstr ""
+
+#: components/plant-form.tsx:304
 msgid "Photo Analysis"
 msgstr "Análisis de foto"
 
-#: components/plant-form.tsx:109
+#: components/plant-form.tsx:122
 msgid "Photo Analysis Error"
 msgstr "Error en el análisis de foto"
 
@@ -277,21 +301,21 @@ msgstr "Foto de {0}"
 msgid "Photo of {name}"
 msgstr "Foto de {name}"
 
-#: components/plant-form.tsx:124
+#: components/plant-form.tsx:137
 #: contexts/composer-context.tsx:54
 msgid "Please allow access to your camera to take plant photos."
 msgstr "Permite el acceso a tu cámara para tomar fotos de plantas."
 
-#: components/plant-form.tsx:125
+#: components/plant-form.tsx:138
 #: contexts/composer-context.tsx:55
 msgid "Please allow access to your photo library to select plant photos."
 msgstr "Permite el acceso a tu biblioteca de fotos para seleccionar fotos de plantas."
 
-#: components/plant-form.tsx:219
+#: components/plant-form.tsx:232
 msgid "Please configure your AI settings first."
 msgstr "Configura tus ajustes de IA primero."
 
-#: components/plant-form.tsx:71
+#: components/plant-form.tsx:84
 msgid "Please describe your plant or add a photo"
 msgstr "Describe tu planta o agrega una foto"
 
@@ -303,7 +327,15 @@ msgstr "Proveedor"
 msgid "Provider is required"
 msgstr "El proveedor es obligatorio"
 
-#: components/plant-form.tsx:300
+#: components/paywall.tsx:45
+msgid "Purchase failed"
+msgstr ""
+
+#: components/paywall.tsx:33
+msgid "Purchases aren't available on this device."
+msgstr ""
+
+#: components/plant-form.tsx:313
 msgid "Remove photo"
 msgstr "Eliminar foto"
 
@@ -311,11 +343,11 @@ msgstr "Eliminar foto"
 msgid "Remove selected photo"
 msgstr "Eliminar foto seleccionada"
 
-#: components/plant-form.tsx:301
+#: components/plant-form.tsx:314
 msgid "Remove the selected plant photo"
 msgstr "Eliminar la foto de planta seleccionada"
 
-#: components/plant-form.tsx:264
+#: components/plant-form.tsx:277
 msgid "Reset"
 msgstr "Restablecer"
 
@@ -323,11 +355,23 @@ msgstr "Restablecer"
 msgid "Reset All"
 msgstr "Restablecer todo"
 
-#: components/plant-form.tsx:259
+#: components/plant-form.tsx:272
 msgid "Reset form"
 msgstr "Restablecer formulario"
 
-#: components/plant-form.tsx:197
+#: components/paywall.tsx:123
+msgid "Restore a previous purchase"
+msgstr ""
+
+#: components/paywall.tsx:62
+msgid "Restore failed"
+msgstr ""
+
+#: components/paywall.tsx:126
+msgid "Restore purchase"
+msgstr ""
+
+#: components/plant-form.tsx:210
 msgid "Save Error"
 msgstr "Error al guardar"
 
@@ -371,15 +415,19 @@ msgstr "Ajustes guardados"
 msgid "Share"
 msgstr "Compartir"
 
-#: components/plant-form.tsx:37
+#: components/plant-form.tsx:45
 msgid "Small care, big growth"
+msgstr ""
+
+#: components/paywall.tsx:36
+msgid "Something went wrong. Please try again."
 msgstr ""
 
 #: contexts/composer-context.tsx:132
 #~ msgid "Sorry, I couldn't respond right now. Please try again."
 #~ msgstr "Lo siento, no pude responder ahora. Inténtalo de nuevo."
 
-#: components/plant-form.tsx:235
+#: components/plant-form.tsx:248
 msgid "Start Chat"
 msgstr "Iniciar chat"
 
@@ -391,7 +439,7 @@ msgstr "Enviar"
 msgid "Take a photo or select from library"
 msgstr "Toma una foto o selecciona de la biblioteca"
 
-#: components/plant-form.tsx:39
+#: components/plant-form.tsx:47
 msgid "Tend with a little love"
 msgstr ""
 
@@ -400,17 +448,41 @@ msgstr ""
 msgid "this plant"
 msgstr "esta planta"
 
+#: components/paywall.tsx:31
+msgid "This purchase isn't available right now. Please try again later."
+msgstr ""
+
 #: utils/date-helpers.ts:11
 msgid "Today"
 msgstr "Hoy"
 
-#: components/plant-form.tsx:220
+#: components/plant-form.tsx:233
 msgid "Try Again"
 msgstr "Reintentar"
 
 #: components/chat/chat-layout.tsx:137
 msgid "Type a message..."
 msgstr "Escribe un mensaje..."
+
+#: components/paywall.tsx:92
+msgid "Unlimited plants, no monthly fees"
+msgstr ""
+
+#: components/paywall.tsx:110
+msgid "Unlock for {priceLabel}"
+msgstr ""
+
+#: components/paywall.tsx:112
+msgid "Unlock full access"
+msgstr ""
+
+#: components/paywall.tsx:74
+msgid "Unlock KeepTend"
+msgstr ""
+
+#: components/paywall.tsx:102
+msgid "Unlock the full app"
+msgstr ""
 
 #: app/(drawer)/ai-settings.tsx:29
 msgid "Using default key"
@@ -419,6 +491,10 @@ msgstr "Usando clave predeterminada"
 #: app/(drawer)/ai-settings.tsx:29
 msgid "Using your API key"
 msgstr "Usando tu clave API"
+
+#: components/paywall.tsx:57
+msgid "We couldn't find a previous purchase on this account."
+msgstr ""
 
 #: contexts/composer-context.tsx:135
 msgid "What do you see in this photo?"
@@ -441,7 +517,7 @@ msgstr "Tu configuración de IA ha sido restablecida."
 msgid "Your AI configuration has been saved successfully."
 msgstr "Tu configuración de IA se ha guardado correctamente."
 
-#: components/plant-form.tsx:38
+#: components/plant-form.tsx:46
 msgid "Your green friends are thriving"
 msgstr ""
 
@@ -449,10 +525,10 @@ msgstr ""
 msgid "your plant"
 msgstr "tu planta"
 
-#: components/plant-form.tsx:233
+#: components/plant-form.tsx:246
 msgid "Your Plant's Name"
 msgstr "El nombre de tu planta"
 
-#: components/plant-form.tsx:32
+#: components/plant-form.tsx:40
 msgid "Your plants are lucky to have you"
 msgstr ""
