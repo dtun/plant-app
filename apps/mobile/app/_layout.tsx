@@ -14,6 +14,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect, useMemo, useState } from "react";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import "react-native-reanimated";
+import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-context";
 import { PaywallGate } from "@/components/paywall";
 import { RootErrorBoundary } from "@/components/ui/root-error-boundary";
 import { StorageErrorBoundary } from "@/components/ui/storage-error-boundary";
@@ -46,31 +47,33 @@ export default function RootLayout() {
   }
 
   return (
-    <RootErrorBoundary>
-      <I18nProvider i18n={i18n}>
-        <StorageErrorBoundary>
-          <LiveStoreProvider
-            schema={schema}
-            storeId={storeId}
-            adapter={adapter}
-            batchUpdates={batchUpdates}
-          >
-            <PurchaseProvider>
-              <KeyboardProvider>
-                <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-                  <PaywallGate>
-                    <Stack screenOptions={{ headerShown: false }}>
-                      <Stack.Screen name="(drawer)" />
-                      <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
-                    </Stack>
-                  </PaywallGate>
-                  <StatusBar style="auto" />
-                </ThemeProvider>
-              </KeyboardProvider>
-            </PurchaseProvider>
-          </LiveStoreProvider>
-        </StorageErrorBoundary>
-      </I18nProvider>
-    </RootErrorBoundary>
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <RootErrorBoundary>
+        <I18nProvider i18n={i18n}>
+          <StorageErrorBoundary>
+            <LiveStoreProvider
+              schema={schema}
+              storeId={storeId}
+              adapter={adapter}
+              batchUpdates={batchUpdates}
+            >
+              <PurchaseProvider>
+                <KeyboardProvider>
+                  <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+                    <PaywallGate>
+                      <Stack screenOptions={{ headerShown: false }}>
+                        <Stack.Screen name="(drawer)" />
+                        <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
+                      </Stack>
+                    </PaywallGate>
+                    <StatusBar style="auto" />
+                  </ThemeProvider>
+                </KeyboardProvider>
+              </PurchaseProvider>
+            </LiveStoreProvider>
+          </StorageErrorBoundary>
+        </I18nProvider>
+      </RootErrorBoundary>
+    </SafeAreaProvider>
   );
 }
