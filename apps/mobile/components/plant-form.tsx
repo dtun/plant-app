@@ -20,9 +20,9 @@ import { useStore } from "@livestore/react";
 import * as Crypto from "expo-crypto";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Alert, Pressable, Text, TextInput, View, Keyboard } from "react-native";
+import { Alert, Pressable, Text, View, Keyboard } from "react-native";
 import { z } from "zod";
 import {
   KeyboardAwareScrollView,
@@ -58,21 +58,15 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
   let [isAnalyzing, setIsAnalyzing] = useState(false);
   let { store } = useStore();
   let router = useRouter();
-  let tagline = useMemo(() => careTaglines[Math.floor(Math.random() * careTaglines.length)], []);
+  let tagline = useMemo(
+    () => careTaglines[Math.floor(Math.random() * careTaglines.length)],
+    []
+  );
   let insets = useSafeAreaInsets();
-  let inputRef = useRef<TextInput>(null);
   let { progress } = useReanimatedKeyboardAnimation();
   let inputAreaStyle = useAnimatedStyle(() => ({
     paddingBottom: KEYBOARD_OPEN_GAP + (insets.bottom - KEYBOARD_OPEN_GAP) * (1 - progress.value),
   }));
-
-  // Focus on the next frame so the keyboard controller's observers are ready before the keyboard opens; autoFocus races that setup and leaves the input stranded behind the keyboard.
-  useEffect(() => {
-    let frame = requestAnimationFrame(() => {
-      inputRef.current?.focus();
-    });
-    return () => cancelAnimationFrame(frame);
-  }, []);
 
   let plantSchema = useMemo(
     () =>
@@ -333,17 +327,14 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
             name="plantInput"
             render={({ field: { onChange, onBlur, value } }) => (
               <ChatInput
-                inputRef={inputRef}
+                autoFocus
                 value={value}
                 onChangeText={onChange}
                 onBlur={onBlur}
                 placeholder={selectedImage ? t`Anything else?` : t`Describe your plant...`}
                 error={errors.plantInput?.message}
                 leftButton={
-                  <PhotoUpload
-                    selectedImage={selectedImage}
-                    onImageSelect={handleShowImagePicker}
-                  />
+                  <PhotoUpload selectedImage={selectedImage} onImageSelect={handleShowImagePicker} />
                 }
                 rightButton={
                   <SubmitButton
