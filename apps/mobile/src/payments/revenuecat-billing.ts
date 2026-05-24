@@ -45,10 +45,10 @@ export function createRevenueCatBilling(): Billing {
   }
 
   async function getEntitlement(): Promise<Result<Entitlement, BillingFailure>> {
-    if (!ensureConfigured()) {
-      return { ok: false, failure: { kind: "no-config" } };
-    }
     try {
+      if (!ensureConfigured()) {
+        return { ok: false, failure: { kind: "no-config" } };
+      }
       let info = await Purchases.getCustomerInfo();
       return { ok: true, value: entitlementFrom(info) };
     } catch (error) {
@@ -57,10 +57,10 @@ export function createRevenueCatBilling(): Billing {
   }
 
   async function getOffer(): Promise<Result<ProOffer, BillingFailure>> {
-    if (!ensureConfigured()) {
-      return { ok: false, failure: { kind: "no-config" } };
-    }
     try {
+      if (!ensureConfigured()) {
+        return { ok: false, failure: { kind: "no-config" } };
+      }
       let offerings = await Purchases.getOfferings();
       let pkg = offerings.current?.availablePackages[0] ?? null;
       resolvedOffer = pkg;
@@ -74,13 +74,13 @@ export function createRevenueCatBilling(): Billing {
   }
 
   async function purchase(): Promise<Result<Entitlement, BillingFailure>> {
-    if (!ensureConfigured()) {
-      return { ok: false, failure: { kind: "no-config" } };
-    }
-    if (!resolvedOffer) {
-      return { ok: false, failure: { kind: "no-offer" } };
-    }
     try {
+      if (!ensureConfigured()) {
+        return { ok: false, failure: { kind: "no-config" } };
+      }
+      if (!resolvedOffer) {
+        return { ok: false, failure: { kind: "no-offer" } };
+      }
       let { customerInfo } = await Purchases.purchasePackage(resolvedOffer);
       return { ok: true, value: entitlementFrom(customerInfo) };
     } catch (error) {
@@ -89,10 +89,10 @@ export function createRevenueCatBilling(): Billing {
   }
 
   async function restore(): Promise<Result<Entitlement, BillingFailure>> {
-    if (!ensureConfigured()) {
-      return { ok: false, failure: { kind: "no-config" } };
-    }
     try {
+      if (!ensureConfigured()) {
+        return { ok: false, failure: { kind: "no-config" } };
+      }
       let info = await Purchases.restorePurchases();
       return { ok: true, value: entitlementFrom(info) };
     } catch (error) {
@@ -101,16 +101,20 @@ export function createRevenueCatBilling(): Billing {
   }
 
   function subscribe(onChange: (entitlement: Entitlement) => void): () => void {
-    if (!ensureConfigured()) {
+    try {
+      if (!ensureConfigured()) {
+        return () => {};
+      }
+      function listener(info: CustomerInfo) {
+        onChange(entitlementFrom(info));
+      }
+      Purchases.addCustomerInfoUpdateListener(listener);
+      return () => {
+        Purchases.removeCustomerInfoUpdateListener(listener);
+      };
+    } catch {
       return () => {};
     }
-    function listener(info: CustomerInfo) {
-      onChange(entitlementFrom(info));
-    }
-    Purchases.addCustomerInfoUpdateListener(listener);
-    return () => {
-      Purchases.removeCustomerInfoUpdateListener(listener);
-    };
   }
 
   return { getEntitlement, getOffer, purchase, restore, subscribe };

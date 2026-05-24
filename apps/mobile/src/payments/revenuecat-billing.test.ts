@@ -180,6 +180,32 @@ test("restore succeeds with not-pro when nothing is found", async () => {
   expect(result.value.isPro).toBe(false);
 });
 
+test("getEntitlement maps a configure failure to a billing failure instead of throwing", async () => {
+  mockPurchases.configure.mockImplementationOnce(() => {
+    throw new Error("native module unavailable");
+  });
+  let billing = createRevenueCatBilling();
+
+  let result = await billing.getEntitlement();
+
+  expect(result.ok).toBe(false);
+  if (result.ok) return;
+  expect(result.failure.kind).toBe("unknown");
+  expect(mockPurchases.getCustomerInfo).not.toHaveBeenCalled();
+});
+
+test("subscribe returns a no-op unsubscribe when configure throws", () => {
+  mockPurchases.configure.mockImplementationOnce(() => {
+    throw new Error("native module unavailable");
+  });
+  let billing = createRevenueCatBilling();
+
+  let unsubscribe = billing.subscribe(() => {});
+
+  expect(mockPurchases.addCustomerInfoUpdateListener).not.toHaveBeenCalled();
+  expect(() => unsubscribe()).not.toThrow();
+});
+
 test("subscribe maps vendor updates to entitlements and unsubscribes cleanly", () => {
   let billing = createRevenueCatBilling();
   let seen: boolean[] = [];

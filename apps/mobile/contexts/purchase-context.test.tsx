@@ -3,7 +3,7 @@ import { useStore } from "@livestore/react";
 import { Text } from "react-native";
 
 import { events } from "@/src/livestore/schema";
-import { __setBillingForTests, createFakeBilling } from "@/src/payments";
+import { __setBillingForTests, createFakeBilling, type Billing } from "@/src/payments";
 
 import { PurchaseProvider, usePurchase } from "./purchase-context";
 
@@ -67,6 +67,23 @@ test("fails closed (stays locked) when the entitlement check errors", async () =
   __setBillingForTests(
     createFakeBilling({ entitlement: { ok: false, failure: { kind: "network" } } })
   );
+
+  renderProvider();
+
+  await waitFor(() => expect(screen.getByText("pro=false;loading=false")).toBeOnTheScreen());
+});
+
+test("clears the loading gate and fails closed when the billing call rejects", async () => {
+  let rejectingBilling: Billing = {
+    getEntitlement: async () => {
+      throw new Error("native module hung");
+    },
+    getOffer: async () => ({ ok: false, failure: { kind: "unknown" } }),
+    purchase: async () => ({ ok: false, failure: { kind: "unknown" } }),
+    restore: async () => ({ ok: false, failure: { kind: "unknown" } }),
+    subscribe: () => () => {},
+  };
+  __setBillingForTests(rejectingBilling);
 
   renderProvider();
 

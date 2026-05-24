@@ -66,26 +66,31 @@ export function PurchaseProvider({ children }: { children: React.ReactNode }) {
     }
 
     async function initialize() {
-      let result = await api.getEntitlement();
-      if (!mounted) return;
+      try {
+        let result = await api.getEntitlement();
+        if (!mounted) return;
 
-      if (result.ok) {
-        apply(result.value);
-      } else if (result.failure.kind === "no-config") {
-        // Unconfigured (dev, web, missing keys): leave the app open.
-        setIsPro(true);
-      } else {
-        // Fail closed: stay locked so AI costs stay protected. RevenueCat caches
-        // CustomerInfo locally, so legitimate owners still resolve on retry.
-        setIsPro(false);
-      }
+        if (result.ok) {
+          apply(result.value);
+        } else if (result.failure.kind === "no-config") {
+          // Unconfigured (dev, web, missing keys): leave the app open.
+          setIsPro(true);
+        } else {
+          // Fail closed: stay locked so AI costs stay protected. RevenueCat caches
+          // CustomerInfo locally, so legitimate owners still resolve on retry.
+          setIsPro(false);
+        }
 
-      let offerResult = await api.getOffer();
-      if (mounted && offerResult.ok) {
-        setOffer(offerResult.value);
-      }
-      if (mounted) {
-        setIsLoading(false);
+        let offerResult = await api.getOffer();
+        if (mounted && offerResult.ok) {
+          setOffer(offerResult.value);
+        }
+      } catch {
+        // The seam shouldn't throw, but never leave the gate stuck on loading:
+        // fail closed so the app is usable rather than frozen on the spinner.
+        if (mounted) setIsPro(false);
+      } finally {
+        if (mounted) setIsLoading(false);
       }
     }
 
