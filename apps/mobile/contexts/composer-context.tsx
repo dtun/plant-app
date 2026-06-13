@@ -30,7 +30,7 @@ let ComposerContext = createContext<ComposerContextValue | null>(null);
 
 export function ComposerProvider({ children }: { children: React.ReactNode }) {
   let { plantId, store, plant } = useChatContext();
-  let { messages, markAsNew, setIsGenerating, isGenerating } = useMessageList();
+  let { messages, markAsNew, setIsGenerating, isGenerating, scrollToBottom } = useMessageList();
 
   let { t } = useLingui();
   let [inputText, setInputText] = useState("");
@@ -113,6 +113,7 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
         createdAt: now,
       })
     );
+    scrollToBottom();
 
     // Generate AI response
     setIsGenerating(true);

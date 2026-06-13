@@ -4,7 +4,7 @@ import { messagesByPlant$, type Message } from "@/src/livestore/queries";
 import { formatDayLabel, isSameDay } from "@/utils/date-helpers";
 import type { LegendListRef } from "@legendapp/list";
 import { useQuery } from "@livestore/react";
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useRef, useState } from "react";
 import { useKeyboardHandler } from "react-native-keyboard-controller";
 import { runOnJS } from "react-native-reanimated";
 
@@ -33,6 +33,8 @@ export function MessageListProvider({ children }: { children: React.ReactNode })
   let { markAsNew, getAnimationType } = useMessageAnimation();
   let [keyboardHeight, setKeyboardHeight] = useState(0);
 
+  // Explicit scroll for deliberate moments (e.g. the user sending a message).
+  // Routine follow-on-new-content is handled by LegendList's maintainScrollAtEnd.
   let scrollToBottom = useCallback(() => {
     if (flatListRef.current && messages.length > 0) {
       setTimeout(() => {
@@ -41,17 +43,10 @@ export function MessageListProvider({ children }: { children: React.ReactNode })
     }
   }, [messages.length]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages.length, isGenerating, scrollToBottom]);
-
   useKeyboardHandler({
     onEnd(e) {
       "worklet";
       runOnJS(setKeyboardHeight)(e.height);
-      if (e.height > 0) {
-        runOnJS(scrollToBottom)();
-      }
     },
   });
 
