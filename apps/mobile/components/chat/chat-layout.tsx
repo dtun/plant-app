@@ -101,7 +101,10 @@ export function ChatLayout() {
           maintainScrollAtEndThreshold={0.1}
           maintainVisibleContentPosition
           contentContainerStyle={{
-            flexGrow: 1,
+            // Only stretch/center for the empty state. When populated, leave
+            // sizing to alignItemsAtEnd — flexGrow inflates the measured
+            // content size and breaks its padding + scroll-range math.
+            flexGrow: messages.length === 0 ? 1 : undefined,
             justifyContent: messages.length === 0 ? "center" : undefined,
             paddingTop: 8,
             paddingBottom: keyboardHeight > 0 ? keyboardHeight + 8 : 8,

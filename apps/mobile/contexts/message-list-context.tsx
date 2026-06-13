@@ -4,7 +4,7 @@ import { messagesByPlant$, type Message } from "@/src/livestore/queries";
 import { formatDayLabel, isSameDay } from "@/utils/date-helpers";
 import type { LegendListRef } from "@legendapp/list";
 import { useQuery } from "@livestore/react";
-import { createContext, useCallback, useContext, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useKeyboardHandler } from "react-native-keyboard-controller";
 import { runOnJS } from "react-native-reanimated";
 
@@ -41,6 +41,15 @@ export function MessageListProvider({ children }: { children: React.ReactNode })
         flatListRef.current?.scrollToEnd({ animated: true });
       }, 100);
     }
+  }, [messages.length]);
+
+  // Land at the bottom once when a chat first opens. alignItemsAtEnd only
+  // bottom-aligns content shorter than the viewport, so long chats need this.
+  let didInitialScroll = useRef(false);
+  useEffect(() => {
+    if (didInitialScroll.current || messages.length === 0) return;
+    didInitialScroll.current = true;
+    setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 0);
   }, [messages.length]);
 
   useKeyboardHandler({
