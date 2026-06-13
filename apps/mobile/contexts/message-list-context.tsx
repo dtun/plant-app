@@ -6,7 +6,7 @@ import type { LegendListRef } from "@legendapp/list";
 import { useQuery } from "@livestore/react";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useKeyboardHandler } from "react-native-keyboard-controller";
-import { runOnJS } from "react-native-reanimated";
+import { useSharedValue, type SharedValue } from "react-native-reanimated";
 
 export type ListItem = { type: "separator"; label: string } | { type: "message"; message: Message };
 
@@ -15,7 +15,7 @@ interface MessageListContextValue {
   listData: ListItem[];
   flatListRef: React.RefObject<LegendListRef | null>;
   scrollToBottom: () => void;
-  keyboardHeight: number;
+  keyboardHeight: SharedValue<number>;
   isGenerating: boolean;
   setIsGenerating: (value: boolean) => void;
   markAsNew: (id: string) => void;
@@ -31,7 +31,12 @@ export function MessageListProvider({ children }: { children: React.ReactNode })
   let [isGenerating, setIsGenerating] = useState(false);
   let flatListRef = useRef<LegendListRef>(null);
   let { markAsNew, getAnimationType } = useMessageAnimation();
-  let [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  // Keyboard height lives on the UI thread as a shared value so the list inset
+  // can track it per-frame without a React re-render. Driving this through
+  // React state re-rendered (and re-laid-out) the whole list 3x per open on
+  // iOS — that was the jank. See the v0 iOS post.
+  let keyboardHeight = useSharedValue(0);
 
   // Explicit scroll for deliberate moments (e.g. the user sending a message).
   // Routine follow-on-new-content is handled by LegendList's maintainScrollAtEnd.
@@ -70,9 +75,13 @@ export function MessageListProvider({ children }: { children: React.ReactNode })
   }, [messages.length]);
 
   useKeyboardHandler({
+    onMove(e) {
+      "worklet";
+      keyboardHeight.value = e.height;
+    },
     onEnd(e) {
       "worklet";
-      runOnJS(setKeyboardHeight)(e.height);
+      keyboardHeight.value = e.height;
     },
   });
 

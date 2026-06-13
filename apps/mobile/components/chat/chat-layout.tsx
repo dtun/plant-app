@@ -10,11 +10,11 @@ import { useChatContext } from "@/contexts/chat-context";
 import { useComposer } from "@/contexts/composer-context";
 import { useMessageList } from "@/contexts/message-list-context";
 import { useLingui } from "@lingui/react/macro";
-import { LegendList } from "@legendapp/list";
+import { AnimatedLegendList } from "@legendapp/list/reanimated";
 import { Stack } from "expo-router";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { KeyboardStickyView } from "react-native-keyboard-controller";
-import Animated, { FadeIn } from "react-native-reanimated";
+import Animated, { FadeIn, useAnimatedProps } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useResolveClassNames } from "uniwind";
 
@@ -41,6 +41,14 @@ export function ChatLayout() {
 
   let inputAreaStyle = useResolveClassNames("px-4 pt-2 bg-background");
 
+  // Track the keyboard with a native scroll inset on the UI thread, so opening
+  // the keyboard lifts the last messages without re-rendering or re-laying-out
+  // the list (the v0 iOS approach). iOS-only prop; a no-op on Android.
+  let listAnimatedProps = useAnimatedProps(() => ({
+    contentInset: { bottom: keyboardHeight.value },
+    scrollIndicatorInsets: { bottom: keyboardHeight.value },
+  }));
+
   return (
     <View className="flex-1 bg-background">
       <Stack.Screen
@@ -65,8 +73,9 @@ export function ChatLayout() {
       />
 
       <Animated.View entering={FadeIn.duration(200)} style={{ flex: 1 }}>
-        <LegendList
+        <AnimatedLegendList
           ref={flatListRef}
+          animatedProps={listAnimatedProps}
           data={listData}
           estimatedItemSize={80}
           keyExtractor={(item, index) =>
@@ -107,7 +116,7 @@ export function ChatLayout() {
             flexGrow: messages.length === 0 ? 1 : undefined,
             justifyContent: messages.length === 0 ? "center" : undefined,
             paddingTop: 8,
-            paddingBottom: keyboardHeight > 0 ? keyboardHeight + 8 : 8,
+            paddingBottom: 8,
           }}
           keyboardDismissMode="interactive"
           keyboardShouldPersistTaps="handled"
