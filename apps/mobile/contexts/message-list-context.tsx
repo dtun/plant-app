@@ -45,11 +45,28 @@ export function MessageListProvider({ children }: { children: React.ReactNode })
 
   // Land at the bottom once when a chat first opens. alignItemsAtEnd only
   // bottom-aligns content shorter than the viewport, so long chats need this.
+  // The list often isn't laid out on the first data tick, so a single scroll
+  // no-ops — retry across a few frames until it sticks (per the v0 iOS post).
   let didInitialScroll = useRef(false);
   useEffect(() => {
     if (didInitialScroll.current || messages.length === 0) return;
     didInitialScroll.current = true;
-    setTimeout(() => flatListRef.current?.scrollToEnd({ animated: false }), 0);
+
+    let pending: Array<ReturnType<typeof setTimeout>> = [];
+    function snapToEnd() {
+      flatListRef.current?.scrollToEnd({ animated: false });
+    }
+    let raf = requestAnimationFrame(() => {
+      snapToEnd();
+      requestAnimationFrame(snapToEnd);
+    });
+    pending.push(setTimeout(snapToEnd, 100));
+    pending.push(setTimeout(snapToEnd, 300));
+
+    return () => {
+      cancelAnimationFrame(raf);
+      for (let id of pending) clearTimeout(id);
+    };
   }, [messages.length]);
 
   useKeyboardHandler({
