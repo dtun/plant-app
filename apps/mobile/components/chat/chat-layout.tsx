@@ -25,7 +25,6 @@ export function ChatLayout() {
     messages,
     listData,
     flatListRef,
-    scrollToBottom,
     keyboardHeight,
     isGenerating,
     getAnimationType,
@@ -97,15 +96,18 @@ export function ChatLayout() {
               </Text>
             </View>
           }
+          alignItemsAtEnd
+          maintainScrollAtEnd
+          maintainScrollAtEndThreshold={0.1}
+          maintainVisibleContentPosition
           contentContainerStyle={{
             flexGrow: 1,
-            justifyContent: messages.length === 0 ? "center" : "flex-end",
+            justifyContent: messages.length === 0 ? "center" : undefined,
             paddingTop: 8,
             paddingBottom: keyboardHeight > 0 ? keyboardHeight + 8 : 8,
           }}
           keyboardDismissMode="interactive"
           keyboardShouldPersistTaps="handled"
-          onContentSizeChange={scrollToBottom}
         />
       </Animated.View>
 
