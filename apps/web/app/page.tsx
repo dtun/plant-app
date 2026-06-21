@@ -14,12 +14,9 @@ export default function Home() {
             className="mx-auto mb-6"
             priority
           />
-          <h1 className="text-5xl sm:text-7xl font-bold tracking-tight mb-6">
-            KeepTend
-          </h1>
+          <h1 className="text-5xl sm:text-7xl font-bold tracking-tight mb-6">KeepTend</h1>
           <p className="text-xl sm:text-2xl text-gray-600 dark:text-gray-400 mb-4 max-w-2xl mx-auto">
-            Give your plants creative, personalized names with smart photo
-            analysis
+            Your plant has a lot to say. Start a conversation. Keep it thriving.
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             <a
@@ -29,15 +26,15 @@ export default function Home() {
               className="underline hover:text-gray-700 dark:hover:text-gray-300"
             >
               Available on iOS (TestFlight Beta)
-            </a>
-            {" "}&bull;{" "}Coming Soon on Android
+            </a>{" "}
+            &bull; Coming Soon on Android
           </p>
         </div>
       </main>
 
       {/* Footer */}
       <footer className="py-8 px-4 text-center text-sm text-gray-500 dark:text-gray-400">
-        <p>&copy; 2025 KeepTend. Smart plant naming.</p>
+        <p>&copy; 2025 KeepTend. Chat with your plants.</p>
         <p className="mt-2">
           A product by{" "}
           <a
