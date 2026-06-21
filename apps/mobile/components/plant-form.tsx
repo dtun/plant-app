@@ -291,10 +291,10 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
           </View>
           <View className="items-center gap-1">
             <Text className="text-center text-xl font-medium text-color">
-              <Trans>Chat with your plant to care for it</Trans>
+              <Trans>Your plant has a lot to say.</Trans>
             </Text>
             <Text className="text-center text-base font-light text-color opacity-70">
-              <Trans>Add a photo or describe your plant to begin</Trans>
+              <Trans>Start a conversation. Keep it thriving.</Trans>
             </Text>
           </View>
         </View>
