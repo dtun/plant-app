@@ -15,21 +15,21 @@ let defaultProps = {
 test("renders InitialsAvatar when plant has no image", () => {
   render(<ChatListItem {...defaultProps} photoUri={null} />);
 
-  expect(screen.getByTestId("initials-avatar")).toBeOnTheScreen();
+  expect(screen.getByLabelText("Snake Plant avatar")).toBeOnTheScreen();
   expect(screen.getByText("SP")).toBeOnTheScreen();
 });
 
 test("renders plant image when photoUri is provided", () => {
   render(<ChatListItem {...defaultProps} photoUri="https://example.com/photo.jpg" />);
 
-  expect(screen.getByTestId("initials-avatar")).toBeOnTheScreen();
+  expect(screen.getByLabelText("Snake Plant avatar")).toBeOnTheScreen();
   expect(screen.getByLabelText("Photo of Snake Plant")).toBeOnTheScreen();
 });
 
 test("InitialsAvatar size matches the chat list image size of 48px", () => {
   render(<ChatListItem {...defaultProps} photoUri={null} />);
 
-  let avatar = screen.getByTestId("initials-avatar");
+  let avatar = screen.getByLabelText("Snake Plant avatar");
   expect(avatar.props.style.width).toBe(48);
   expect(avatar.props.style.height).toBe(48);
 });
@@ -52,7 +52,7 @@ test("image is removed from tree when onError fires", () => {
   fireEvent(image, "error");
 
   expect(screen.queryByLabelText("Photo of Snake Plant")).toBeNull();
-  expect(screen.getByTestId("initials-avatar")).toBeOnTheScreen();
+  expect(screen.getByLabelText("Snake Plant avatar")).toBeOnTheScreen();
 });
 
 test("fallback InitialsAvatar is always visible with correct name", () => {

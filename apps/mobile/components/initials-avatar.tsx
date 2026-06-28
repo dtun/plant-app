@@ -13,7 +13,6 @@ export function InitialsAvatar({ name, size = 48 }: InitialsAvatarProps) {
 
   return (
     <View
-      testID="initials-avatar"
       accessibilityLabel={`${name} avatar`}
       style={{
         width: size,
