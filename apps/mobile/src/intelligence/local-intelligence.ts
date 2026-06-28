@@ -2,7 +2,7 @@ import { msg } from "@lingui/core/macro";
 import { i18n } from "@/src/i18n";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createOpenAI } from "@ai-sdk/openai";
-import { generateText } from "ai";
+import { APICallError, generateText } from "ai";
 import { z } from "zod";
 
 import "expo-sqlite/localStorage/install";
@@ -127,26 +127,37 @@ function noConfigFailure(): AIFailure {
   };
 }
 
+function networkFailure(): AIFailure {
+  return {
+    kind: "network",
+    message: i18n._(msg`Network error. Please check your internet connection.`),
+  };
+}
+
 function mapErrorToFailure(error: unknown): AIFailure {
-  if (error instanceof Error) {
-    if (error.message.includes("API key")) {
+  if (APICallError.isInstance(error)) {
+    // No status code means the request never reached the API — the SDK wraps
+    // connection failures as APICallError with isRetryable set and statusCode unset.
+    if (error.statusCode === undefined) {
+      return networkFailure();
+    }
+    if (error.statusCode === 401 || error.statusCode === 403) {
       return {
         kind: "invalid-key",
         message: i18n._(msg`Invalid API key. Please check your AI settings.`),
       };
     }
-    if (error.message.includes("quota") || error.message.includes("billing")) {
+    if (error.statusCode === 402 || error.statusCode === 429) {
       return {
         kind: "quota",
         message: i18n._(msg`API quota exceeded. Please check your account billing.`),
       };
     }
-    if (error.message.includes("network") || error.message.includes("fetch")) {
-      return {
-        kind: "network",
-        message: i18n._(msg`Network error. Please check your internet connection.`),
-      };
-    }
+  }
+
+  // A bare fetch failure (no cause attached) surfaces as an unwrapped TypeError.
+  if (error instanceof TypeError) {
+    return networkFailure();
   }
 
   let detail = error instanceof Error ? error.message : String(error);

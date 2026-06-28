@@ -1,11 +1,22 @@
-import { generateText } from "ai";
+import { APICallError, generateText } from "ai";
 
 import { createLocalIntelligence } from "./local-intelligence";
 import type { PlantData } from "./types";
 
 jest.mock("ai", () => ({
+  ...jest.requireActual("ai"),
   generateText: jest.fn(),
 }));
+
+function apiError(statusCode: number | undefined, isRetryable = false) {
+  return new APICallError({
+    message: "request failed",
+    url: "https://api.example.com",
+    requestBodyValues: {},
+    statusCode,
+    isRetryable,
+  });
+}
 
 jest.mock("@ai-sdk/openai", () => ({
   createOpenAI: () => () => ({ provider: "openai-stub" }),
@@ -61,9 +72,9 @@ test("generatePlantName returns no-config failure when no AI config can be resol
   expect(result.failure.message).toMatch(/AI configuration not found/);
 });
 
-test("generatePlantName maps 'API key' SDK errors to invalid-key failure", async () => {
+test("generatePlantName maps 401/403 SDK errors to invalid-key failure", async () => {
   setUserConfig();
-  mockGenerateText.mockRejectedValueOnce(new Error("Invalid API key provided"));
+  mockGenerateText.mockRejectedValueOnce(apiError(401));
   let intel = createLocalIntelligence();
 
   let result = await intel.generatePlantName(plantData);
@@ -73,9 +84,9 @@ test("generatePlantName maps 'API key' SDK errors to invalid-key failure", async
   expect(result.failure.kind).toBe("invalid-key");
 });
 
-test("generatePlantName maps quota/billing SDK errors to quota failure", async () => {
+test("generatePlantName maps 402/429 SDK errors to quota failure", async () => {
   setUserConfig();
-  mockGenerateText.mockRejectedValueOnce(new Error("You exceeded your current quota"));
+  mockGenerateText.mockRejectedValueOnce(apiError(429));
   let intel = createLocalIntelligence();
 
   let result = await intel.generatePlantName(plantData);
@@ -85,9 +96,21 @@ test("generatePlantName maps quota/billing SDK errors to quota failure", async (
   expect(result.failure.kind).toBe("quota");
 });
 
-test("generatePlantName maps network/fetch SDK errors to network failure", async () => {
+test("generatePlantName maps connection-level SDK errors to network failure", async () => {
   setUserConfig();
-  mockGenerateText.mockRejectedValueOnce(new Error("network request failed"));
+  mockGenerateText.mockRejectedValueOnce(apiError(undefined, true));
+  let intel = createLocalIntelligence();
+
+  let result = await intel.generatePlantName(plantData);
+
+  expect(result.ok).toBe(false);
+  if (result.ok) return;
+  expect(result.failure.kind).toBe("network");
+});
+
+test("generatePlantName maps a bare fetch TypeError to network failure", async () => {
+  setUserConfig();
+  mockGenerateText.mockRejectedValueOnce(new TypeError("fetch failed"));
   let intel = createLocalIntelligence();
 
   let result = await intel.generatePlantName(plantData);
