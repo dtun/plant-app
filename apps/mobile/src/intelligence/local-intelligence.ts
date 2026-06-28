@@ -153,6 +153,10 @@ function mapErrorToFailure(error: unknown): AIFailure {
   return { kind: "unknown", message: detail };
 }
 
+function toImagePart(base64: string) {
+  return { type: "image" as const, image: base64, mediaType: "image/jpeg" };
+}
+
 async function imageToBase64(input: PhotoInput): Promise<string> {
   if (input.base64) {
     return input.base64;
@@ -276,11 +280,7 @@ export function createLocalIntelligence(): PlantIntelligence {
                 type: "text",
                 text: "Analyze this plant photo and provide a detailed description of its appearance, including leaf shape, color, texture, size, and any notable characteristics. Focus on botanical features that would help identify or describe the plant.",
               },
-              {
-                type: "image",
-                image: base64,
-                mediaType: "image/jpeg",
-              },
+              toImagePart(base64),
             ],
           },
         ],
@@ -312,13 +312,13 @@ export function createLocalIntelligence(): PlantIntelligence {
           if (m.imageUri) {
             let content: (
               | { type: "text"; text: string }
-              | { type: "image"; image: string; mimeType: string }
+              | ReturnType<typeof toImagePart>
             )[] = [];
             if (m.content) {
               content.push({ type: "text", text: m.content });
             }
             let base64 = await imageToBase64({ imageUri: m.imageUri, base64: m.imageBase64 });
-            content.push({ type: "image", image: base64, mimeType: "image/jpeg" });
+            content.push(toImagePart(base64));
             return { role: "user" as const, content };
           }
           return { role: m.role, content: m.content };

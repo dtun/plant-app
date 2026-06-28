@@ -121,3 +121,20 @@ test("generatePlantName returns ok result with trimmed text on success", async (
   if (!result.ok) return;
   expect(result.value).toBe("Leafy");
 });
+
+test("generateChatResponse sends image parts the vision model understands (mediaType)", async () => {
+  setUserConfig();
+  mockGenerateText.mockResolvedValueOnce({ text: "Hello!" });
+  let intel = createLocalIntelligence();
+
+  await intel.generateChatResponse({
+    plantContext: { name: "Fern" },
+    messages: [
+      { role: "user", content: "What am I?", imageUri: "file://x.jpg", imageBase64: "abc123" },
+    ],
+  });
+
+  let call = mockGenerateText.mock.calls[0][0];
+  let imagePart = call.messages[0].content.find((part: { type: string }) => part.type === "image");
+  expect(imagePart).toEqual({ type: "image", image: "abc123", mediaType: "image/jpeg" });
+});
