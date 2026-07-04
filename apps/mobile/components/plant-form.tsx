@@ -3,6 +3,7 @@ import { ChatInput } from "@/components/ui/chat-input";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { PhotoUpload } from "@/components/ui/photo-upload";
 import { SubmitButton } from "@/components/ui/submit-button";
+import { i18n } from "@/src/i18n";
 import { intelligence, type PlantData } from "@/src/intelligence";
 import { events } from "@/src/livestore/schema";
 import { getDeviceId } from "@/utils/device";
@@ -12,6 +13,7 @@ import {
   takePhotoWithCamera,
   type PhotoFailure,
 } from "@/utils/photo-utils";
+import { msg } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useStore } from "@livestore/react";
@@ -33,6 +35,17 @@ let leafImage = require("@/assets/images/KeepTend-Leaf.png");
 
 const KEYBOARD_OPEN_GAP = 8;
 
+let careTaglines = [
+  msg`Your plants are lucky to have you`,
+  msg`A little care goes a long way`,
+  msg`Happy plants, happy home`,
+  msg`Every leaf thanks you`,
+  msg`Nurture today, bloom tomorrow`,
+  msg`Small care, big growth`,
+  msg`Your green friends are thriving`,
+  msg`Tend with a little love`,
+];
+
 interface PlantFormProps {
   setOptions?: (options: Partial<object>) => void;
 }
@@ -44,6 +57,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
   let [isAnalyzing, setIsAnalyzing] = useState(false);
   let { store } = useStore();
   let router = useRouter();
+  let tagline = useMemo(() => careTaglines[Math.floor(Math.random() * careTaglines.length)], []);
   let insets = useSafeAreaInsets();
   let inputRef = useRef<TextInput>(null);
   // Stick the input to the keyboard via Reanimated (height.value is negative when open); KeyboardStickyView's legacy Animated driver fails to track the keyboard on RN 0.83 / Fabric, leaving the input covered.
@@ -281,7 +295,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
         bounces={false}
         contentContainerStyle={{ flex: 1, gap: 16, justifyContent: "flex-end" }}
       >
-        <View className="flex-1 items-center justify-center gap-3">
+        <View className="flex-1 items-center justify-center gap-2">
           <View className="h-12 w-12">
             <Image
               source={leafImage}
@@ -289,14 +303,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
               contentFit="contain"
             />
           </View>
-          <View className="items-center gap-1">
-            <Text className="text-center text-xl font-medium text-color">
-              <Trans>Your plant has a lot to say.</Trans>
-            </Text>
-            <Text className="text-center text-base font-light text-color opacity-70">
-              <Trans>Start a conversation. Keep it thriving.</Trans>
-            </Text>
-          </View>
+          <Text className="text-center text-lg font-light text-color">{i18n._(tagline)}</Text>
         </View>
         {isAnalyzing || watchedFields.photoDescription ? (
           <View className="flex-row justify-between items-center">
