@@ -98,19 +98,9 @@ let calculateTotal = function (items) {
 2. **For functions:** Use `function` declaration unless there's a specific technical exception that requires explanation
 3. **When in doubt:** Default to `let` for variables and `function` for functions
 
-## AI Integration Architecture
+## AI Integration
 
-### Provider Abstraction Pattern
-
-- Use AI SDK with createOpenAI() and createAnthropic() for provider abstraction
-- Support multiple AI providers (OpenAI, Anthropic) with unified interface
-- Store provider choice and API keys in localStorage using expo-sqlite polyfill
-
-### Model Selection Strategy
-
-- **Photo Analysis**: Use vision-capable models (gpt-4o, claude-sonnet-4-6)
-- **Name Generation**: Use lighter models (gpt-4o-mini, claude-haiku-4-5-20251001) for cost efficiency
-- Structured error handling with user-friendly messages for common API issues
+AI capabilities (plant naming, photo description, chat) go through the `PlantIntelligence` seam — see `CONTEXT.md`. The interface is operation-shaped and provider-agnostic: callers never see provider names, model names, or API keys, and failures cross the seam as a typed `AIFailure`, never as thrown errors. Provider wiring, config resolution, and model selection (vision-capable models for photo analysis, lighter models for name generation) are private to the adapter in `apps/mobile/src/intelligence/`.
 
 ## Internationalization (Lingui v5)
 
