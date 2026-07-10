@@ -11,6 +11,13 @@ module.exports = defineConfig([
     ignores: ["dist/*"],
   },
   {
+    // let-by-default, function declarations — see docs/adr/0002
+    rules: {
+      "func-style": ["error", "declaration"],
+      "prefer-const": "off",
+    },
+  },
+  {
     files: ["**/*.test.ts", "**/*.test.tsx", "**/jest.setup.js"],
     plugins: {
       jest: jestPlugin,
