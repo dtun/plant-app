@@ -31,8 +31,8 @@ export function SubmitButton({
       <TouchableOpacity
         className={
           variant === "primary"
-            ? "rounded justify-center items-center bg-tint"
-            : "rounded justify-center items-center"
+            ? "rounded-lg justify-center items-center bg-tint"
+            : "rounded-lg justify-center items-center"
         }
         style={{
           width: size,
@@ -53,7 +53,7 @@ export function SubmitButton({
         ) : children ? (
           children
         ) : (
-          <IconSymbol colorClassName={null} name={icon} size={16} color="#fff" />
+          <IconSymbol colorClassName={null} name={icon} size={20} color="#fff" />
         )}
       </TouchableOpacity>
     </View>

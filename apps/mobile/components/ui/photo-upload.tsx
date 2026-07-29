@@ -2,6 +2,7 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useLingui } from "@lingui/react/macro";
 import { Image } from "expo-image";
 import { TouchableOpacity, View } from "react-native";
+import { useResolveClassNames } from "uniwind";
 
 interface PhotoUploadProps {
   onImageSelect: () => void;
@@ -12,15 +13,15 @@ interface PhotoUploadProps {
 
 export function PhotoUpload({
   onImageSelect,
-  onRemoveImage,
   selectedImage,
   size = 32,
 }: PhotoUploadProps) {
   let { t } = useLingui();
+  let { borderRadius: borderRadiusLg } = useResolveClassNames('rounded-lg');
   return (
     <View className="flex-row items-center gap-2">
       <TouchableOpacity
-        className="rounded items-center justify-center bg-gray-900 dark:bg-gray-800"
+        className="rounded-lg items-center justify-center bg-gray-900 dark:bg-gray-800"
         style={{ width: size, height: size }}
         onPress={onImageSelect}
         accessible={true}
@@ -33,9 +34,9 @@ export function PhotoUpload({
       {selectedImage ? (
         <Image
           source={{ uri: selectedImage }}
-          className="self-center rounded"
-          style={{ width: size, height: size }}
-        />
+          className="self-center rounded-lg"
+          style={{ width: size, height: size, borderRadius: borderRadiusLg }}
+          />
       ) : null}
     </View>
   );
