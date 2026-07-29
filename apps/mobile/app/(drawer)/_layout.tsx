@@ -24,6 +24,7 @@ export default function DrawerLayout() {
           drawerLabel: t`Home`,
           title: t`Home`,
           headerTitle: () => null,
+          headerTransparent: true,
         }}
       />
       <Drawer.Screen
