@@ -24,10 +24,6 @@ export default function ChatsScreen() {
   let { store } = useStore();
   let router = useRouter();
 
-  function handlePlantPress(plantId: string) {
-    router.push(`/chat/${plantId}` as any);
-  }
-
   function handleDeletePlant(plantId: string) {
     let plant = plants.find((p) => p.id === plantId);
     let name = plant?.name ?? t`this plant`;
@@ -100,7 +96,7 @@ export default function ChatsScreen() {
             photoUri={item.photoUri}
             lastMessageContent={item.lastMessageContent}
             lastMessageCreatedAt={item.lastMessageCreatedAt}
-            onPress={handlePlantPress}
+            onPress={plantId => router.push(`/chat/${plantId}`)}
             onDelete={handleDeletePlant}
           />
         )}
