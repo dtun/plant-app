@@ -1,8 +1,18 @@
-# KeepTend Domain Glossary
+# KeepTend Context
+
+## Why KeepTend Exists
+
+People who keep houseplants form real attachments to them, but the relationship is mute. A plant can't say it's thirsty, can't react to being repotted, can't be talked to after a long day — so owners oscillate between guesswork and worry, and the affection they feel has nowhere to land. Existing plant apps treat plants as maintenance objects: databases to identify them, schedules to service them. Nothing treats the plant as a companion.
+
+KeepTend gives each plant a voice — a name, a personality grounded in what it actually is, and a conversation — so tending becomes a relationship rather than a chore list. Care knowledge arrives through the plant's voice, not through features the owner configures.
+
+This framing is a filter: a feature belongs in KeepTend when it deepens the owner–plant relationship or arrives through the plant's voice. A capability that treats the plant as a maintenance object (a bare encyclopedia lookup, a configuration-heavy schedule) is off-mission unless the plant delivers it.
+
+## Domain Glossary
 
 Living document. Terms are added as they get grilled through architecture reviews — don't pre-fill speculatively.
 
-## PlantIntelligence
+### PlantIntelligence
 
 The seam between the app and AI capabilities about plants. Three operations:
 
@@ -20,7 +30,7 @@ Adapters:
 
 Provider choice (OpenAI vs Anthropic) is private to whichever adapter is wired up. Callers never see provider names, model names, or API keys.
 
-## PhotoPicker
+### PhotoPicker
 
 The seam between the app and device photo capture (camera + library). Two operations:
 
