@@ -24,8 +24,8 @@ jest.mock("@/utils/device", () => ({
   getDeviceId: () => "test-device",
 }));
 
-jest.mock("@/components/ui/chat-input", () => ({
-  ChatInput: () => null,
+jest.mock("@react-navigation/elements", () => ({
+  useHeaderHeight: () => 0,
 }));
 
 jest.mock("@/components/ui/photo-upload", () => ({
@@ -58,6 +58,7 @@ jest.mock("@/hooks/use-message-animation", () => ({
 
 jest.mock("react-native-safe-area-context", () => ({
   SafeAreaView: ({ children }: { children: React.ReactNode }) => children,
+  useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
 
 test("renders empty state when there are no messages", () => {
