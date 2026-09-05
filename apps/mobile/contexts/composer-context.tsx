@@ -13,14 +13,14 @@ import { useLingui } from "@lingui/react/macro";
 import * as Crypto from "expo-crypto";
 import { createContext, useCallback, useContext, useState } from "react";
 import { Alert, LayoutChangeEvent } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
 
 interface ComposerContextValue {
   inputText: string;
   setInputText: (text: string) => void;
   pendingImageUri: string | null;
   setPendingImageUri: (uri: string | null) => void;
-  composerHeight: { value: number };
+  /** Measured height of the floating composer, so the message list can pad for it. */
+  composerHeight: number;
   handleComposerLayout: (event: LayoutChangeEvent) => void;
   handleAttachPhoto: () => void;
   handleSend: () => Promise<void>;
@@ -36,14 +36,13 @@ export function ComposerProvider({ children }: { children: React.ReactNode }) {
   let [inputText, setInputText] = useState("");
   let [pendingImageUri, setPendingImageUri] = useState<string | null>(null);
   let [pendingImageBase64, setPendingImageBase64] = useState<string | null>(null);
-  let composerHeight = useSharedValue(0);
+  // Plain state, not a shared value: it only changes when the composer itself
+  // re-lays out (attachment added, input grows), never per keyboard frame.
+  let [composerHeight, setComposerHeight] = useState(0);
 
-  let handleComposerLayout = useCallback(
-    (event: LayoutChangeEvent) => {
-      composerHeight.value = event.nativeEvent.layout.height;
-    },
-    [composerHeight]
-  );
+  let handleComposerLayout = useCallback((event: LayoutChangeEvent) => {
+    setComposerHeight(event.nativeEvent.layout.height);
+  }, []);
 
   function notifyPhotoFailure(failure: PhotoFailure, surface: "camera" | "library") {
     if (failure.kind === "cancelled") return;
