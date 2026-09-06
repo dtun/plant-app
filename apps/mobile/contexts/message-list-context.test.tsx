@@ -8,7 +8,9 @@ jest.mock("expo-router", () => ({
   useLocalSearchParams: () => ({ plantId: "plant-1" }),
 }));
 
-let DAY = 24 * 60 * 60 * 1000;
+const DAY = 24 * 60 * 60 * 1000;
+/** A fixed local-noon anchor so "earlier today" cannot slip into yesterday at midnight. */
+const NOON = new Date(2026, 0, 15, 12).getTime();
 let fern = { id: "plant-1", name: "Fern" };
 
 function message(id: string, role: Message["role"], createdAt: number): Message {
@@ -31,11 +33,10 @@ function wrapper({ children }: { children: React.ReactNode }) {
 }
 
 test("surfaces the plant's messages with a separator wherever the day changes", () => {
-  let now = Date.now();
   let messages = [
-    message("yesterday", "user", now - DAY),
-    message("earlier-today", "assistant", now - 1000),
-    message("just-now", "user", now),
+    message("yesterday", "user", NOON - DAY),
+    message("earlier-today", "assistant", NOON - 1000),
+    message("just-now", "user", NOON),
   ];
   stubStore(messages);
 
@@ -48,14 +49,13 @@ test("surfaces the plant's messages with a separator wherever the day changes", 
 });
 
 test("appends a message when the store query grows", () => {
-  let now = Date.now();
-  let first = message("first", "user", now);
+  let first = message("first", "user", NOON);
   stubStore([first]);
 
   let { result, rerender } = renderHook(() => useMessageList(), { wrapper });
   expect(result.current.messages).toHaveLength(1);
 
-  stubStore([first, message("reply", "assistant", now + 1)]);
+  stubStore([first, message("reply", "assistant", NOON + 1)]);
   rerender({});
 
   expect(result.current.messages.map((m) => m.id)).toEqual(["first", "reply"]);
