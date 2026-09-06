@@ -27,10 +27,16 @@ jobs:
         working-directory: apps/mobile
 
       - name: 🧪 Verify catalogs are up to date
+        env:
+          LOCALES_DIR: apps/mobile/src/locales
         run: |
-          if [ -n "$(git status --porcelain apps/mobile/src/locales)" ]; then
+          # Intent-to-add so a catalog file extract creates (not just edits) shows up in the diff.
+          git add --intent-to-add -- "$LOCALES_DIR"
+          if ! git diff --quiet -- "$LOCALES_DIR"; then
             echo "::error::Lingui catalogs are stale. Run 'npm run i18n:extract' in apps/mobile and commit the result."
-            git --no-pager diff -- apps/mobile/src/locales
+            echo "::group::Catalog diff"
+            git diff -- "$LOCALES_DIR"
+            echo "::endgroup::"
             exit 1
           fi
           echo "Lingui catalogs are up to date."
