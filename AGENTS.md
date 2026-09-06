@@ -136,6 +136,8 @@ npm run test        # Run all tests
 npm run vibecheck   # Run lint, typecheck, and tests
 ```
 
+**testIDs:** interactive elements and screen containers carry a `testID`; convention in `docs/testing/test-ids.md`.
+
 ### Code Formatting
 
 This project uses Prettier for consistent code formatting:
