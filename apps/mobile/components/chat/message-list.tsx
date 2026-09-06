@@ -4,15 +4,12 @@ import { TypingIndicator } from "@/components/chat/typing-indicator";
 import { useChatContext } from "@/contexts/chat-context";
 import { useComposer } from "@/contexts/composer-context";
 import { useMessageList } from "@/contexts/message-list-context";
+import { useKeyboardFollowingList } from "@/hooks/use-keyboard-following-list";
 import { LegendList } from "@legendapp/list";
 import { useLingui } from "@lingui/react/macro";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { useCallback, useEffect, useRef } from "react";
-import { type ScrollView, Text, View } from "react-native";
-import { useKeyboardHandler } from "react-native-keyboard-controller";
+import { Text, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { scheduleOnRN } from "react-native-worklets";
 
 /** Breathing room between the first/last message and the chrome over them. */
 const EDGE_GAP = 8;
@@ -20,8 +17,8 @@ const EDGE_GAP = 8;
 /**
  * The scrolling conversation. It fills the whole screen and runs under both
  * the transparent header and the floating `Composer`; content padding keeps
- * messages clear of that chrome at rest, and a native scroll inset follows
- * the keyboard so they stay clear while it's open.
+ * messages clear of that chrome at rest, and `useKeyboardFollowingList` keeps
+ * them clear while the keyboard is open.
  */
 export function MessageList() {
   let { t } = useLingui();
@@ -29,96 +26,10 @@ export function MessageList() {
   let { messages, listData, flatListRef, isGenerating, getAnimationType } = useMessageList();
   let { composerHeight } = useComposer();
   let headerHeight = useHeaderHeight();
-  let { bottom: safeBottom } = useSafeAreaInsets();
-
-  // Follow the keyboard with a native scroll inset, set straight on the scroll
-  // view each frame rather than through React state, so the list never
-  // re-renders or re-lays-out while the keyboard moves. Insets are an iOS-only
-  // prop; a no-op on Android.
-  //
-  // Growing the inset alone doesn't move the content, so when the reader is at
-  // the end of the conversation the list is re-pinned to its end every frame,
-  // which keeps the latest message riding just above the composer. Mid-history
-  // the content stays put and only the inset changes.
-  let isInteractive = useRef(false);
-  let pinToEnd = useRef(false);
-
-  // LegendList's scroll bookkeeping is only stale before the first user
-  // scroll: its scroll-to-end on open runs on estimated sizes and the native
-  // maintainVisibleContentPosition adjustment silently carries the content the
-  // rest of the way. Until then, "at the end" is exactly where it is.
-  let hasUserScrolled = useRef(false);
-  let handleScrollBeginDrag = useCallback(() => {
-    hasUserScrolled.current = true;
-  }, []);
-
-  let hasMessages = messages.length > 0;
-  let isAtEnd = useCallback(() => {
-    let state = flatListRef.current?.getState();
-    return hasMessages && (!hasUserScrolled.current || (state?.isAtEnd ?? false));
-  }, [flatListRef, hasMessages]);
-
-  let anchorToKeyboard = useCallback(() => {
-    isInteractive.current = false;
-    pinToEnd.current = isAtEnd();
-  }, [isAtEnd]);
-
-  let followKeyboard = useCallback(
-    (inset: number, moveContent: boolean) => {
-      // LegendList types the native ref loosely; it is the ScrollView instance.
-      let scrollView = flatListRef.current?.getNativeScrollRef() as ScrollView | undefined;
-      if (!scrollView) return;
-      scrollView.setNativeProps({ contentInset: { bottom: inset } });
-      if (moveContent && pinToEnd.current && !isInteractive.current) {
-        scrollView.scrollToEnd({ animated: false });
-      }
-    },
-    [flatListRef]
-  );
-
-  let markInteractive = useCallback(() => {
-    isInteractive.current = true;
-  }, []);
-
-  // When the composer grows (the field wraps, a photo is attached) the list's
-  // bottom padding grows with it. Keep the end pinned so the card grows over
-  // empty padding rather than over the last message.
-  useEffect(() => {
-    if (!isAtEnd()) return;
-    flatListRef.current?.scrollToEnd({ animated: false });
-  }, [composerHeight, flatListRef, isAtEnd]);
-
-  // The composer already reserves the bottom safe area, and absorbs it while
-  // the keyboard is open, so the list only needs the part above that.
-  function insetFor(keyboardHeight: number) {
-    "worklet";
-    return Math.max(keyboardHeight - safeBottom, 0);
-  }
-
-  useKeyboardHandler(
-    {
-      onStart() {
-        "worklet";
-        scheduleOnRN(anchorToKeyboard);
-      },
-      onMove(e) {
-        "worklet";
-        scheduleOnRN(followKeyboard, insetFor(e.height), true);
-      },
-      onInteractive(e) {
-        "worklet";
-        // The user is dragging the keyboard along with the list, so only the
-        // inset follows; moving the content under their finger would fight them.
-        scheduleOnRN(markInteractive);
-        scheduleOnRN(followKeyboard, insetFor(e.height), false);
-      },
-      onEnd(e) {
-        "worklet";
-        scheduleOnRN(followKeyboard, insetFor(e.height), true);
-      },
-    },
-    [anchorToKeyboard, followKeyboard, markInteractive, safeBottom]
-  );
+  let listProps = useKeyboardFollowingList(flatListRef, {
+    hasMessages: messages.length > 0,
+    composerHeight,
+  });
 
   return (
     <Animated.View entering={FadeIn.duration(200)} style={{ flex: 1 }}>
@@ -165,8 +76,8 @@ export function MessageList() {
           paddingBottom: composerHeight + EDGE_GAP,
         }}
         scrollIndicatorInsets={{ top: headerHeight, bottom: composerHeight }}
-        onScrollBeginDrag={handleScrollBeginDrag}
         keyboardDismissMode="interactive"
+        {...listProps}
         keyboardShouldPersistTaps="handled"
       />
     </Animated.View>
