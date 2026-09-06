@@ -13,6 +13,11 @@
     background-color: light-dark(#fff, #151718);
   }
 
+  /* The background at zero alpha, for fades into it. */
+  .bg-background-clear {
+    background-color: light-dark(rgba(255, 255, 255, 0), rgba(21, 23, 24, 0));
+  }
+
   .text-tint {
     color: light-dark(#16a34a, #22c55e);
   }
