@@ -4,6 +4,7 @@ import { MessageListProvider, useMessageList } from "@/contexts/message-list-con
 import {
   __setPlantIntelligenceForTests,
   createFakeIntelligence,
+  createLocalIntelligence,
   type AIFailure,
   type ChatInput,
   type Result,
@@ -52,6 +53,11 @@ beforeEach(() => {
   (useQuery as jest.Mock).mockImplementation((query: { label: string }) =>
     query.label.startsWith("plant-") ? [fern] : []
   );
+});
+
+afterEach(() => {
+  // The seam is module-global; put the default back so no test inherits a previous fake.
+  __setPlantIntelligenceForTests(createLocalIntelligence());
 });
 
 test("sending commits the owner's message, asks the plant through the seam, then commits its reply", async () => {
@@ -106,27 +112,26 @@ test("sending commits the owner's message, asks the plant through the seam, then
 });
 
 test.each([
-  ["no-config", "I need to be set up first. Please configure your AI settings."],
-  ["quota", "The plant is resting; try again later."],
-] as const)("a %s failure lands as the plant's reply instead of throwing", async (kind, reply) => {
-  __setPlantIntelligenceForTests(
-    createFakeIntelligence({
-      chatResponse: {
-        ok: false,
-        failure: { kind, message: "The plant is resting; try again later." },
-      },
-    })
-  );
-  let { result } = renderComposer();
+  // no-config uses fixed copy and ignores the failure message; quota echoes it.
+  ["no-config", "ignored", "I need to be set up first. Please configure your AI settings."],
+  ["quota", "The plant is resting; try again later.", "The plant is resting; try again later."],
+] as const)(
+  "a %s failure lands as the plant's reply instead of throwing",
+  async (kind, message, reply) => {
+    __setPlantIntelligenceForTests(
+      createFakeIntelligence({ chatResponse: { ok: false, failure: { kind, message } } })
+    );
+    let { result } = renderComposer();
 
-  act(() => result.current.composer.setInputText("Hi"));
-  await act(() => result.current.composer.handleSend());
+    act(() => result.current.composer.setInputText("Hi"));
+    await act(() => result.current.composer.handleSend());
 
-  expect(result.current.isGenerating).toBe(false);
-  expect(committedMessages().at(-1)).toEqual(
-    expect.objectContaining({ role: "assistant", content: reply })
-  );
-});
+    expect(result.current.isGenerating).toBe(false);
+    expect(committedMessages().at(-1)).toEqual(
+      expect.objectContaining({ role: "assistant", content: reply })
+    );
+  }
+);
 
 test("a blank message is not sent", async () => {
   let ask = jest.fn();
