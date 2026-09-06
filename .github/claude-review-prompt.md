@@ -36,7 +36,7 @@ Also flag anything that is clearly a bug, a broken test, or a change that contra
 Post the review on the pull request:
 
 - Use inline comments (`mcp__github_inline_comment__create_inline_comment`) for findings tied to specific lines.
-- Post one top-level comment (`gh pr comment`) summarizing the findings, in this shape:
+- Post one summary comment with `gh pr comment <PR NUMBER> --edit-last --create-if-none --body "…"`, so a re-run updates the previous summary instead of adding another. Shape:
   - A list of findings, each with `path:line`, a severity (**blocker**, **should-fix**, or **nit**), a one-sentence explanation, and the convention it relates to.
   - If there are no findings, say so explicitly: "No findings against the KeepTend conventions."
 
