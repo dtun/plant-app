@@ -1,4 +1,5 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { testIds } from "@/src/testing/test-ids";
 import * as haptics from "@/utils/haptics";
 import { useLingui } from "@lingui/react/macro";
 import { Pressable } from "react-native";
@@ -16,6 +17,7 @@ export function ChatHeaderMenu({ onClearChat }: ChatHeaderMenuProps) {
       <DropdownMenu.Trigger>
         <Pressable
           className="self-center"
+          testID={testIds.chat.headerMenuButton}
           accessibilityRole="button"
           accessibilityLabel={t`Chat options`}
           accessibilityHint={t`Opens chat options menu`}

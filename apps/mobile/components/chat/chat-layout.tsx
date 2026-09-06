@@ -5,6 +5,7 @@ import { PhotoUpload } from "@/components/ui/photo-upload";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { useComposer } from "@/contexts/composer-context";
 import { useMessageList } from "@/contexts/message-list-context";
+import { testIds } from "@/src/testing/test-ids";
 import { useLingui } from "@lingui/react/macro";
 import { View } from "react-native";
 
@@ -23,13 +24,18 @@ export function ChatLayout() {
       <MessageList />
       <Composer>
         <Composer.Attachment />
-        <Composer.Field placeholder={t`Type a message...`} />
+        <Composer.Field placeholder={t`Type a message...`} testID={testIds.chat.composerInput} />
         <Composer.Toolbar>
-          <PhotoUpload selectedImage={null} onImageSelect={handleAttachPhoto} />
+          <PhotoUpload
+            selectedImage={null}
+            onImageSelect={handleAttachPhoto}
+            testID={testIds.chat.attachPhotoButton}
+          />
           <SubmitButton
             onPress={handleSend}
             disabled={(!inputText.trim() && !pendingImageUri) || isGenerating}
             isLoading={isGenerating}
+            testID={testIds.chat.sendButton}
           />
         </Composer.Toolbar>
       </Composer>
