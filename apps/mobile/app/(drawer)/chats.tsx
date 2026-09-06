@@ -2,7 +2,6 @@ import { ChatListItem } from "@/components/chat-list-item";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { plantsWithLastMessage$ } from "@/src/livestore/queries";
 import { events } from "@/src/livestore/schema";
-import { testIds } from "@/src/testing/test-ids";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { FlashList } from "@shopify/flash-list";
 import { useQuery, useStore } from "@livestore/react";
@@ -68,7 +67,7 @@ export default function ChatsScreen() {
           className="flex-row items-center gap-4"
           onPress={() => router.push("/")}
           activeOpacity={0.7}
-          testID={testIds.plantList.namePlantButton}
+          testID="namePlantBtn"
           accessibilityRole="button"
           accessibilityLabel={t`Name a plant to start chatting`}
           accessibilityHint={t`Navigates to the plant naming screen`}

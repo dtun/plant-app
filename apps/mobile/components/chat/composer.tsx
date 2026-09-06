@@ -1,6 +1,5 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useComposer } from "@/contexts/composer-context";
-import { testIds } from "@/src/testing/test-ids";
 import { useLingui } from "@lingui/react/macro";
 import { LinearGradient } from "expo-linear-gradient";
 import type { ReactNode } from "react";
@@ -81,7 +80,7 @@ function Attachment() {
         <TouchableOpacity
           onPress={() => setPendingImageUri(null)}
           className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center"
-          testID={testIds.chat.removeAttachmentButton}
+          testID="removeAttachmentBtn"
           accessibilityRole="button"
           accessibilityLabel={t`Remove selected photo`}
         >

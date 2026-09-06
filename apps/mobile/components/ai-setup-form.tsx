@@ -6,7 +6,6 @@ import { Controller, useForm } from "react-hook-form";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { z } from "zod";
 
-import { providerOptionTestId, testIds } from "@/src/testing/test-ids";
 import { FormField } from "./ui/form-field";
 import { OptionSelector } from "./ui/option-selector";
 
@@ -111,7 +110,7 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
               secureTextEntry
               autoCapitalize="none"
               autoCorrect={false}
-              testID={testIds.settings.apiKeyInput}
+              testID="apiKeyInput"
             />
           )}
         />
@@ -126,7 +125,7 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
               options={providerOptions}
               value={value}
               onChange={onChange}
-              optionTestID={providerOptionTestId}
+              optionTestID={(provider) => `providerSelector-${provider}`}
             />
           )}
         />
@@ -136,7 +135,7 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
         <TouchableOpacity
           className="rounded-xl p-4 items-center bg-tint"
           onPress={handleSubmit(onSubmit)}
-          testID={testIds.settings.saveButton}
+          testID="saveSettingsBtn"
         >
           <Text className="text-white text-base font-semibold">
             <Trans>Save Settings</Trans>
@@ -146,7 +145,7 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
         <TouchableOpacity
           className="rounded-xl p-4 items-center"
           onPress={handleReset}
-          testID={testIds.settings.resetButton}
+          testID="resetSettingsBtn"
         >
           <Text className="text-base font-semibold text-color">
             <Trans>Reset All</Trans>

@@ -1,6 +1,5 @@
 import { msg } from "@lingui/core/macro";
 import { i18n } from "@/src/i18n";
-import { plantRowTestId } from "@/src/testing/test-ids";
 import * as haptics from "@/utils/haptics";
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
@@ -55,7 +54,7 @@ export function ChatListItem({
         <Pressable
           onPress={() => onPress(id)}
           className="flex-row items-center px-4 py-3 border-b border-icon"
-          testID={plantRowTestId(id)}
+          testID={`plantItem-${id}`}
           accessibilityRole="button"
           accessibilityLabel={t`Chat with ${name}`}
           accessibilityHint={t`Opens chat conversation with this plant`}

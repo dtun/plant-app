@@ -5,7 +5,6 @@ import * as ContextMenu from "zeego/context-menu";
 import { useLingui } from "@lingui/react/macro";
 import { useStore } from "@livestore/react";
 import { events } from "@/src/livestore/schema";
-import { chatMessageTestId } from "@/src/testing/test-ids";
 import { Markdown } from "@/components/chat/markdown";
 
 export interface MessageBubbleProps {
@@ -48,7 +47,7 @@ export function MessageBubble({ id, role, content, imageUri }: MessageBubbleProp
               className={`rounded-2xl overflow-hidden ${
                 isUser ? "bg-bubble-user" : "bg-bubble-assistant"
               }`}
-              testID={chatMessageTestId(id)}
+              testID={`chatMessage-${id}`}
             >
               {imageUri ? (
                 <Image
