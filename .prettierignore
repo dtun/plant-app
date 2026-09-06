@@ -24,3 +24,6 @@ package-lock.json
 # Next.js
 .next/
 next-env.d.ts
+
+# Lingui compiled catalogs
+apps/mobile/src/locales/*/messages.js
