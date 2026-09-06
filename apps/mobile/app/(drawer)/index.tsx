@@ -5,13 +5,10 @@ import { View } from "react-native";
 
 export default function HomeScreen() {
   let { setOptions } = useNavigation();
-  let headerHeight = useHeaderHeight()
+  let headerHeight = useHeaderHeight();
 
   return (
-    <View
-      className="flex-1 bg-background px-4"
-      style={{ paddingTop: headerHeight }}
-    >
+    <View className="flex-1 bg-background px-4" style={{ paddingTop: headerHeight }}>
       <PlantForm setOptions={setOptions} />
     </View>
   );
