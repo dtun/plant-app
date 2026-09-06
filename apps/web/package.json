@@ -13,7 +13,7 @@
     "vibecheck": "npm run lint && npm run typecheck && npm run test"
   },
   "dependencies": {
-    "next": "15.5.11",
+    "next": "15.5.25",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
@@ -22,7 +22,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint-config-next": "15.5.11",
+    "eslint-config-next": "15.5.25",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.0.4"
