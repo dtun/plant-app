@@ -30,6 +30,11 @@ export function ChatHeaderMenu({ onClearChat }: ChatHeaderMenuProps) {
           <DropdownMenu.ItemSubtitle>{t`Coming soon`}</DropdownMenu.ItemSubtitle>
           <DropdownMenu.ItemIcon ios={{ name: "square.and.arrow.up" }} />
         </DropdownMenu.Item>
+        <DropdownMenu.Item key="care-plan" disabled>
+          <DropdownMenu.ItemTitle>{t`Care Plan`}</DropdownMenu.ItemTitle>
+          <DropdownMenu.ItemSubtitle>{t`Coming soon`}</DropdownMenu.ItemSubtitle>
+          <DropdownMenu.ItemIcon ios={{ name: "list.clipboard" }} />
+        </DropdownMenu.Item>
         <DropdownMenu.Separator />
         <DropdownMenu.Item key="clear" onSelect={onClearChat} destructive>
           <DropdownMenu.ItemTitle>{t`Clear Chat`}</DropdownMenu.ItemTitle>
