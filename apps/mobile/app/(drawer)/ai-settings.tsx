@@ -22,6 +22,7 @@ export default function AISettingsScreen() {
       className="flex-1 bg-background px-5 pt-4"
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ paddingBottom: 40 }}
+      testID="aiSettingsScreen"
     >
       <View className="mb-6">
         <View className="rounded-xl border border-icon p-4">
