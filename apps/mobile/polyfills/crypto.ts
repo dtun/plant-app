@@ -1,15 +1,26 @@
 /**
  * Crypto polyfill for React Native
  *
- * Adds crypto.getRandomValues to the global object using expo-crypto.
- * Required by LiveStore's nanoid dependency.
+ * Adds crypto.getRandomValues and crypto.randomUUID to the global object
+ * using expo-crypto. getRandomValues is required by LiveStore's nanoid
+ * dependency; randomUUID is provided so callers of the global do not hit a
+ * missing method at runtime that the type system said was there.
+ *
+ * crypto.subtle is not provided. The cast below hides that gap, so do not
+ * rely on the global's SubtleCrypto in app code.
  */
 
 import * as Crypto from "expo-crypto";
 
-// Polyfill crypto.getRandomValues for React Native
+type UUID = ReturnType<globalThis.Crypto["randomUUID"]>;
+
+// Polyfill crypto.getRandomValues and crypto.randomUUID for React Native
 if (typeof global.crypto === "undefined") {
   global.crypto = {
+    randomUUID(): UUID {
+      return Crypto.randomUUID() as UUID;
+    },
+
     getRandomValues<T extends ArrayBufferView>(array: T): T {
       // Get the byte length from the ArrayBufferView
       let byteLength = array.byteLength;
