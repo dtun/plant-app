@@ -274,6 +274,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
         ? () => (
             <Pressable
               onPress={handleReset}
+              testID="resetFormBtn"
               accessible={true}
               accessibilityRole="button"
               accessibilityLabel={t`Reset form`}
@@ -315,6 +316,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
             ) : (
               <Pressable
                 onPress={removePhoto}
+                testID="removePhotoBtn"
                 accessible={true}
                 accessibilityRole="button"
                 accessibilityLabel={t`Remove photo`}
@@ -339,13 +341,19 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
               onBlur={onBlur}
               placeholder={selectedImage ? t`Anything else?` : t`Describe your plant...`}
               error={errors.plantInput?.message}
+              testID="plantDescriptionInput"
               leftButton={
-                <PhotoUpload selectedImage={selectedImage} onImageSelect={handleShowImagePicker} />
+                <PhotoUpload
+                  selectedImage={selectedImage}
+                  onImageSelect={handleShowImagePicker}
+                  testID="addPhotoBtn"
+                />
               }
               rightButton={
                 <SubmitButton
                   onPress={handleSubmit(onSubmit)}
                   isLoading={isGenerating || isAnalyzing}
+                  testID="plantFormSubmitBtn"
                 />
               }
             />
