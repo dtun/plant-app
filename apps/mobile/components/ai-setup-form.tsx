@@ -110,6 +110,7 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
               secureTextEntry
               autoCapitalize="none"
               autoCorrect={false}
+              testID="apiKeyInput"
             />
           )}
         />
@@ -120,7 +121,12 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
           control={control}
           name="provider"
           render={({ field: { onChange, value } }) => (
-            <OptionSelector options={providerOptions} value={value} onChange={onChange} />
+            <OptionSelector
+              options={providerOptions}
+              value={value}
+              onChange={onChange}
+              testID="providerSelector"
+            />
           )}
         />
       </FormField>
@@ -129,13 +135,18 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
         <TouchableOpacity
           className="rounded-xl p-4 items-center bg-tint"
           onPress={handleSubmit(onSubmit)}
+          testID="saveSettingsBtn"
         >
           <Text className="text-white text-base font-semibold">
             <Trans>Save Settings</Trans>
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className="rounded-xl p-4 items-center" onPress={handleReset}>
+        <TouchableOpacity
+          className="rounded-xl p-4 items-center"
+          onPress={handleReset}
+          testID="resetSettingsBtn"
+        >
           <Text className="text-base font-semibold text-color">
             <Trans>Reset All</Trans>
           </Text>
