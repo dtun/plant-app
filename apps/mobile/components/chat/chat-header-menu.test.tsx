@@ -11,17 +11,18 @@ beforeEach(() => {
   mockOnClearChat.mockClear();
 });
 
-test("renders Share and Clear Chat menu items", () => {
+test("renders Share, Care Plan, and Clear Chat menu items", () => {
   render(<ChatHeaderMenu onClearChat={mockOnClearChat} />);
 
   expect(screen.getByText("Share")).toBeOnTheScreen();
+  expect(screen.getByText("Care Plan")).toBeOnTheScreen();
   expect(screen.getByText("Clear Chat")).toBeOnTheScreen();
 });
 
-test("renders Coming soon subtitle on Share item", () => {
+test("renders Coming soon subtitle on Share and Care Plan items", () => {
   render(<ChatHeaderMenu onClearChat={mockOnClearChat} />);
 
-  expect(screen.getByText("Coming soon")).toBeOnTheScreen();
+  expect(screen.getAllByText("Coming soon")).toHaveLength(2);
 });
 
 test("Clear Chat calls onClearChat when selected", () => {

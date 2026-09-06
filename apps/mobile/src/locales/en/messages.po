@@ -82,6 +82,10 @@ msgstr "Camera"
 msgid "Cancel"
 msgstr "Cancel"
 
+#: components/chat/chat-header-menu.tsx:34
+msgid "Care Plan"
+msgstr "Care Plan"
+
 #: components/chat/chat-header.tsx:18
 msgid "Chat"
 msgstr "Chat"
@@ -112,12 +116,13 @@ msgstr "Clear"
 msgid "Clear all form fields and start over"
 msgstr "Clear all form fields and start over"
 
-#: components/chat/chat-header-menu.tsx:35
+#: components/chat/chat-header-menu.tsx:40
 #: contexts/chat-context.tsx:28
 msgid "Clear Chat"
 msgstr "Clear Chat"
 
 #: components/chat/chat-header-menu.tsx:30
+#: components/chat/chat-header-menu.tsx:35
 msgid "Coming soon"
 msgstr "Coming soon"
 
