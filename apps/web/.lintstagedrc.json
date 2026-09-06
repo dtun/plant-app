@@ -1,4 +1,4 @@
 {
-  "*.{ts,tsx,js,jsx,json,md}": "prettier --write --ignore-path ../../.prettierignore",
-  "*.{ts,tsx,js,jsx}": "eslint --fix"
+  "*.{ts,tsx,js,jsx}": ["eslint --fix", "prettier --write --ignore-path ../../.prettierignore"],
+  "*.{json,md}": "prettier --write --ignore-path ../../.prettierignore"
 }

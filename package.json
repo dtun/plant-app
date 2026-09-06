@@ -11,8 +11,11 @@
     "prepare": "husky || true"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,md}": "prettier --write",
-    "*.{ts,tsx,js,jsx}": "eslint --fix"
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": "prettier --write"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.4.1",
