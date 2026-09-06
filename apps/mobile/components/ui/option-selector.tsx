@@ -4,17 +4,17 @@ import { Text, TouchableOpacity, View } from "react-native";
 interface OptionSelectorProps<T extends string> {
   label?: string;
   onChange: (value: T) => void;
-  /** Derives the testID for each option's button from the option value. */
-  optionTestID?: (option: T) => string;
   options: readonly T[];
+  /** Namespace for the option buttons: each gets `${testID}-${option}`. */
+  testID?: string;
   value?: T;
 }
 
 export function OptionSelector<T extends string>({
   label,
   onChange,
-  optionTestID,
   options,
+  testID,
   value,
 }: OptionSelectorProps<T>) {
   let { t } = useLingui();
@@ -29,7 +29,7 @@ export function OptionSelector<T extends string>({
               : "flex-1 border border-icon rounded-xl p-3 items-center"
           }
           onPress={() => onChange(option)}
-          testID={optionTestID?.(option)}
+          testID={testID ? `${testID}-${option}` : undefined}
           accessible={true}
           accessibilityRole="button"
           accessibilityLabel={t`Select ${option}`}

@@ -125,7 +125,7 @@ export function AISetupForm({ onSaved }: AISetupFormProps) {
               options={providerOptions}
               value={value}
               onChange={onChange}
-              optionTestID={(provider) => `providerSelector-${provider}`}
+              testID="providerSelector"
             />
           )}
         />
