@@ -10,11 +10,16 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "prepare": "husky || true"
   },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md}": "prettier --write",
+    "*.{ts,tsx,js,jsx}": "eslint --fix"
+  },
   "devDependencies": {
     "@commitlint/cli": "^20.4.1",
     "@commitlint/config-conventional": "^20.4.1",
     "eslint": "^9.25.0",
     "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.7.4",
     "react-test-renderer": "^19.2.0"
   }
