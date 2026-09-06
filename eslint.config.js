@@ -8,7 +8,9 @@ module.exports = defineConfig([
   expoConfig,
   prettierConfig,
   {
-    ignores: ["dist/*"],
+    // Lingui compiles catalogs with an eslint-disable header, which ESLint then
+    // flags as unused. The .po files are the source; skip the compiled output.
+    ignores: ["dist/*", "**/src/locales/*/messages.js"],
   },
   {
     // let-by-default, function declarations — see docs/adr/0002
