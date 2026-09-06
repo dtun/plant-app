@@ -54,6 +54,7 @@ export function ChatListItem({
         <Pressable
           onPress={() => onPress(id)}
           className="flex-row items-center px-4 py-3 border-b border-icon"
+          testID={`plantItem-${id}`}
           accessibilityRole="button"
           accessibilityLabel={t`Chat with ${name}`}
           accessibilityHint={t`Opens chat conversation with this plant`}
