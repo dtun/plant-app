@@ -5,6 +5,16 @@ import { useKeyboardHandler } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
 
+/**
+ * The list inset for a keyboard height. The bottom safe area is left out
+ * because the composer dock already reserves it, and absorbs it while the
+ * keyboard is open.
+ */
+function insetFor(keyboardHeight: number, safeBottom: number) {
+  "worklet";
+  return Math.max(keyboardHeight - safeBottom, 0);
+}
+
 interface KeyboardFollowingListOptions {
   /** Whether the list has anything to keep in view. */
   hasMessages: boolean;
@@ -30,9 +40,6 @@ interface KeyboardFollowingListProps {
  * the composer. Mid-history, content stays put and only the inset changes.
  * Interactive dismissal only follows the inset: moving content under the
  * user's finger would fight them.
- *
- * The bottom safe area is left out of the inset because the composer dock
- * already reserves it, and absorbs it while the keyboard is open.
  *
  * Spread the returned props onto the list. Insets are an iOS-only prop; a
  * no-op on Android.
@@ -81,11 +88,9 @@ export function useKeyboardFollowingList(
     isInteractive.current = true;
   }, []);
 
-  function insetFor(keyboardHeight: number) {
-    "worklet";
-    return Math.max(keyboardHeight - safeBottom, 0);
-  }
-
+  // Each handler is a worklet, and the Babel plugin appends what they capture
+  // to the dependency array. Keep the captured set flat and stable: plain
+  // values and JS callbacks only, no worklet-in-worklet helpers.
   useKeyboardHandler(
     {
       onStart() {
@@ -94,16 +99,16 @@ export function useKeyboardFollowingList(
       },
       onMove(e) {
         "worklet";
-        scheduleOnRN(followKeyboard, insetFor(e.height), true);
+        scheduleOnRN(followKeyboard, insetFor(e.height, safeBottom), true);
       },
       onInteractive(e) {
         "worklet";
         scheduleOnRN(markInteractive);
-        scheduleOnRN(followKeyboard, insetFor(e.height), false);
+        scheduleOnRN(followKeyboard, insetFor(e.height, safeBottom), false);
       },
       onEnd(e) {
         "worklet";
-        scheduleOnRN(followKeyboard, insetFor(e.height), true);
+        scheduleOnRN(followKeyboard, insetFor(e.height, safeBottom), true);
       },
     },
     [anchorToKeyboard, followKeyboard, markInteractive, safeBottom]
