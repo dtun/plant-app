@@ -11,13 +11,9 @@ interface PhotoUploadProps {
   size?: number;
 }
 
-export function PhotoUpload({
-  onImageSelect,
-  selectedImage,
-  size = 32,
-}: PhotoUploadProps) {
+export function PhotoUpload({ onImageSelect, selectedImage, size = 32 }: PhotoUploadProps) {
   let { t } = useLingui();
-  let { borderRadius: borderRadiusLg } = useResolveClassNames('rounded-lg');
+  let { borderRadius: borderRadiusLg } = useResolveClassNames("rounded-lg");
   return (
     <View className="flex-row items-center gap-2">
       <TouchableOpacity
@@ -36,7 +32,7 @@ export function PhotoUpload({
           source={{ uri: selectedImage }}
           className="self-center rounded-lg"
           style={{ width: size, height: size, borderRadius: borderRadiusLg }}
-          />
+        />
       ) : null}
     </View>
   );

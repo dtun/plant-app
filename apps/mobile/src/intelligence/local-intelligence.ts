@@ -321,10 +321,7 @@ export function createLocalIntelligence(): PlantIntelligence {
       let formattedMessages = await Promise.all(
         input.messages.map(async (m) => {
           if (m.imageUri) {
-            let content: (
-              | { type: "text"; text: string }
-              | ReturnType<typeof toImagePart>
-            )[] = [];
+            let content: ({ type: "text"; text: string } | ReturnType<typeof toImagePart>)[] = [];
             if (m.content) {
               content.push({ type: "text", text: m.content });
             }

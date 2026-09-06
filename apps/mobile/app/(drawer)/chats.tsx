@@ -96,7 +96,7 @@ export default function ChatsScreen() {
             photoUri={item.photoUri}
             lastMessageContent={item.lastMessageContent}
             lastMessageCreatedAt={item.lastMessageCreatedAt}
-            onPress={plantId => router.push(`/chat/${plantId}`)}
+            onPress={(plantId) => router.push(`/chat/${plantId}`)}
             onDelete={handleDeletePlant}
           />
         )}

@@ -36,7 +36,10 @@ async function flush() {
 
 type Options = { hasMessages: boolean; composerHeight: number };
 
-function render(ref: { current: never }, options: Options = { hasMessages: true, composerHeight: 120 }) {
+function render(
+  ref: { current: never },
+  options: Options = { hasMessages: true, composerHeight: 120 }
+) {
   return renderHook((props: Options) => useKeyboardFollowingList(ref, props), {
     initialProps: options,
   });

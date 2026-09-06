@@ -74,5 +74,4 @@ describe("db/store", () => {
       expect(() => createAdapter()).toThrow("Unknown error");
     });
   });
-
 });
