@@ -48,6 +48,13 @@ export function useKeyboardFollowingList(
   listRef: RefObject<LegendListRef | null>,
   { hasMessages, composerHeight }: KeyboardFollowingListOptions
 ): KeyboardFollowingListProps {
+  // Reanimated's useHandler, which useKeyboardHandler calls, pushes a worklet
+  // hash into the dependency array it is given, on every render. Under React
+  // Compiler that array literal would be memoized and grow by one each render,
+  // and React would report the changing length. Keep this hook uncompiled so
+  // the array is fresh each render.
+  "use no memo";
+
   let { bottom: safeBottom } = useSafeAreaInsets();
   let isInteractive = useRef(false);
   let pinToEnd = useRef(false);
@@ -88,9 +95,6 @@ export function useKeyboardFollowingList(
     isInteractive.current = true;
   }, []);
 
-  // Each handler is a worklet, and the Babel plugin appends what they capture
-  // to the dependency array. Keep the captured set flat and stable: plain
-  // values and JS callbacks only, no worklet-in-worklet helpers.
   useKeyboardHandler(
     {
       onStart() {
