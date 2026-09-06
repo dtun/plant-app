@@ -1,18 +1,20 @@
-import type { Billing, BillingFailure, Entitlement, ProOffer, Result } from "./types";
+import type { Entitlements, EntitlementFailure, Entitlement, ProOffer, Result } from "./types";
 
-export interface FakeBillingResponses {
-  entitlement?: Result<Entitlement, BillingFailure>;
-  offer?: Result<ProOffer, BillingFailure>;
-  purchase?: Result<Entitlement, BillingFailure>;
-  restore?: Result<Entitlement, BillingFailure>;
+export interface FakeEntitlementsResponses {
+  entitlement?: Result<Entitlement, EntitlementFailure>;
+  offer?: Result<ProOffer, EntitlementFailure>;
+  purchase?: Result<Entitlement, EntitlementFailure>;
+  restore?: Result<Entitlement, EntitlementFailure>;
 }
 
-export interface FakeBilling extends Billing {
+export interface FakeEntitlements extends Entitlements {
   /** Push a synthetic entitlement change to subscribers. */
   emit(entitlement: Entitlement): void;
 }
 
-export function createFakeBilling(responses: FakeBillingResponses = {}): FakeBilling {
+export function createFakeEntitlements(
+  responses: FakeEntitlementsResponses = {}
+): FakeEntitlements {
   let listeners = new Set<(entitlement: Entitlement) => void>();
 
   return {

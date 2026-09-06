@@ -1,6 +1,6 @@
 import Purchases from "react-native-purchases";
 
-import { createRevenueCatBilling } from "./revenuecat-billing";
+import { createRevenueCatEntitlements } from "./revenuecat-entitlements";
 
 let mockPurchases = Purchases as unknown as {
   configure: jest.Mock;
@@ -36,9 +36,9 @@ afterEach(() => {
 test("getEntitlement returns no-config failure when no API key is set", async () => {
   delete process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
   delete process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY;
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let result = await billing.getEntitlement();
+  let result = await entitlements.getEntitlement();
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -49,9 +49,9 @@ test("getEntitlement returns no-config failure when no API key is set", async ()
 
 test("getEntitlement reports pro ownership and product id from active entitlement", async () => {
   mockPurchases.getCustomerInfo.mockResolvedValueOnce(proInfo);
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let result = await billing.getEntitlement();
+  let result = await entitlements.getEntitlement();
 
   expect(mockPurchases.configure).toHaveBeenCalledWith({ apiKey: "test-ios-key" });
   if (!result.ok) throw new Error("expected ok");
@@ -61,9 +61,9 @@ test("getEntitlement reports pro ownership and product id from active entitlemen
 
 test("getEntitlement reports not-pro when the entitlement is inactive", async () => {
   mockPurchases.getCustomerInfo.mockResolvedValueOnce(customerInfo());
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let result = await billing.getEntitlement();
+  let result = await entitlements.getEntitlement();
 
   if (!result.ok) throw new Error("expected ok");
   expect(result.value.isPro).toBe(false);
@@ -72,9 +72,9 @@ test("getEntitlement reports not-pro when the entitlement is inactive", async ()
 
 test("getEntitlement maps network errors to a network failure", async () => {
   mockPurchases.getCustomerInfo.mockRejectedValueOnce(new Error("network request failed"));
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let result = await billing.getEntitlement();
+  let result = await entitlements.getEntitlement();
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -83,9 +83,9 @@ test("getEntitlement maps network errors to a network failure", async () => {
 
 test("getEntitlement maps unrecognized errors to an unknown failure", async () => {
   mockPurchases.getCustomerInfo.mockRejectedValueOnce(new Error("kaboom"));
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let result = await billing.getEntitlement();
+  let result = await entitlements.getEntitlement();
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -97,9 +97,9 @@ test("getOffer returns a price label from the current offering", async () => {
     current: { availablePackages: [{ product: { priceString: "$9.99", identifier: "lifetime" } }] },
     all: {},
   });
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let result = await billing.getOffer();
+  let result = await entitlements.getOffer();
 
   if (!result.ok) throw new Error("expected ok");
   expect(result.value.priceLabel).toBe("$9.99");
@@ -107,9 +107,9 @@ test("getOffer returns a price label from the current offering", async () => {
 
 test("getOffer returns no-offer when there is no current offering", async () => {
   mockPurchases.getOfferings.mockResolvedValueOnce({ current: null, all: {} });
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let result = await billing.getOffer();
+  let result = await entitlements.getOffer();
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -117,9 +117,9 @@ test("getOffer returns no-offer when there is no current offering", async () => 
 });
 
 test("purchase returns no-offer when no offer has been resolved", async () => {
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let result = await billing.purchase();
+  let result = await entitlements.purchase();
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -134,10 +134,10 @@ test("purchase buys the resolved offer and returns the new entitlement", async (
     all: {},
   });
   mockPurchases.purchasePackage.mockResolvedValueOnce({ customerInfo: proInfo });
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  await billing.getOffer();
-  let result = await billing.purchase();
+  await entitlements.getOffer();
+  let result = await entitlements.purchase();
 
   expect(mockPurchases.purchasePackage).toHaveBeenCalledWith(pkg);
   if (!result.ok) throw new Error("expected ok");
@@ -150,10 +150,10 @@ test("purchase maps a user cancellation to a cancelled failure", async () => {
     all: {},
   });
   mockPurchases.purchasePackage.mockRejectedValueOnce({ userCancelled: true });
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  await billing.getOffer();
-  let result = await billing.purchase();
+  await entitlements.getOffer();
+  let result = await entitlements.purchase();
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -162,9 +162,9 @@ test("purchase maps a user cancellation to a cancelled failure", async () => {
 
 test("restore reports ownership found on the account", async () => {
   mockPurchases.restorePurchases.mockResolvedValueOnce(proInfo);
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let result = await billing.restore();
+  let result = await entitlements.restore();
 
   if (!result.ok) throw new Error("expected ok");
   expect(result.value.isPro).toBe(true);
@@ -172,21 +172,21 @@ test("restore reports ownership found on the account", async () => {
 
 test("restore succeeds with not-pro when nothing is found", async () => {
   mockPurchases.restorePurchases.mockResolvedValueOnce(customerInfo());
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let result = await billing.restore();
+  let result = await entitlements.restore();
 
   if (!result.ok) throw new Error("expected ok");
   expect(result.value.isPro).toBe(false);
 });
 
-test("getEntitlement maps a configure failure to a billing failure instead of throwing", async () => {
+test("getEntitlement maps a configure failure to an entitlement failure instead of throwing", async () => {
   mockPurchases.configure.mockImplementationOnce(() => {
     throw new Error("native module unavailable");
   });
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let result = await billing.getEntitlement();
+  let result = await entitlements.getEntitlement();
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -198,19 +198,19 @@ test("subscribe returns a no-op unsubscribe when configure throws", () => {
   mockPurchases.configure.mockImplementationOnce(() => {
     throw new Error("native module unavailable");
   });
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
 
-  let unsubscribe = billing.subscribe(() => {});
+  let unsubscribe = entitlements.subscribe(() => {});
 
   expect(mockPurchases.addCustomerInfoUpdateListener).not.toHaveBeenCalled();
   expect(() => unsubscribe()).not.toThrow();
 });
 
 test("subscribe maps vendor updates to entitlements and unsubscribes cleanly", () => {
-  let billing = createRevenueCatBilling();
+  let entitlements = createRevenueCatEntitlements();
   let seen: boolean[] = [];
 
-  let unsubscribe = billing.subscribe((entitlement) => seen.push(entitlement.isPro));
+  let unsubscribe = entitlements.subscribe((entitlement) => seen.push(entitlement.isPro));
 
   let listener = mockPurchases.addCustomerInfoUpdateListener.mock.calls[0][0];
   listener(proInfo);

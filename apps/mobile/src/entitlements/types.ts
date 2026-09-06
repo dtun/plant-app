@@ -1,9 +1,9 @@
 import type { Result } from "@/src/intelligence/types";
 
-export type BillingFailureKind = "cancelled" | "no-config" | "no-offer" | "network" | "unknown";
+export type EntitlementFailureKind = "cancelled" | "no-config" | "no-offer" | "network" | "unknown";
 
-export interface BillingFailure {
-  kind: BillingFailureKind;
+export interface EntitlementFailure {
+  kind: EntitlementFailureKind;
 }
 
 /** What the app owns. The lifetime "pro" unlock is the only entitlement today. */
@@ -21,13 +21,13 @@ export interface ProOffer {
 /**
  * The seam between the app and the billing vendor. Provider choice (RevenueCat)
  * is private to whichever adapter is wired up; callers never see vendor types.
- * Failures cross as a discriminated BillingFailure, never as thrown errors.
+ * Failures cross as a discriminated EntitlementFailure, never as thrown errors.
  */
-export interface Billing {
-  getEntitlement(): Promise<Result<Entitlement, BillingFailure>>;
-  getOffer(): Promise<Result<ProOffer, BillingFailure>>;
-  purchase(): Promise<Result<Entitlement, BillingFailure>>;
-  restore(): Promise<Result<Entitlement, BillingFailure>>;
+export interface Entitlements {
+  getEntitlement(): Promise<Result<Entitlement, EntitlementFailure>>;
+  getOffer(): Promise<Result<ProOffer, EntitlementFailure>>;
+  purchase(): Promise<Result<Entitlement, EntitlementFailure>>;
+  restore(): Promise<Result<Entitlement, EntitlementFailure>>;
   /** Subscribe to entitlement changes pushed by the vendor; returns an unsubscribe fn. */
   subscribe(onChange: (entitlement: Entitlement) => void): () => void;
 }

@@ -1,7 +1,7 @@
 import Purchases, { type CustomerInfo, type PurchasesPackage } from "react-native-purchases";
 
 import { PRO_ENTITLEMENT_ID, getRevenueCatApiKey } from "./config";
-import type { Billing, BillingFailure, Entitlement, ProOffer, Result } from "./types";
+import type { Entitlements, EntitlementFailure, Entitlement, ProOffer, Result } from "./types";
 
 function entitlementFrom(info: CustomerInfo): Entitlement {
   let active = info.entitlements.active[PRO_ENTITLEMENT_ID];
@@ -17,7 +17,7 @@ function isUserCancelled(error: unknown): boolean {
   );
 }
 
-function mapError(error: unknown): BillingFailure {
+function mapError(error: unknown): EntitlementFailure {
   if (isUserCancelled(error)) {
     return { kind: "cancelled" };
   }
@@ -28,7 +28,7 @@ function mapError(error: unknown): BillingFailure {
   return { kind: "unknown" };
 }
 
-export function createRevenueCatBilling(): Billing {
+export function createRevenueCatEntitlements(): Entitlements {
   let apiKey = getRevenueCatApiKey();
   let configured = false;
   let resolvedOffer: PurchasesPackage | null = null;
@@ -44,7 +44,7 @@ export function createRevenueCatBilling(): Billing {
     return true;
   }
 
-  async function getEntitlement(): Promise<Result<Entitlement, BillingFailure>> {
+  async function getEntitlement(): Promise<Result<Entitlement, EntitlementFailure>> {
     try {
       if (!ensureConfigured()) {
         return { ok: false, failure: { kind: "no-config" } };
@@ -56,7 +56,7 @@ export function createRevenueCatBilling(): Billing {
     }
   }
 
-  async function getOffer(): Promise<Result<ProOffer, BillingFailure>> {
+  async function getOffer(): Promise<Result<ProOffer, EntitlementFailure>> {
     try {
       if (!ensureConfigured()) {
         return { ok: false, failure: { kind: "no-config" } };
@@ -73,7 +73,7 @@ export function createRevenueCatBilling(): Billing {
     }
   }
 
-  async function purchase(): Promise<Result<Entitlement, BillingFailure>> {
+  async function purchase(): Promise<Result<Entitlement, EntitlementFailure>> {
     try {
       if (!ensureConfigured()) {
         return { ok: false, failure: { kind: "no-config" } };
@@ -88,7 +88,7 @@ export function createRevenueCatBilling(): Billing {
     }
   }
 
-  async function restore(): Promise<Result<Entitlement, BillingFailure>> {
+  async function restore(): Promise<Result<Entitlement, EntitlementFailure>> {
     try {
       if (!ensureConfigured()) {
         return { ok: false, failure: { kind: "no-config" } };
