@@ -47,7 +47,14 @@ export function Composer({ children }: { children: ReactNode }) {
       {fade ? (
         <LinearGradient pointerEvents="none" colors={fade} style={StyleSheet.absoluteFill} />
       ) : null}
-      <View className="px-3 pt-4" style={{ paddingBottom: insets.bottom + 8 }}>
+      <View
+        className="pt-4"
+        style={{
+          paddingBottom: insets.bottom + 8,
+          paddingLeft: insets.left + 12,
+          paddingRight: insets.right + 12,
+        }}
+      >
         <View className="rounded-3xl border border-icon bg-background p-2 pt-3 gap-2">
           {children}
         </View>
@@ -121,7 +128,7 @@ function useBackdropFade(): readonly [ColorValue, ColorValue] | null {
   return backgroundColor !== undefined && clear ? [clear, backgroundColor] : null;
 }
 
-let styles = StyleSheet.create({
+const styles = StyleSheet.create({
   dock: {
     position: "absolute",
     left: 0,

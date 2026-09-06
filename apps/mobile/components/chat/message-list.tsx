@@ -7,7 +7,7 @@ import { useMessageList } from "@/contexts/message-list-context";
 import { LegendList } from "@legendapp/list";
 import { useLingui } from "@lingui/react/macro";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { type ScrollView, Text, View } from "react-native";
 import { useKeyboardHandler } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
@@ -40,7 +40,6 @@ export function MessageList() {
   // the end of the conversation the list is re-pinned to its end every frame,
   // which keeps the latest message riding just above the composer. Mid-history
   // the content stays put and only the inset changes.
-  let appliedInset = useRef(0);
   let isInteractive = useRef(false);
   let pinToEnd = useRef(false);
 
@@ -53,32 +52,48 @@ export function MessageList() {
     hasUserScrolled.current = true;
   }, []);
 
+  let hasMessages = messages.length > 0;
+  let isAtEnd = useCallback(() => {
+    let state = flatListRef.current?.getState();
+    return hasMessages && (!hasUserScrolled.current || (state?.isAtEnd ?? false));
+  }, [flatListRef, hasMessages]);
+
   let anchorToKeyboard = useCallback(() => {
     isInteractive.current = false;
-    let state = flatListRef.current?.getState();
-    pinToEnd.current = !hasUserScrolled.current || (state?.isAtEnd ?? false);
-  }, [flatListRef]);
+    pinToEnd.current = isAtEnd();
+  }, [isAtEnd]);
 
   let followKeyboard = useCallback(
     (inset: number, moveContent: boolean) => {
       // LegendList types the native ref loosely; it is the ScrollView instance.
       let scrollView = flatListRef.current?.getNativeScrollRef() as ScrollView | undefined;
       if (!scrollView) return;
-      scrollView.setNativeProps({
-        contentInset: { bottom: inset },
-        scrollIndicatorInsets: { top: headerHeight, bottom: composerHeight + inset },
-      });
+      scrollView.setNativeProps({ contentInset: { bottom: inset } });
       if (moveContent && pinToEnd.current && !isInteractive.current) {
         scrollView.scrollToEnd({ animated: false });
       }
-      appliedInset.current = inset;
     },
-    [flatListRef, headerHeight, composerHeight]
+    [flatListRef]
   );
 
   let markInteractive = useCallback(() => {
     isInteractive.current = true;
   }, []);
+
+  // When the composer grows (the field wraps, a photo is attached) the list's
+  // bottom padding grows with it. Keep the end pinned so the card grows over
+  // empty padding rather than over the last message.
+  useEffect(() => {
+    if (!isAtEnd()) return;
+    flatListRef.current?.scrollToEnd({ animated: false });
+  }, [composerHeight, flatListRef, isAtEnd]);
+
+  // The composer already reserves the bottom safe area, and absorbs it while
+  // the keyboard is open, so the list only needs the part above that.
+  function insetFor(keyboardHeight: number) {
+    "worklet";
+    return Math.max(keyboardHeight - safeBottom, 0);
+  }
 
   useKeyboardHandler(
     {
@@ -88,18 +103,18 @@ export function MessageList() {
       },
       onMove(e) {
         "worklet";
-        scheduleOnRN(followKeyboard, Math.max(e.height - safeBottom, 0), true);
+        scheduleOnRN(followKeyboard, insetFor(e.height), true);
       },
       onInteractive(e) {
         "worklet";
         // The user is dragging the keyboard along with the list, so only the
         // inset follows; moving the content under their finger would fight them.
         scheduleOnRN(markInteractive);
-        scheduleOnRN(followKeyboard, Math.max(e.height - safeBottom, 0), false);
+        scheduleOnRN(followKeyboard, insetFor(e.height), false);
       },
       onEnd(e) {
         "worklet";
-        scheduleOnRN(followKeyboard, Math.max(e.height - safeBottom, 0), true);
+        scheduleOnRN(followKeyboard, insetFor(e.height), true);
       },
     },
     [anchorToKeyboard, followKeyboard, markInteractive, safeBottom]
@@ -139,7 +154,7 @@ export function MessageList() {
         alignItemsAtEnd
         maintainScrollAtEnd
         maintainScrollAtEndThreshold={0.1}
-        maintainVisibleContentPosition={false}
+        maintainVisibleContentPosition
         contentContainerStyle={{
           // Only stretch/center for the empty state. When populated, leave
           // sizing to alignItemsAtEnd — flexGrow inflates the measured
