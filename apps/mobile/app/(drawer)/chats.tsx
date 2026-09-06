@@ -62,11 +62,12 @@ export default function ChatsScreen() {
 
   if (plants.length === 0) {
     return (
-      <View className="flex-1 bg-background items-center justify-center px-8">
+      <View className="flex-1 bg-background items-center justify-center px-8" testID="chatsScreen">
         <TouchableOpacity
           className="flex-row items-center gap-4"
           onPress={() => router.push("/")}
           activeOpacity={0.7}
+          testID="namePlantBtn"
           accessibilityRole="button"
           accessibilityLabel={t`Name a plant to start chatting`}
           accessibilityHint={t`Navigates to the plant naming screen`}
@@ -85,7 +86,7 @@ export default function ChatsScreen() {
   }
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-background" testID="chatsScreen">
       <FlashList
         data={plants}
         keyExtractor={(item) => item.id}
