@@ -1,8 +1,16 @@
-# Automated Claude review on every non-draft PR from this repo (issue #32).
+# Claude review of a PR from this repo, requested by adding the `claude-review` label
+# (issue #32).
+#
+# Adding the label reviews the PR. While the label stays on, each push re-reviews it,
+# and a labelled draft is reviewed when it is marked ready. Remove the label to stop.
+# Fork PRs are never reviewed (forks cannot read secrets anyway).
 #
 # Required setup (a maintainer does this once; nothing here is committed):
 #
-#   1. Repository secret `ANTHROPIC_API_KEY`
+#   1. Label `claude-review`
+#      `gh label create claude-review --description "Pull request label to request a Claude review." --color 11181c`
+#
+#   2. Repository secret `ANTHROPIC_API_KEY`
 #      Settings → Secrets and variables → Actions → New repository secret.
 #      Name: ANTHROPIC_API_KEY. Value: a Claude API key from https://platform.claude.com.
 #      Alternative: a Claude subscription token from `claude setup-token`, saved as
@@ -10,7 +18,7 @@
 #      `claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}` and update the
 #      check step to read that secret instead.
 #
-#   2. Install the Claude GitHub App on this repository: https://github.com/apps/claude.
+#   3. Install the Claude GitHub App on this repository: https://github.com/apps/claude.
 #      With no `github_token` input, the action posts comments as that app, which is
 #      why the job needs `id-token: write`. To skip installing the app, pass
 #      `github_token: ${{ secrets.GITHUB_TOKEN }}` to the action instead; comments then
@@ -36,7 +44,7 @@
 on:
   pull_request:
     types:
-      - opened
+      - labeled
       - synchronize
       - ready_for_review
       - reopened
@@ -47,11 +55,14 @@ concurrency:
 
 jobs:
   review:
-    # Skip drafts, bot authors (dependabot, github-actions, and the like all have
-    # `user.type == Bot`), and fork PRs (forks cannot read secrets anyway).
+    # Run only when the `claude-review` label is on the PR. On a `labeled` event the
+    # label being added must be that one, so adding an unrelated label to an
+    # already-labelled PR does not start another review. Drafts wait until they are
+    # marked ready; fork PRs are skipped because they cannot read secrets.
     if: |
+      contains(github.event.pull_request.labels.*.name, 'claude-review') &&
+      (github.event.action != 'labeled' || github.event.label.name == 'claude-review') &&
       github.event.pull_request.draft == false &&
-      github.event.pull_request.user.type != 'Bot' &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 20
