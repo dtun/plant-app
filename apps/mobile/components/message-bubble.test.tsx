@@ -10,10 +10,6 @@ let mockCommit = jest.fn();
 
 beforeEach(() => {
   mockCommit.mockClear();
-  jest.mocked(events).messageDeleted = jest.fn((args) => ({
-    type: "v1.MessageDeleted",
-    ...args,
-  })) as any;
   (useStore as jest.Mock).mockReturnValue({ store: { commit: mockCommit } });
   jest.spyOn(Alert, "alert");
 });
