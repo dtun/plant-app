@@ -6,6 +6,7 @@ import { SubmitButton } from "@/components/ui/submit-button";
 import { i18n } from "@/src/i18n";
 import { intelligence, type PlantData } from "@/src/intelligence";
 import { events } from "@/src/livestore/schema";
+import { testIds } from "@/src/testing/test-ids";
 import { getDeviceId } from "@/utils/device";
 import {
   pickImageFromLibrary,
@@ -274,6 +275,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
         ? () => (
             <Pressable
               onPress={handleReset}
+              testID={testIds.plantForm.resetButton}
               accessible={true}
               accessibilityRole="button"
               accessibilityLabel={t`Reset form`}
@@ -315,6 +317,7 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
             ) : (
               <Pressable
                 onPress={removePhoto}
+                testID={testIds.plantForm.removePhotoButton}
                 accessible={true}
                 accessibilityRole="button"
                 accessibilityLabel={t`Remove photo`}
@@ -339,13 +342,19 @@ export function PlantForm({ setOptions }: PlantFormProps = {}) {
               onBlur={onBlur}
               placeholder={selectedImage ? t`Anything else?` : t`Describe your plant...`}
               error={errors.plantInput?.message}
+              testID={testIds.plantForm.descriptionInput}
               leftButton={
-                <PhotoUpload selectedImage={selectedImage} onImageSelect={handleShowImagePicker} />
+                <PhotoUpload
+                  selectedImage={selectedImage}
+                  onImageSelect={handleShowImagePicker}
+                  testID={testIds.plantForm.photoButton}
+                />
               }
               rightButton={
                 <SubmitButton
                   onPress={handleSubmit(onSubmit)}
                   isLoading={isGenerating || isAnalyzing}
+                  testID={testIds.plantForm.submitButton}
                 />
               }
             />

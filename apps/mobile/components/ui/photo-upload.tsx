@@ -9,21 +9,19 @@ interface PhotoUploadProps {
   onRemoveImage?: () => void;
   selectedImage?: string | null;
   size?: number;
+  testID?: string;
 }
 
-export function PhotoUpload({
-  onImageSelect,
-  selectedImage,
-  size = 32,
-}: PhotoUploadProps) {
+export function PhotoUpload({ onImageSelect, selectedImage, size = 32, testID }: PhotoUploadProps) {
   let { t } = useLingui();
-  let { borderRadius: borderRadiusLg } = useResolveClassNames('rounded-lg');
+  let { borderRadius: borderRadiusLg } = useResolveClassNames("rounded-lg");
   return (
     <View className="flex-row items-center gap-2">
       <TouchableOpacity
         className="rounded-lg items-center justify-center bg-gray-900 dark:bg-gray-800"
         style={{ width: size, height: size }}
         onPress={onImageSelect}
+        testID={testID}
         accessible={true}
         accessibilityRole="button"
         accessibilityLabel={t`Add plant photo`}
@@ -36,7 +34,7 @@ export function PhotoUpload({
           source={{ uri: selectedImage }}
           className="self-center rounded-lg"
           style={{ width: size, height: size, borderRadius: borderRadiusLg }}
-          />
+        />
       ) : null}
     </View>
   );

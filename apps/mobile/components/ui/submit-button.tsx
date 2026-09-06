@@ -11,6 +11,7 @@ interface SubmitButtonProps {
   isLoading?: boolean;
   onPress: () => void;
   size?: number;
+  testID?: string;
   variant?: "primary" | "secondary";
 }
 
@@ -21,6 +22,7 @@ export function SubmitButton({
   isLoading = false,
   onPress,
   size = 32,
+  testID,
   variant = "primary",
 }: SubmitButtonProps) {
   let { t } = useLingui();
@@ -41,6 +43,7 @@ export function SubmitButton({
         }}
         onPress={onPress}
         disabled={isDisabled}
+        testID={testID}
         accessible={true}
         accessibilityRole="button"
         accessibilityLabel={isLoading ? t`Loading` : t`Submit`}
