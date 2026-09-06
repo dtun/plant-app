@@ -11,7 +11,19 @@ jest.mock("expo-router", () => ({
 jest.mock("@legendapp/list", () => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   let { FlatList } = require("react-native");
-  return { LegendList: FlatList };
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  let { forwardRef, useImperativeHandle } = require("react");
+  // A FlatList wearing the slice of LegendList's imperative interface the
+  // chat screen relies on: scroll state and the native scroll view.
+  let LegendList = forwardRef(function LegendList(props: object, ref: unknown) {
+    useImperativeHandle(ref, () => ({
+      getState: () => ({ isAtEnd: true, scroll: 0 }),
+      getNativeScrollRef: () => ({ setNativeProps: jest.fn(), scrollToEnd: jest.fn() }),
+      scrollToEnd: jest.fn(),
+    }));
+    return <FlatList {...props} />;
+  });
+  return { LegendList };
 });
 
 jest.mock("@/utils/photo-utils", () => ({
