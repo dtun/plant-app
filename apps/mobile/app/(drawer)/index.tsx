@@ -11,6 +11,7 @@ export default function HomeScreen() {
     <View
       className="flex-1 bg-background px-4"
       style={{ paddingTop: headerHeight }}
+      testID="homeScreen"
     >
       <PlantForm setOptions={setOptions} />
     </View>

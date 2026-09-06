@@ -18,7 +18,7 @@ export function ChatLayout() {
   let { inputText, pendingImageUri, handleAttachPhoto, handleSend } = useComposer();
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-background" testID="chatScreen">
       <ChatHeader />
       <MessageList />
       <Composer>
