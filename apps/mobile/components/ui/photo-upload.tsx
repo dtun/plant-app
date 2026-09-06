@@ -9,9 +9,10 @@ interface PhotoUploadProps {
   onRemoveImage?: () => void;
   selectedImage?: string | null;
   size?: number;
+  testID?: string;
 }
 
-export function PhotoUpload({ onImageSelect, selectedImage, size = 32 }: PhotoUploadProps) {
+export function PhotoUpload({ onImageSelect, selectedImage, size = 32, testID }: PhotoUploadProps) {
   let { t } = useLingui();
   let { borderRadius: borderRadiusLg } = useResolveClassNames("rounded-lg");
   return (
@@ -20,6 +21,7 @@ export function PhotoUpload({ onImageSelect, selectedImage, size = 32 }: PhotoUp
         className="rounded-lg items-center justify-center bg-gray-900 dark:bg-gray-800"
         style={{ width: size, height: size }}
         onPress={onImageSelect}
+        testID={testID}
         accessible={true}
         accessibilityRole="button"
         accessibilityLabel={t`Add plant photo`}

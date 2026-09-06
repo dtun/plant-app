@@ -5,6 +5,8 @@ interface OptionSelectorProps<T extends string> {
   label?: string;
   onChange: (value: T) => void;
   options: readonly T[];
+  /** Namespace for the option buttons: each gets `${testID}-${option}`. */
+  testID?: string;
   value?: T;
 }
 
@@ -12,6 +14,7 @@ export function OptionSelector<T extends string>({
   label,
   onChange,
   options,
+  testID,
   value,
 }: OptionSelectorProps<T>) {
   let { t } = useLingui();
@@ -26,6 +29,7 @@ export function OptionSelector<T extends string>({
               : "flex-1 border border-icon rounded-xl p-3 items-center"
           }
           onPress={() => onChange(option)}
+          testID={testID ? `${testID}-${option}` : undefined}
           accessible={true}
           accessibilityRole="button"
           accessibilityLabel={t`Select ${option}`}

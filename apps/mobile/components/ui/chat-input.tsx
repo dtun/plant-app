@@ -13,6 +13,7 @@ interface ChatInputProps {
   onLayout?: (event: LayoutChangeEvent) => void;
   placeholder?: string;
   rightButton?: ReactNode;
+  testID?: string;
   value?: string;
 }
 
@@ -28,6 +29,7 @@ export function ChatInput({
   onLayout,
   placeholder,
   rightButton,
+  testID,
   value,
 }: ChatInputProps) {
   return (
@@ -47,6 +49,7 @@ export function ChatInput({
             placeholder={placeholder}
             multiline={multiline}
             numberOfLines={numberOfLines}
+            testID={testID}
           />
         </View>
         <View className="flex-row gap-2 justify-between">
