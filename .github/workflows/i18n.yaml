@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  i18n-mobile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v6
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: npm
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🌐 Extract Lingui catalogs
+        run: npm run i18n:extract
+        working-directory: apps/mobile
+
+      - name: 🧪 Verify catalogs are up to date
+        run: |
+          if [ -n "$(git status --porcelain apps/mobile/src/locales)" ]; then
+            echo "::error::Lingui catalogs are stale. Run 'npm run i18n:extract' in apps/mobile and commit the result."
+            git --no-pager diff -- apps/mobile/src/locales
+            exit 1
+          fi
+          echo "Lingui catalogs are up to date."
