@@ -1,6 +1,5 @@
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useComposer } from "@/contexts/composer-context";
-import { withAlpha } from "@/utils/color";
 import { useLingui } from "@lingui/react/macro";
 import { LinearGradient } from "expo-linear-gradient";
 import type { ReactNode } from "react";
@@ -117,15 +116,15 @@ Composer.Field = Field;
 Composer.Toolbar = Toolbar;
 
 /**
- * Gradient from transparent to the screen background, so messages scrolling
- * under the dock fade out instead of being clipped. Null when the resolved
- * background color can't be decomposed, in which case the dock is just
- * transparent around the card.
+ * Gradient from the transparent to the solid theme background, so messages
+ * scrolling under the dock fade out instead of being clipped. Null if the
+ * theme didn't resolve, in which case the dock is just transparent around the
+ * card.
  */
 function useBackdropFade(): readonly [ColorValue, ColorValue] | null {
-  let { backgroundColor } = useResolveClassNames("bg-background");
-  let clear = withAlpha(backgroundColor, 0);
-  return backgroundColor !== undefined && clear ? [clear, backgroundColor] : null;
+  let { backgroundColor: clear } = useResolveClassNames("bg-background-clear");
+  let { backgroundColor: solid } = useResolveClassNames("bg-background");
+  return clear !== undefined && solid !== undefined ? [clear, solid] : null;
 }
 
 const styles = StyleSheet.create({
