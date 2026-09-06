@@ -29,6 +29,14 @@ export let events = {
     type: "v1.MessageCreated",
     data,
   })),
+  messageDeleted: jest.fn((data: any) => ({
+    type: "v1.MessageDeleted",
+    data,
+  })),
+  chatCleared: jest.fn((data: any) => ({
+    type: "v1.ChatCleared",
+    data,
+  })),
 };
 
 export let tables = {
