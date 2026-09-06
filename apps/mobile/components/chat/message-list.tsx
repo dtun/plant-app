@@ -9,6 +9,7 @@ import { LegendList } from "@legendapp/list";
 import { useLingui } from "@lingui/react/macro";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Text, View } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import Animated, { FadeIn } from "react-native-reanimated";
 
 /** Breathing room between the first/last message and the chrome over them. */
@@ -26,10 +27,27 @@ export function MessageList() {
   let { messages, listData, flatListRef, isGenerating, getAnimationType } = useMessageList();
   let { composerHeight } = useComposer();
   let headerHeight = useHeaderHeight();
-  let listProps = useKeyboardFollowingList(flatListRef, {
-    hasMessages: messages.length > 0,
-    composerHeight,
-  });
+  let hasMessages = messages.length > 0;
+  let listProps = useKeyboardFollowingList(flatListRef, { hasMessages, composerHeight });
+
+  if (!hasMessages) {
+    // Nothing to scroll yet: a plain view that centers between the chrome and
+    // gives way to the keyboard, rather than a list with 300px of empty inset.
+    return (
+      <Animated.View entering={FadeIn.duration(200)} style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+          <View
+            className="flex-1 items-center justify-center px-8"
+            style={{ paddingTop: headerHeight, paddingBottom: composerHeight }}
+          >
+            <Text className="text-icon text-base text-center">
+              {t`Say hello to ${plant?.name ?? t`your plant`}!`}
+            </Text>
+          </View>
+        </KeyboardAvoidingView>
+      </Animated.View>
+    );
+  }
 
   return (
     <Animated.View entering={FadeIn.duration(200)} style={{ flex: 1 }}>
@@ -55,23 +73,13 @@ export function MessageList() {
           );
         }}
         ListFooterComponent={isGenerating ? <TypingIndicator /> : null}
-        ListEmptyComponent={
-          <View className="flex-1 items-center justify-center px-8">
-            <Text className="text-icon text-base text-center">
-              {t`Say hello to ${plant?.name ?? t`your plant`}!`}
-            </Text>
-          </View>
-        }
         alignItemsAtEnd
         maintainScrollAtEnd
         maintainScrollAtEndThreshold={0.1}
         maintainVisibleContentPosition
         contentContainerStyle={{
-          // Only stretch/center for the empty state. When populated, leave
-          // sizing to alignItemsAtEnd — flexGrow inflates the measured
-          // content size and breaks its padding + scroll-range math.
-          flexGrow: messages.length === 0 ? 1 : undefined,
-          justifyContent: messages.length === 0 ? "center" : undefined,
+          // Leave sizing to alignItemsAtEnd: flexGrow would inflate the
+          // measured content size and break its padding + scroll-range math.
           paddingTop: headerHeight + EDGE_GAP,
           paddingBottom: composerHeight + EDGE_GAP,
         }}
