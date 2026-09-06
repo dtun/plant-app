@@ -18,18 +18,23 @@ export function ChatLayout() {
   let { inputText, pendingImageUri, handleAttachPhoto, handleSend } = useComposer();
 
   return (
-    <View className="flex-1 bg-background">
+    <View className="flex-1 bg-background" testID="chatScreen">
       <ChatHeader />
       <MessageList />
       <Composer>
         <Composer.Attachment />
-        <Composer.Field placeholder={t`Type a message...`} />
+        <Composer.Field placeholder={t`Type a message...`} testID="composerInput" />
         <Composer.Toolbar>
-          <PhotoUpload selectedImage={null} onImageSelect={handleAttachPhoto} />
+          <PhotoUpload
+            selectedImage={null}
+            onImageSelect={handleAttachPhoto}
+            testID="attachPhotoBtn"
+          />
           <SubmitButton
             onPress={handleSend}
             disabled={(!inputText.trim() && !pendingImageUri) || isGenerating}
             isLoading={isGenerating}
+            testID="sendBtn"
           />
         </Composer.Toolbar>
       </Composer>

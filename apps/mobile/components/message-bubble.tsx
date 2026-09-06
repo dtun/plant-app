@@ -47,6 +47,7 @@ export function MessageBubble({ id, role, content, imageUri }: MessageBubbleProp
               className={`rounded-2xl overflow-hidden ${
                 isUser ? "bg-bubble-user" : "bg-bubble-assistant"
               }`}
+              testID={`chatMessage-${id}`}
             >
               {imageUri ? (
                 <Image

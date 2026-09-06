@@ -80,6 +80,7 @@ function Attachment() {
         <TouchableOpacity
           onPress={() => setPendingImageUri(null)}
           className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center"
+          testID="removeAttachmentBtn"
           accessibilityRole="button"
           accessibilityLabel={t`Remove selected photo`}
         >
@@ -91,7 +92,7 @@ function Attachment() {
 }
 
 /** The message text field. Grows with its content up to a few lines. */
-function Field({ placeholder }: { placeholder: string }) {
+function Field({ placeholder, testID }: { placeholder: string; testID?: string }) {
   let { inputText, setInputText } = useComposer();
 
   return (
@@ -102,6 +103,7 @@ function Field({ placeholder }: { placeholder: string }) {
       placeholder={placeholder}
       accessibilityLabel={placeholder}
       multiline
+      testID={testID}
     />
   );
 }
