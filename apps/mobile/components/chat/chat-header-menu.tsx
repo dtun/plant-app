@@ -16,6 +16,7 @@ export function ChatHeaderMenu({ onClearChat }: ChatHeaderMenuProps) {
       <DropdownMenu.Trigger>
         <Pressable
           className="self-center"
+          testID="chatMenuBtn"
           accessibilityRole="button"
           accessibilityLabel={t`Chat options`}
           accessibilityHint={t`Opens chat options menu`}
