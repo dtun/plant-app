@@ -7,9 +7,12 @@ import { useMessageList } from "@/contexts/message-list-context";
 import { LegendList } from "@legendapp/list";
 import { useLingui } from "@lingui/react/macro";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { useCallback } from "react";
-import { type ScrollViewProps, Text, View } from "react-native";
-import Animated, { FadeIn, useAnimatedProps } from "react-native-reanimated";
+import { useCallback, useRef } from "react";
+import { type ScrollView, Text, View } from "react-native";
+import { useKeyboardHandler } from "react-native-keyboard-controller";
+import Animated, { FadeIn } from "react-native-reanimated";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { scheduleOnRN } from "react-native-worklets";
 
 /** Breathing room between the first/last message and the chrome over them. */
 const EDGE_GAP = 8;
@@ -23,35 +26,89 @@ const EDGE_GAP = 8;
 export function MessageList() {
   let { t } = useLingui();
   let { plant } = useChatContext();
-  let { messages, listData, flatListRef, keyboardInset, isGenerating, getAnimationType } =
-    useMessageList();
+  let { messages, listData, flatListRef, isGenerating, getAnimationType } = useMessageList();
   let { composerHeight } = useComposer();
   let headerHeight = useHeaderHeight();
+  let { bottom: safeBottom } = useSafeAreaInsets();
 
-  // Track the keyboard with a native scroll inset on the UI thread, so opening
-  // the keyboard lifts the last messages without re-rendering or re-laying-out
-  // the list (the v0 iOS approach). iOS-only prop; a no-op on Android.
-  let listAnimatedProps = useAnimatedProps(() => ({
-    contentInset: { bottom: keyboardInset.value },
-    scrollIndicatorInsets: {
-      top: headerHeight,
-      bottom: composerHeight + keyboardInset.value,
+  // Follow the keyboard with a native scroll inset, set straight on the scroll
+  // view each frame rather than through React state, so the list never
+  // re-renders or re-lays-out while the keyboard moves. Insets are an iOS-only
+  // prop; a no-op on Android.
+  //
+  // Growing the inset alone doesn't move the content, so when the reader is at
+  // the end of the conversation the list is re-pinned to its end every frame,
+  // which keeps the latest message riding just above the composer. Mid-history
+  // the content stays put and only the inset changes.
+  let appliedInset = useRef(0);
+  let isInteractive = useRef(false);
+  let pinToEnd = useRef(false);
+
+  // LegendList's scroll bookkeeping is only stale before the first user
+  // scroll: its scroll-to-end on open runs on estimated sizes and the native
+  // maintainVisibleContentPosition adjustment silently carries the content the
+  // rest of the way. Until then, "at the end" is exactly where it is.
+  let hasUserScrolled = useRef(false);
+  let handleScrollBeginDrag = useCallback(() => {
+    hasUserScrolled.current = true;
+  }, []);
+
+  let anchorToKeyboard = useCallback(() => {
+    isInteractive.current = false;
+    let state = flatListRef.current?.getState();
+    pinToEnd.current = !hasUserScrolled.current || (state?.isAtEnd ?? false);
+  }, [flatListRef]);
+
+  let followKeyboard = useCallback(
+    (inset: number, moveContent: boolean) => {
+      // LegendList types the native ref loosely; it is the ScrollView instance.
+      let scrollView = flatListRef.current?.getNativeScrollRef() as ScrollView | undefined;
+      if (!scrollView) return;
+      scrollView.setNativeProps({
+        contentInset: { bottom: inset },
+        scrollIndicatorInsets: { top: headerHeight, bottom: composerHeight + inset },
+      });
+      if (moveContent && pinToEnd.current && !isInteractive.current) {
+        scrollView.scrollToEnd({ animated: false });
+      }
+      appliedInset.current = inset;
     },
-  }));
+    [flatListRef, headerHeight, composerHeight]
+  );
 
-  // Hand LegendList an Animated.ScrollView directly rather than going through
-  // `@legendapp/list/reanimated`, whose wrapper (2.0.19) also forwards the
-  // animated props handle to the native view as an unknown plain prop.
-  let renderScrollComponent = useCallback(
-    (props: ScrollViewProps) => <Animated.ScrollView {...props} animatedProps={listAnimatedProps} />,
-    [listAnimatedProps]
+  let markInteractive = useCallback(() => {
+    isInteractive.current = true;
+  }, []);
+
+  useKeyboardHandler(
+    {
+      onStart() {
+        "worklet";
+        scheduleOnRN(anchorToKeyboard);
+      },
+      onMove(e) {
+        "worklet";
+        scheduleOnRN(followKeyboard, Math.max(e.height - safeBottom, 0), true);
+      },
+      onInteractive(e) {
+        "worklet";
+        // The user is dragging the keyboard along with the list, so only the
+        // inset follows; moving the content under their finger would fight them.
+        scheduleOnRN(markInteractive);
+        scheduleOnRN(followKeyboard, Math.max(e.height - safeBottom, 0), false);
+      },
+      onEnd(e) {
+        "worklet";
+        scheduleOnRN(followKeyboard, Math.max(e.height - safeBottom, 0), true);
+      },
+    },
+    [anchorToKeyboard, followKeyboard, markInteractive, safeBottom]
   );
 
   return (
     <Animated.View entering={FadeIn.duration(200)} style={{ flex: 1 }}>
       <LegendList
         ref={flatListRef}
-        renderScrollComponent={renderScrollComponent}
         data={listData}
         estimatedItemSize={80}
         keyExtractor={(item, index) => (item.type === "message" ? item.message.id : `sep-${index}`)}
@@ -82,7 +139,7 @@ export function MessageList() {
         alignItemsAtEnd
         maintainScrollAtEnd
         maintainScrollAtEndThreshold={0.1}
-        maintainVisibleContentPosition
+        maintainVisibleContentPosition={false}
         contentContainerStyle={{
           // Only stretch/center for the empty state. When populated, leave
           // sizing to alignItemsAtEnd — flexGrow inflates the measured
@@ -92,6 +149,8 @@ export function MessageList() {
           paddingTop: headerHeight + EDGE_GAP,
           paddingBottom: composerHeight + EDGE_GAP,
         }}
+        scrollIndicatorInsets={{ top: headerHeight, bottom: composerHeight }}
+        onScrollBeginDrag={handleScrollBeginDrag}
         keyboardDismissMode="interactive"
         keyboardShouldPersistTaps="handled"
       />
