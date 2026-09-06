@@ -128,4 +128,19 @@ describe("useKeyboardFollowingList", () => {
     expect(list.scrollToEnd.mock.calls.length).toBe(callsAfterMount + 1);
     expect(list.scrollToEnd).toHaveBeenLastCalledWith({ animated: false });
   });
+
+  test("hands the keyboard handler a fresh, constant-length dependency array each render", () => {
+    let { ref } = makeList({ isAtEnd: true });
+    let { rerender } = render(ref);
+    let calls = (useKeyboardHandler as jest.Mock).mock.calls;
+    let first = calls[calls.length - 1][1];
+
+    rerender({ hasMessages: true, composerHeight: 120 });
+    let second = calls[calls.length - 1][1];
+
+    // Reanimated pushes a worklet hash into whatever array it is given, so a
+    // reused array would grow by one every render.
+    expect(second).not.toBe(first);
+    expect(second).toHaveLength(first.length);
+  });
 });
