@@ -66,7 +66,7 @@ export default function PaywallScreen() {
   let { t } = useLingui();
   let router = useRouter();
   let { reason } = useLocalSearchParams<{ reason?: PaywallReason }>();
-  let { entitlement, status, purchase, restore } = useEntitlements();
+  let { entitlement, status, purchase, restore, refresh } = useEntitlements();
   let isPro = entitlement?.isPro === true;
   let [offerState, setOfferState] = useState<OfferState>({ status: "loading" });
   let [busy, setBusy] = useState(false);
@@ -93,7 +93,8 @@ export default function PaywallScreen() {
   }
 
   function handleRetry() {
-    loadOffer();
+    if (status === "error") refresh();
+    if (offerState.status === "failed") loadOffer();
   }
 
   /** Copy for a failed purchase or restore; `cancelled` is the user's choice, not an error. */
@@ -151,8 +152,10 @@ export default function PaywallScreen() {
 
   let isCheckingEntitlement = status === "loading" && !isPro;
   let isBillingUnavailable = status === "unavailable";
-  let showBilling = status === "ready" && !isPro;
-  let canRetry = showBilling && offerState.status === "failed";
+  let entitlementFailed = status === "error";
+  // A failed entitlement read must not block buying or restoring; the store still answers.
+  let showBilling = (status === "ready" || entitlementFailed) && !isPro;
+  let canRetry = showBilling && (offerState.status === "failed" || entitlementFailed);
   let subscribeDisabled = offerState.status !== "ready" || busy;
   let dismissLabel = isPro ? t`Done` : t`Not now`;
   let dismissHint = isPro ? t`Closes this screen` : t`Closes this screen without subscribing`;
@@ -199,6 +202,12 @@ export default function PaywallScreen() {
         </Text>
       ) : null}
 
+      {entitlementFailed ? (
+        <Text className="mt-6 text-base text-center text-color" accessibilityRole="alert">
+          {t`Couldn't check your subscription right now.`}
+        </Text>
+      ) : null}
+
       {showBilling ? <OfferSection state={offerState} /> : null}
 
       {canRetry ? (
@@ -207,7 +216,7 @@ export default function PaywallScreen() {
           onPress={handleRetry}
           accessibilityRole="button"
           accessibilityLabel={t`Try again`}
-          accessibilityHint={t`Loads the subscription again`}
+          accessibilityHint={t`Tries loading the subscription again`}
           testID="retryBtn"
         >
           <Text className="text-base font-semibold text-color">{t`Try again`}</Text>
