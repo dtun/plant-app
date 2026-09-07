@@ -1,4 +1,8 @@
-import Purchases, { type CustomerInfo, type PurchasesPackage } from "react-native-purchases";
+import Purchases, {
+  PURCHASES_ERROR_CODE,
+  type CustomerInfo,
+  type PurchasesPackage,
+} from "react-native-purchases";
 
 import { PRO_ENTITLEMENT_ID, getRevenueCatApiKey } from "./config";
 import type { Entitlements, EntitlementFailure, Entitlement, ProOffer, Result } from "./types";
@@ -17,15 +21,36 @@ function isUserCancelled(error: unknown): boolean {
   );
 }
 
+/**
+ * The vendor's structured error code, if the thrown value carries one. The SDK
+ * throws plain objects shaped like PurchasesError; anything else (a configure
+ * throw, a missing native module) has no code and classifies as unknown.
+ */
+function errorCodeOf(error: unknown): string | null {
+  if (typeof error !== "object" || error === null || !("code" in error)) {
+    return null;
+  }
+  let { code } = error as { code?: unknown };
+  return typeof code === "string" || typeof code === "number" ? String(code) : null;
+}
+
+/**
+ * Classifies on the SDK's error code, which is a stable contract, never on the
+ * human-readable message, which is localized and reworded between releases.
+ */
 function mapError(error: unknown): EntitlementFailure {
   if (isUserCancelled(error)) {
     return { kind: "cancelled" };
   }
-  let message = error instanceof Error ? error.message : String(error);
-  if (/network|offline|connection|fetch/i.test(message)) {
-    return { kind: "network" };
+  switch (errorCodeOf(error)) {
+    case PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR:
+      return { kind: "cancelled" };
+    case PURCHASES_ERROR_CODE.NETWORK_ERROR:
+    case PURCHASES_ERROR_CODE.OFFLINE_CONNECTION_ERROR:
+      return { kind: "network" };
+    default:
+      return { kind: "unknown" };
   }
-  return { kind: "unknown" };
 }
 
 export function createRevenueCatEntitlements(): Entitlements {

@@ -1,4 +1,4 @@
-import Purchases from "react-native-purchases";
+import Purchases, { PURCHASES_ERROR_CODE } from "react-native-purchases";
 
 import { createRevenueCatEntitlements } from "./revenuecat-entitlements";
 
@@ -70,8 +70,15 @@ test("getEntitlement reports not-pro when the entitlement is inactive", async ()
   expect(result.value.productId).toBeNull();
 });
 
-test("getEntitlement maps network errors to a network failure", async () => {
-  mockPurchases.getCustomerInfo.mockRejectedValueOnce(new Error("network request failed"));
+function sdkError(code: PURCHASES_ERROR_CODE, message: string) {
+  return { code, message, userCancelled: code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR };
+}
+
+test.each([
+  ["NETWORK_ERROR", PURCHASES_ERROR_CODE.NETWORK_ERROR],
+  ["OFFLINE_CONNECTION_ERROR", PURCHASES_ERROR_CODE.OFFLINE_CONNECTION_ERROR],
+])("getEntitlement maps %s to a network failure regardless of message text", async (_, code) => {
+  mockPurchases.getCustomerInfo.mockRejectedValueOnce(sdkError(code, "Sin conexión a internet"));
   let entitlements = createRevenueCatEntitlements();
 
   let result = await entitlements.getEntitlement();
@@ -79,6 +86,30 @@ test("getEntitlement maps network errors to a network failure", async () => {
   expect(result.ok).toBe(false);
   if (result.ok) return;
   expect(result.failure.kind).toBe("network");
+});
+
+test("getEntitlement does not classify by message text alone", async () => {
+  mockPurchases.getCustomerInfo.mockRejectedValueOnce(new Error("network request failed"));
+  let entitlements = createRevenueCatEntitlements();
+
+  let result = await entitlements.getEntitlement();
+
+  expect(result.ok).toBe(false);
+  if (result.ok) return;
+  expect(result.failure.kind).toBe("unknown");
+});
+
+test("getEntitlement maps an unhandled SDK error code to an unknown failure", async () => {
+  mockPurchases.getCustomerInfo.mockRejectedValueOnce(
+    sdkError(PURCHASES_ERROR_CODE.INVALID_CREDENTIALS_ERROR, "Network-ish wording, wrong code")
+  );
+  let entitlements = createRevenueCatEntitlements();
+
+  let result = await entitlements.getEntitlement();
+
+  expect(result.ok).toBe(false);
+  if (result.ok) return;
+  expect(result.failure.kind).toBe("unknown");
 });
 
 test("getEntitlement maps unrecognized errors to an unknown failure", async () => {
@@ -144,7 +175,27 @@ test("purchase buys the resolved offer and returns the new entitlement", async (
   expect(result.value.isPro).toBe(true);
 });
 
-test("purchase maps a user cancellation to a cancelled failure", async () => {
+test("purchase maps the PURCHASE_CANCELLED_ERROR code to a cancelled failure", async () => {
+  mockPurchases.getOfferings.mockResolvedValueOnce({
+    current: { availablePackages: [{ product: { priceString: "$9.99", identifier: "lifetime" } }] },
+    all: {},
+  });
+  mockPurchases.purchasePackage.mockRejectedValueOnce({
+    code: PURCHASES_ERROR_CODE.PURCHASE_CANCELLED_ERROR,
+    message: "Compra cancelada",
+    userCancelled: null,
+  });
+  let entitlements = createRevenueCatEntitlements();
+
+  await entitlements.getOffer();
+  let result = await entitlements.purchase();
+
+  expect(result.ok).toBe(false);
+  if (result.ok) return;
+  expect(result.failure.kind).toBe("cancelled");
+});
+
+test("purchase still honours the legacy userCancelled flag when no code is present", async () => {
   mockPurchases.getOfferings.mockResolvedValueOnce({
     current: { availablePackages: [{ product: { priceString: "$9.99", identifier: "lifetime" } }] },
     all: {},
