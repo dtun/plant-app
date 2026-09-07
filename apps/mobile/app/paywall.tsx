@@ -66,7 +66,7 @@ export default function PaywallScreen() {
   let { t } = useLingui();
   let router = useRouter();
   let { reason } = useLocalSearchParams<{ reason?: PaywallReason }>();
-  let { entitlement, purchase, restore } = useEntitlements();
+  let { entitlement, status, purchase, restore } = useEntitlements();
   let isPro = entitlement?.isPro === true;
   let [offerState, setOfferState] = useState<OfferState>({ status: "loading" });
   let [busy, setBusy] = useState(false);
@@ -142,7 +142,9 @@ export default function PaywallScreen() {
     router.back();
   }
 
-  let showBilling = !isPro;
+  let isCheckingEntitlement = status === "loading" && !isPro;
+  let isBillingUnavailable = status === "unavailable";
+  let showBilling = status === "ready" && !isPro;
   let subscribeDisabled = offerState.status !== "ready" || busy;
   let dismissLabel = isPro ? t`Done` : t`Not now`;
   let dismissHint = isPro ? t`Closes this screen` : t`Closes this screen without subscribing`;
@@ -178,6 +180,14 @@ export default function PaywallScreen() {
       {isPro ? (
         <Text className="mt-6 text-base text-center text-color">
           {t`You're already subscribed to KeepTend Pro.`}
+        </Text>
+      ) : null}
+
+      {isCheckingEntitlement ? <ActivityIndicator /> : null}
+
+      {isBillingUnavailable ? (
+        <Text className="mt-6 text-base text-center text-color" accessibilityRole="alert">
+          {t`Subscriptions aren't available in this build.`}
         </Text>
       ) : null}
 
