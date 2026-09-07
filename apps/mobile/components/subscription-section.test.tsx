@@ -140,3 +140,47 @@ test("Manage subscription is hidden when the store offers no management page", a
 
   expect(screen.queryByRole("button", { name: "Manage subscription" })).toBeNull();
 });
+
+test("a restore that recovers a purchase flips the section to subscribed", async () => {
+  renderSection({
+    restore: {
+      ok: true,
+      value: {
+        isPro: true,
+        productId: "pro_monthly",
+        expiresAt: 1767268800000,
+        willRenew: true,
+        managementUrl: null,
+      },
+    },
+  });
+
+  fireEvent.press(await screen.findByRole("button", { name: "Restore purchase" }));
+
+  expect(await screen.findByText("Your subscription has been restored.")).toBeOnTheScreen();
+  expect(screen.getByText("Subscribed to KeepTend Pro")).toBeOnTheScreen();
+  expect(screen.queryByRole("button", { name: "Subscribe" })).toBeNull();
+});
+
+test("a restore that finds no purchase says so without treating it as an error", async () => {
+  renderSection();
+
+  fireEvent.press(await screen.findByRole("button", { name: "Restore purchase" }));
+
+  expect(
+    await screen.findByText("No previous purchase was found for this account.")
+  ).toBeOnTheScreen();
+  expect(screen.getByText("Not subscribed")).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Subscribe" })).toBeOnTheScreen();
+});
+
+test("a network failure during restore explains itself and leaves the actions in place", async () => {
+  renderSection({ restore: { ok: false, failure: { kind: "network" } } });
+
+  fireEvent.press(await screen.findByRole("button", { name: "Restore purchase" }));
+
+  expect(
+    await screen.findByText("Couldn't reach the store. Check your connection and try again.")
+  ).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Restore purchase" })).toBeEnabled();
+});
