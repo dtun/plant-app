@@ -12,8 +12,17 @@ let mockPurchases = Purchases as unknown as {
   removeCustomerInfoUpdateListener: jest.Mock;
 };
 
-function customerInfo(active: Record<string, { productIdentifier: string }> = {}) {
-  return { entitlements: { active, all: {} } };
+interface ActiveEntitlement {
+  productIdentifier: string;
+  expirationDateMillis?: number | null;
+  willRenew?: boolean;
+}
+
+function customerInfo(
+  active: Record<string, ActiveEntitlement> = {},
+  managementURL: string | null = null
+) {
+  return { entitlements: { active, all: {} }, managementURL };
 }
 
 let proInfo = customerInfo({ pro: { productIdentifier: "lifetime" } });
@@ -59,6 +68,46 @@ test("getEntitlement reports pro ownership and product id from active entitlemen
   expect(result.value.productId).toBe("lifetime");
 });
 
+test("getEntitlement reports expiry, renewal, and management URL for a subscription", async () => {
+  mockPurchases.getCustomerInfo.mockResolvedValueOnce(
+    customerInfo(
+      {
+        pro: {
+          productIdentifier: "pro_monthly",
+          expirationDateMillis: 1767225600000,
+          willRenew: true,
+        },
+      },
+      "https://apps.apple.com/account/subscriptions"
+    )
+  );
+  let entitlements = createRevenueCatEntitlements();
+
+  let result = await entitlements.getEntitlement();
+
+  if (!result.ok) throw new Error("expected ok");
+  expect(result.value.isPro).toBe(true);
+  expect(result.value.expiresAt).toBe(1767225600000);
+  expect(result.value.willRenew).toBe(true);
+  expect(result.value.managementUrl).toBe("https://apps.apple.com/account/subscriptions");
+});
+
+test("getEntitlement reports a lifetime unlock with no expiry and no renewal", async () => {
+  mockPurchases.getCustomerInfo.mockResolvedValueOnce(
+    customerInfo({
+      pro: { productIdentifier: "lifetime", expirationDateMillis: null, willRenew: false },
+    })
+  );
+  let entitlements = createRevenueCatEntitlements();
+
+  let result = await entitlements.getEntitlement();
+
+  if (!result.ok) throw new Error("expected ok");
+  expect(result.value.isPro).toBe(true);
+  expect(result.value.expiresAt).toBeNull();
+  expect(result.value.willRenew).toBe(false);
+});
+
 test("getEntitlement reports not-pro when the entitlement is inactive", async () => {
   mockPurchases.getCustomerInfo.mockResolvedValueOnce(customerInfo());
   let entitlements = createRevenueCatEntitlements();
@@ -68,6 +117,9 @@ test("getEntitlement reports not-pro when the entitlement is inactive", async ()
   if (!result.ok) throw new Error("expected ok");
   expect(result.value.isPro).toBe(false);
   expect(result.value.productId).toBeNull();
+  expect(result.value.expiresAt).toBeNull();
+  expect(result.value.willRenew).toBe(false);
+  expect(result.value.managementUrl).toBeNull();
 });
 
 function sdkError(code: PURCHASES_ERROR_CODE, message: string) {

@@ -17,7 +17,16 @@ test("createFakeEntitlements returns canned ok results by default", async () => 
 
 test("createFakeEntitlements returns configured responses", async () => {
   let entitlements = createFakeEntitlements({
-    entitlement: { ok: true, value: { isPro: true, productId: "lifetime" } },
+    entitlement: {
+      ok: true,
+      value: {
+        isPro: true,
+        productId: "pro_monthly",
+        expiresAt: 1767225600000,
+        willRenew: false,
+        managementUrl: "https://play.google.com/store/account/subscriptions",
+      },
+    },
     offer: { ok: true, value: { priceLabel: "£4.99" } },
   });
 
@@ -27,8 +36,25 @@ test("createFakeEntitlements returns configured responses", async () => {
   if (!entitlement.ok) throw new Error("expected ok");
   if (!offer.ok) throw new Error("expected ok");
   expect(entitlement.value.isPro).toBe(true);
-  expect(entitlement.value.productId).toBe("lifetime");
+  expect(entitlement.value.productId).toBe("pro_monthly");
+  expect(entitlement.value.expiresAt).toBe(1767225600000);
+  expect(entitlement.value.willRenew).toBe(false);
+  expect(entitlement.value.managementUrl).toBe(
+    "https://play.google.com/store/account/subscriptions"
+  );
   expect(offer.value.priceLabel).toBe("£4.99");
+});
+
+test("createFakeEntitlements default not-pro state carries no expiry, renewal, or management URL", async () => {
+  let entitlements = createFakeEntitlements();
+
+  let result = await entitlements.getEntitlement();
+
+  if (!result.ok) throw new Error("expected ok");
+  expect(result.value.isPro).toBe(false);
+  expect(result.value.expiresAt).toBeNull();
+  expect(result.value.willRenew).toBe(false);
+  expect(result.value.managementUrl).toBeNull();
 });
 
 test("createFakeEntitlements returns configured failure responses", async () => {
@@ -50,9 +76,21 @@ test("subscribe notifies listeners on emit and stops after unsubscribe", () => {
   let seen: Entitlement[] = [];
   let unsubscribe = entitlements.subscribe((entitlement) => seen.push(entitlement));
 
-  entitlements.emit({ isPro: true, productId: "lifetime" });
+  entitlements.emit({
+    isPro: true,
+    productId: "lifetime",
+    expiresAt: null,
+    willRenew: false,
+    managementUrl: null,
+  });
   unsubscribe();
-  entitlements.emit({ isPro: false, productId: null });
+  entitlements.emit({
+    isPro: false,
+    productId: null,
+    expiresAt: null,
+    willRenew: false,
+    managementUrl: null,
+  });
 
   expect(seen).toHaveLength(1);
   expect(seen[0].isPro).toBe(true);
