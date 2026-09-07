@@ -82,6 +82,10 @@ msgstr "Cámara"
 msgid "Cancel"
 msgstr "Cancelar"
 
+#: app/paywall.tsx:134
+msgid "Care notes read from a photo"
+msgstr "Notas de cuidado a partir de una foto"
+
 #: components/chat/chat-header.tsx:18
 msgid "Chat"
 msgstr "Chat"
@@ -93,6 +97,10 @@ msgstr "Opciones de chat"
 #: components/chat-list-item.tsx:59
 msgid "Chat with {name}"
 msgstr "Chat con {name}"
+
+#: app/paywall.tsx:132
+msgid "Chat with your plants, any time"
+msgstr "Chatea con tus plantas cuando quieras"
 
 #: app/(drawer)/_layout.tsx:34
 #: app/(drawer)/_layout.tsx:35
@@ -117,6 +125,14 @@ msgstr "Borrar todos los campos y empezar de nuevo"
 msgid "Clear Chat"
 msgstr "Borrar chat"
 
+#: app/paywall.tsx:229
+msgid "Closes this screen"
+msgstr "Cierra esta pantalla"
+
+#: app/paywall.tsx:229
+msgid "Closes this screen without subscribing"
+msgstr "Cierra esta pantalla sin suscribirte"
+
 #: components/chat/chat-header-menu.tsx:30
 msgid "Coming soon"
 msgstr "Próximamente"
@@ -124,6 +140,14 @@ msgstr "Próximamente"
 #: components/message-bubble.tsx:70
 msgid "Copy"
 msgstr "Copiar"
+
+#: app/paywall.tsx:125
+msgid "Couldn't load the subscription. Check your connection and try again."
+msgstr "No se pudo cargar la suscripción. Revisa tu conexión e inténtalo de nuevo."
+
+#: app/paywall.tsx:80
+msgid "Couldn't reach the store. Check your connection and try again."
+msgstr "No se pudo conectar con la tienda. Revisa tu conexión e inténtalo de nuevo."
 
 #: app/(drawer)/chats.tsx:36
 #: components/chat-list-item.tsx:92
@@ -143,6 +167,11 @@ msgstr "Eliminar planta"
 #: components/plant-form.tsx:342
 msgid "Describe your plant..."
 msgstr "Describe tu planta..."
+
+#: app/paywall.tsx:227
+#: app/paywall.tsx:233
+msgid "Done"
+msgstr "Listo"
 
 #: components/plant-form.tsx:252
 #~ msgid "e.g., Succulent, Fern, Flowering Plant..."
@@ -198,6 +227,10 @@ msgstr "Error al guardar ajustes. Inténtalo de nuevo."
 msgid "Failed to take photo. Please try again."
 msgstr "Error al tomar la foto. Inténtalo de nuevo."
 
+#: app/paywall.tsx:140
+msgid "Give your plants a voice"
+msgstr "Dale voz a tus plantas"
+
 #: components/plant-form.tsx:41
 msgid "Happy plants, happy home"
 msgstr ""
@@ -227,6 +260,10 @@ msgstr "Nombra una planta para empezar a chatear"
 msgid "Name a plant to start chatting!"
 msgstr "¡Nombra una planta para empezar a chatear!"
 
+#: app/paywall.tsx:133
+msgid "Names and personalities grounded in what each plant is"
+msgstr "Nombres y personalidades basados en lo que es cada planta"
+
 #: app/(drawer)/chats.tsx:73
 msgid "Navigates to the plant naming screen"
 msgstr "Navega a la pantalla para nombrar plantas"
@@ -235,13 +272,30 @@ msgstr "Navega a la pantalla para nombrar plantas"
 msgid "Network error. Please check your internet connection."
 msgstr "Error de red. Revisa tu conexión a internet."
 
+#: app/paywall.tsx:135
+msgid "No API key or setup needed"
+msgstr "Sin clave API ni configuración"
+
 #: components/chat-list-item.tsx:81
 msgid "No messages yet"
 msgstr "Sin mensajes aún"
 
+#: app/paywall.tsx:117
+msgid "No previous purchase was found for this account."
+msgstr "No se encontró ninguna compra anterior en esta cuenta."
+
+#: app/paywall.tsx:227
+#: app/paywall.tsx:233
+msgid "Not now"
+msgstr "Ahora no"
+
 #: components/plant-form.tsx:43
 msgid "Nurture today, bloom tomorrow"
 msgstr ""
+
+#: app/paywall.tsx:31
+msgid "One-time purchase"
+msgstr "Pago único"
 
 #: components/chat-list-item.tsx:60
 msgid "Opens chat conversation with this plant"
@@ -303,6 +357,14 @@ msgstr "Proveedor"
 msgid "Provider is required"
 msgstr "El proveedor es obligatorio"
 
+#: app/paywall.tsx:82
+msgid "Purchases aren't allowed on this device or account."
+msgstr "Las compras no están permitidas en este dispositivo o cuenta."
+
+#: app/paywall.tsx:214
+msgid "Recovers a subscription you already bought"
+msgstr "Recupera una suscripción que ya compraste"
+
 #: components/plant-form.tsx:322
 msgid "Remove photo"
 msgstr "Eliminar foto"
@@ -315,6 +377,30 @@ msgstr "Eliminar foto seleccionada"
 msgid "Remove the selected plant photo"
 msgstr "Eliminar la foto de planta seleccionada"
 
+#: app/paywall.tsx:23
+msgid "Renews every 2 months"
+msgstr "Se renueva cada 2 meses"
+
+#: app/paywall.tsx:25
+msgid "Renews every 3 months"
+msgstr "Se renueva cada 3 meses"
+
+#: app/paywall.tsx:27
+msgid "Renews every 6 months"
+msgstr "Se renueva cada 6 meses"
+
+#: app/paywall.tsx:21
+msgid "Renews monthly"
+msgstr "Se renueva cada mes"
+
+#: app/paywall.tsx:19
+msgid "Renews weekly"
+msgstr "Se renueva cada semana"
+
+#: app/paywall.tsx:29
+msgid "Renews yearly"
+msgstr "Se renueva cada año"
+
 #: components/plant-form.tsx:285
 msgid "Reset"
 msgstr "Restablecer"
@@ -326,6 +412,11 @@ msgstr "Restablecer todo"
 #: components/plant-form.tsx:280
 msgid "Reset form"
 msgstr "Restablecer formulario"
+
+#: app/paywall.tsx:213
+#: app/paywall.tsx:218
+msgid "Restore purchase"
+msgstr "Restaurar compra"
 
 #: components/plant-form.tsx:217
 msgid "Save Error"
@@ -375,6 +466,10 @@ msgstr "Compartir"
 msgid "Small care, big growth"
 msgstr ""
 
+#: app/paywall.tsx:89
+msgid "Something went wrong. Please try again."
+msgstr "Algo salió mal. Inténtalo de nuevo."
+
 #: contexts/composer-context.tsx:132
 #~ msgid "Sorry, I couldn't respond right now. Please try again."
 #~ msgstr "Lo siento, no pude responder ahora. Inténtalo de nuevo."
@@ -387,9 +482,18 @@ msgstr ""
 msgid "Start Chat"
 msgstr "Iniciar chat"
 
+#: app/paywall.tsx:197
+msgid "Starts your KeepTend Pro subscription"
+msgstr "Inicia tu suscripción a KeepTend Pro"
+
 #: components/ui/submit-button.tsx:49
 msgid "Submit"
 msgstr "Enviar"
+
+#: app/paywall.tsx:196
+#: app/paywall.tsx:204
+msgid "Subscribe"
+msgstr "Suscribirse"
 
 #: components/ui/photo-upload.tsx:28
 msgid "Take a photo or select from library"
@@ -399,10 +503,22 @@ msgstr "Toma una foto o selecciona de la biblioteca"
 msgid "Tend with a little love"
 msgstr ""
 
+#: app/paywall.tsx:84
+msgid "The store is having trouble right now. Please try again later."
+msgstr "La tienda tiene problemas en este momento. Inténtalo más tarde."
+
+#: app/paywall.tsx:127
+msgid "The subscription isn't available right now. Please try again later."
+msgstr "La suscripción no está disponible en este momento. Inténtalo más tarde."
+
 #: app/(drawer)/chats.tsx:29
 #: contexts/chat-context.tsx:27
 msgid "this plant"
 msgstr "esta planta"
+
+#: app/paywall.tsx:86
+msgid "This subscription is no longer available."
+msgstr "Esta suscripción ya no está disponible."
 
 #: utils/date-helpers.ts:11
 msgid "Today"
@@ -436,6 +552,14 @@ msgstr "¿Qué ves en esta foto?"
 #: utils/date-helpers.ts:14
 msgid "Yesterday"
 msgstr "Ayer"
+
+#: app/paywall.tsx:162
+msgid "You're already subscribed to KeepTend Pro."
+msgstr "Ya estás suscrito a KeepTend Pro."
+
+#: app/paywall.tsx:139
+msgid "You've used your free conversations"
+msgstr "Has usado tus conversaciones gratuitas"
 
 #: components/ai-setup-form.tsx:85
 msgid "Your AI configuration has been reset."
