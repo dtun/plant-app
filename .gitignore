@@ -3,6 +3,12 @@
 # dependencies
 node_modules/
 
+# this repo uses npm; ignore lockfiles from other package managers
+pnpm-lock.yaml
+yarn.lock
+bun.lockb
+bun.lock
+
 # Expo
 .expo/
 .expo-export/
