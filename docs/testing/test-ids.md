@@ -1,6 +1,6 @@
 # testID naming convention
 
-`testID`s let the e2e runner (Maestro) drive the app without depending on visible text. Every interactive element (anything tappable or typeable) on an instrumented screen carries one, and each screen carries one on its root container. Instrumented so far: home (plant form), chats (plant list), chat, and AI settings.
+`testID`s let the e2e runner (Maestro) drive the app without depending on visible text. Every interactive element (anything tappable or typeable) on an instrumented screen carries one, and each screen carries one on its root container. Instrumented so far: home (plant form), chats (plant list), chat, AI settings, and the paywall.
 
 ## Naming
 
@@ -26,3 +26,4 @@
 | Chats       | `chatsScreen`      | `namePlantBtn`, `plantItem-${plantId}`                                                                         |
 | Chat        | `chatScreen`       | `composerInput`, `sendBtn`, `attachPhotoBtn`, `removeAttachmentBtn`, `chatMenuBtn`, `chatMessage-${messageId}` |
 | AI settings | `aiSettingsScreen` | `apiKeyInput`, `providerSelector-OpenAI`, `providerSelector-Anthropic`, `saveSettingsBtn`, `resetSettingsBtn`  |
+| Paywall     | `paywallScreen`    | `subscribeBtn`, `restorePurchaseBtn`, `dismissPaywallBtn`                                                      |
