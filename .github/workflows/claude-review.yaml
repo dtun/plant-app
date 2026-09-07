@@ -30,6 +30,12 @@
 # step-level env var and later steps gate on its output, per
 # https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#using-secrets-in-a-workflow
 #
+# `--max-turns` bounds a runaway run below the 20-minute job timeout. A turn is one
+# tool call (a file read, a `gh pr diff`, one inline comment). Overrunning the cap fails
+# the check even when the review finished; a multi-commit PR touching a seam, a
+# provider, a screen, tests, and docs needed 34 turns (#64), so the cap sits at 50, which
+# is roughly six minutes at the observed pace.
+#
 # Each run posts inline comments for line-specific findings plus one summary comment.
 # The prompt writes the summary with `gh pr comment --edit-last --create-if-none`, so a
 # later push updates the previous summary in place rather than adding another; inline
@@ -111,5 +117,5 @@ jobs:
 
             ${{ steps.prompt.outputs.body }}
           claude_args: |
-            --max-turns 30
+            --max-turns 50
             --allowedTools "Read,Glob,Grep,mcp__github_inline_comment__create_inline_comment,Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
