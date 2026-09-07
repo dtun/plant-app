@@ -210,3 +210,37 @@ test("an already-subscribed user sees that and has nothing to buy", async () => 
 
   expect(mockBack).toHaveBeenCalledTimes(1);
 });
+
+test("a subscribed user never sees Subscribe, even before the entitlement loads", async () => {
+  renderPaywall({
+    entitlement: {
+      ok: true,
+      value: {
+        isPro: true,
+        productId: "pro_monthly",
+        expiresAt: 4102444800000,
+        willRenew: true,
+        managementUrl: null,
+      },
+    },
+  });
+
+  expect(screen.queryByRole("button", { name: "Subscribe" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Restore purchase" })).toBeNull();
+
+  await screen.findByText("You're already subscribed to KeepTend Pro.");
+
+  expect(screen.queryByRole("button", { name: "Subscribe" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Restore purchase" })).toBeNull();
+});
+
+test("an unconfigured seam hides billing and explains why", async () => {
+  renderPaywall({ entitlement: { ok: false, failure: { kind: "no-config" } } });
+
+  expect(
+    await screen.findByText("Subscriptions aren't available in this build.")
+  ).toBeOnTheScreen();
+  expect(screen.queryByRole("button", { name: "Subscribe" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Restore purchase" })).toBeNull();
+  expect(screen.getByRole("button", { name: "Not now" })).toBeOnTheScreen();
+});

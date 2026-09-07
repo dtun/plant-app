@@ -82,7 +82,7 @@ msgstr "Cámara"
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: app/paywall.tsx:151
+#: app/paywall.tsx:154
 msgid "Care notes read from a photo"
 msgstr "Notas de cuidado a partir de una foto"
 
@@ -98,7 +98,7 @@ msgstr "Opciones de chat"
 msgid "Chat with {name}"
 msgstr "Chat con {name}"
 
-#: app/paywall.tsx:149
+#: app/paywall.tsx:152
 msgid "Chat with your plants, any time"
 msgstr "Chatea con tus plantas cuando quieras"
 
@@ -125,11 +125,11 @@ msgstr "Borrar todos los campos y empezar de nuevo"
 msgid "Clear Chat"
 msgstr "Borrar chat"
 
-#: app/paywall.tsx:147
+#: app/paywall.tsx:150
 msgid "Closes this screen"
 msgstr "Cierra esta pantalla"
 
-#: app/paywall.tsx:147
+#: app/paywall.tsx:150
 msgid "Closes this screen without subscribing"
 msgstr "Cierra esta pantalla sin suscribirte"
 
@@ -168,7 +168,7 @@ msgstr "Eliminar planta"
 msgid "Describe your plant..."
 msgstr "Describe tu planta..."
 
-#: app/paywall.tsx:146
+#: app/paywall.tsx:149
 msgid "Done"
 msgstr "Listo"
 
@@ -226,7 +226,7 @@ msgstr "Error al guardar ajustes. Inténtalo de nuevo."
 msgid "Failed to take photo. Please try again."
 msgstr "Error al tomar la foto. Inténtalo de nuevo."
 
-#: app/paywall.tsx:157
+#: app/paywall.tsx:160
 msgid "Give your plants a voice"
 msgstr "Dale voz a tus plantas"
 
@@ -259,7 +259,7 @@ msgstr "Nombra una planta para empezar a chatear"
 msgid "Name a plant to start chatting!"
 msgstr "¡Nombra una planta para empezar a chatear!"
 
-#: app/paywall.tsx:150
+#: app/paywall.tsx:153
 msgid "Names and personalities grounded in what each plant is"
 msgstr "Nombres y personalidades basados en lo que es cada planta"
 
@@ -271,7 +271,7 @@ msgstr "Navega a la pantalla para nombrar plantas"
 msgid "Network error. Please check your internet connection."
 msgstr "Error de red. Revisa tu conexión a internet."
 
-#: app/paywall.tsx:152
+#: app/paywall.tsx:155
 msgid "No API key or setup needed"
 msgstr "Sin clave API ni configuración"
 
@@ -283,7 +283,7 @@ msgstr "Sin mensajes aún"
 msgid "No previous purchase was found for this account."
 msgstr "No se encontró ninguna compra anterior en esta cuenta."
 
-#: app/paywall.tsx:146
+#: app/paywall.tsx:149
 msgid "Not now"
 msgstr "Ahora no"
 
@@ -359,7 +359,7 @@ msgstr "El proveedor es obligatorio"
 msgid "Purchases aren't allowed on this device or account."
 msgstr "Las compras no están permitidas en este dispositivo o cuenta."
 
-#: app/paywall.tsx:218
+#: app/paywall.tsx:229
 msgid "Recovers a subscription you already bought"
 msgstr "Recupera una suscripción que ya compraste"
 
@@ -411,8 +411,8 @@ msgstr "Restablecer todo"
 msgid "Reset form"
 msgstr "Restablecer formulario"
 
-#: app/paywall.tsx:217
-#: app/paywall.tsx:222
+#: app/paywall.tsx:228
+#: app/paywall.tsx:233
 msgid "Restore purchase"
 msgstr "Restaurar compra"
 
@@ -480,7 +480,7 @@ msgstr "Algo salió mal. Inténtalo de nuevo."
 msgid "Start Chat"
 msgstr "Iniciar chat"
 
-#: app/paywall.tsx:201
+#: app/paywall.tsx:212
 msgid "Starts your KeepTend Pro subscription"
 msgstr "Inicia tu suscripción a KeepTend Pro"
 
@@ -488,10 +488,14 @@ msgstr "Inicia tu suscripción a KeepTend Pro"
 msgid "Submit"
 msgstr "Enviar"
 
-#: app/paywall.tsx:200
-#: app/paywall.tsx:208
+#: app/paywall.tsx:211
+#: app/paywall.tsx:219
 msgid "Subscribe"
 msgstr "Suscribirse"
+
+#: app/paywall.tsx:190
+msgid "Subscriptions aren't available in this build."
+msgstr "Las suscripciones no están disponibles en esta versión."
 
 #: components/ui/photo-upload.tsx:28
 msgid "Take a photo or select from library"
@@ -551,11 +555,11 @@ msgstr "¿Qué ves en esta foto?"
 msgid "Yesterday"
 msgstr "Ayer"
 
-#: app/paywall.tsx:179
+#: app/paywall.tsx:182
 msgid "You're already subscribed to KeepTend Pro."
 msgstr "Ya estás suscrito a KeepTend Pro."
 
-#: app/paywall.tsx:156
+#: app/paywall.tsx:159
 msgid "You've used your free conversations"
 msgstr "Has usado tus conversaciones gratuitas"
 
