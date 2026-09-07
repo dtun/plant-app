@@ -47,7 +47,7 @@ export interface Entitlements {
   purchase(offer: ProOffer): Promise<Result<Entitlement, EntitlementFailure>>;
   restore(): Promise<Result<Entitlement, EntitlementFailure>>;
   /**
-   * The vendor's anonymous app user id, which the server meters built-in AI by.
+   * The vendor's anonymous app user id, which the planned server will meter built-in AI by.
    * Null when the vendor is unconfigured or unreachable; never throws.
    */
   getAppUserId(): Promise<string | null>;
