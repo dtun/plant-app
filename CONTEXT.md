@@ -50,16 +50,17 @@ The chooser dialog (`showPhotoPickerAlert`) is a separate UI helper, not part of
 The seam between the app and the billing vendor (lives in `src/entitlements/`). Operations:
 
 - `getEntitlement` — what the user currently owns.
-- `getOffer` — the pro unlock as the UI needs to price it.
-- `purchase` — buy the resolved offer.
+- `getOffer` — the pro subscription as the UI needs to price it.
+- `purchase(offer)` — buy the given offer. The offer is re-resolved against the store at purchase time, so there is no ordering dependency on `getOffer`; an offer that has left the storefront returns `no-offer`.
 - `restore` — recover a prior purchase on the account.
+- `getAppUserId` — the vendor's anonymous app user id. RemoteIntelligence sends it with every built-in AI request and the server meters free allowance and verifies entitlement by it. Null when the vendor is unconfigured or unreachable; never throws.
 - `subscribe` — register for entitlement changes the vendor pushes asynchronously (cross-device purchase, refund, family share); returns an unsubscribe function.
 
-Domain types are vendor-agnostic: `Entitlement` (`isPro` + the backing `productId`) and `ProOffer` (`priceLabel`). The vendor's own types (`PurchasesPackage`, `CustomerInfo`) never cross the seam — callers never see the vendor name. The lifetime "pro" unlock is the only entitlement today.
+Domain types are vendor-agnostic. `Entitlement` carries `isPro`, the backing `productId`, `expiresAt` (epoch ms; null for a lifetime unlock or when not pro), `willRenew` (the store will bill again at `expiresAt`), and `managementUrl` (where the user manages or cancels; null when the store offers none). `ProOffer` carries `priceLabel` and the store `productId` that `purchase` resolves it by. The vendor's own types (`PurchasesPackage`, `CustomerInfo`) never cross the seam — callers never see the vendor name. "Pro" is the only entitlement; it may be backed by a subscription or a lifetime unlock.
 
-Failures cross as a discriminated `EntitlementFailure` (`cancelled | no-config | no-offer | network | store-error | unknown`), never as thrown errors. Copy belongs to the calling screen, which maps each kind to localized text, mirroring PhotoPicker. "Nothing to restore" is **not** a failure — `restore` succeeds with an `Entitlement` whose `isPro` is false.
+Failures cross as a discriminated `EntitlementFailure` (`cancelled | not-allowed | no-config | no-offer | network | store-error | unknown`), never as thrown errors. `not-allowed` means the device or account may not make purchases (parental controls, managed device). Copy belongs to the calling screen, which maps each kind to localized text, mirroring PhotoPicker. "Nothing to restore" is **not** a failure — `restore` succeeds with an `Entitlement` whose `isPro` is false.
 
 Adapters:
 
 - **RevenueCatEntitlements** — the only production adapter. Resolves its public SDK key from env (`config.ts`); when no key is present it returns `no-config` from every operation without ever touching the SDK, so web/dev/tests stay unconfigured safely.
-- **FakeEntitlements** — test adapter. Constructed with canned outcomes and can `emit` synthetic entitlement changes; replaces module-level mocking of the vendor SDK.
+- **FakeEntitlements** — test adapter. Constructed with canned outcomes (entitlement, offer, purchase, restore, app user id) and can `emit` synthetic entitlement changes; replaces module-level mocking of the vendor SDK.

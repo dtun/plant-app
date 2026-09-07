@@ -7,7 +7,7 @@
  *   EXPO_PUBLIC_REVENUECAT_ANDROID_KEY
  *
  * The "pro" entitlement is configured in the RevenueCat dashboard and granted
- * by the one-time non-consumable unlock product.
+ * by whichever subscription (or lifetime) products are attached to it there.
  */
 
 import { Platform } from "react-native";
