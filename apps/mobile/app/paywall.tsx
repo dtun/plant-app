@@ -142,6 +142,7 @@ export default function PaywallScreen() {
     router.back();
   }
 
+  let showBilling = !isPro;
   let subscribeDisabled = offerState.status !== "ready" || busy;
   let dismissLabel = isPro ? t`Done` : t`Not now`;
   let dismissHint = isPro ? t`Closes this screen` : t`Closes this screen without subscribing`;
@@ -180,7 +181,7 @@ export default function PaywallScreen() {
         </Text>
       ) : null}
 
-      {isPro ? null : <OfferSection state={offerState} />}
+      {showBilling ? <OfferSection state={offerState} /> : null}
 
       {actionMessage ? (
         <Text className="mt-4 text-base text-center text-color" accessibilityRole="alert">
@@ -189,7 +190,7 @@ export default function PaywallScreen() {
       ) : null}
 
       <View className="mt-8 gap-3">
-        {isPro ? null : (
+        {showBilling ? (
           <>
             <TouchableOpacity
               className="rounded-xl p-4 items-center bg-tint"
@@ -222,7 +223,7 @@ export default function PaywallScreen() {
               <Text className="text-base font-semibold text-color">{t`Restore purchase`}</Text>
             </TouchableOpacity>
           </>
-        )}
+        ) : null}
 
         <TouchableOpacity
           className="rounded-xl p-4 items-center"
