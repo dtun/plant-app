@@ -82,7 +82,7 @@ msgstr "Camera"
 msgid "Cancel"
 msgstr "Cancel"
 
-#: app/paywall.tsx:154
+#: app/paywall.tsx:164
 msgid "Care notes read from a photo"
 msgstr "Care notes read from a photo"
 
@@ -98,7 +98,7 @@ msgstr "Chat options"
 msgid "Chat with {name}"
 msgstr "Chat with {name}"
 
-#: app/paywall.tsx:152
+#: app/paywall.tsx:162
 msgid "Chat with your plants, any time"
 msgstr "Chat with your plants, any time"
 
@@ -125,11 +125,11 @@ msgstr "Clear all form fields and start over"
 msgid "Clear Chat"
 msgstr "Clear Chat"
 
-#: app/paywall.tsx:150
+#: app/paywall.tsx:160
 msgid "Closes this screen"
 msgstr "Closes this screen"
 
-#: app/paywall.tsx:150
+#: app/paywall.tsx:160
 msgid "Closes this screen without subscribing"
 msgstr "Closes this screen without subscribing"
 
@@ -141,11 +141,15 @@ msgstr "Coming soon"
 msgid "Copy"
 msgstr "Copy"
 
-#: app/paywall.tsx:44
+#: app/paywall.tsx:206
+msgid "Couldn't check your subscription right now."
+msgstr "Couldn't check your subscription right now."
+
+#: app/paywall.tsx:43
 msgid "Couldn't load the subscription. Check your connection and try again."
 msgstr "Couldn't load the subscription. Check your connection and try again."
 
-#: app/paywall.tsx:98
+#: app/paywall.tsx:105
 msgid "Couldn't reach the store. Check your connection and try again."
 msgstr "Couldn't reach the store. Check your connection and try again."
 
@@ -168,7 +172,7 @@ msgstr "Delete Plant"
 msgid "Describe your plant..."
 msgstr "Describe your plant..."
 
-#: app/paywall.tsx:149
+#: app/paywall.tsx:159
 msgid "Done"
 msgstr "Done"
 
@@ -226,7 +230,7 @@ msgstr "Failed to save settings. Please try again."
 msgid "Failed to take photo. Please try again."
 msgstr "Failed to take photo. Please try again."
 
-#: app/paywall.tsx:160
+#: app/paywall.tsx:170
 msgid "Give your plants a voice"
 msgstr "Give your plants a voice"
 
@@ -259,7 +263,7 @@ msgstr "Name a plant to start chatting"
 msgid "Name a plant to start chatting!"
 msgstr "Name a plant to start chatting!"
 
-#: app/paywall.tsx:153
+#: app/paywall.tsx:163
 msgid "Names and personalities grounded in what each plant is"
 msgstr "Names and personalities grounded in what each plant is"
 
@@ -271,7 +275,7 @@ msgstr "Navigates to the plant naming screen"
 msgid "Network error. Please check your internet connection."
 msgstr "Network error. Please check your internet connection."
 
-#: app/paywall.tsx:155
+#: app/paywall.tsx:165
 msgid "No API key or setup needed"
 msgstr "No API key or setup needed"
 
@@ -279,11 +283,11 @@ msgstr "No API key or setup needed"
 msgid "No messages yet"
 msgstr "No messages yet"
 
-#: app/paywall.tsx:135
+#: app/paywall.tsx:142
 msgid "No previous purchase was found for this account."
 msgstr "No previous purchase was found for this account."
 
-#: app/paywall.tsx:149
+#: app/paywall.tsx:159
 msgid "Not now"
 msgstr "Not now"
 
@@ -291,7 +295,7 @@ msgstr "Not now"
 msgid "Nurture today, bloom tomorrow"
 msgstr "Nurture today, bloom tomorrow"
 
-#: app/paywall.tsx:25
+#: app/paywall.tsx:24
 msgid "One-time purchase"
 msgstr "One-time purchase"
 
@@ -355,11 +359,11 @@ msgstr "Provider"
 msgid "Provider is required"
 msgstr "Provider is required"
 
-#: app/paywall.tsx:100
+#: app/paywall.tsx:107
 msgid "Purchases aren't allowed on this device or account."
 msgstr "Purchases aren't allowed on this device or account."
 
-#: app/paywall.tsx:229
+#: app/paywall.tsx:258
 msgid "Recovers a subscription you already bought"
 msgstr "Recovers a subscription you already bought"
 
@@ -375,27 +379,27 @@ msgstr "Remove selected photo"
 msgid "Remove the selected plant photo"
 msgstr "Remove the selected plant photo"
 
-#: app/paywall.tsx:21
+#: app/paywall.tsx:20
 msgid "Renews every 2 months"
 msgstr "Renews every 2 months"
 
-#: app/paywall.tsx:22
+#: app/paywall.tsx:21
 msgid "Renews every 3 months"
 msgstr "Renews every 3 months"
 
-#: app/paywall.tsx:23
+#: app/paywall.tsx:22
 msgid "Renews every 6 months"
 msgstr "Renews every 6 months"
 
-#: app/paywall.tsx:20
+#: app/paywall.tsx:19
 msgid "Renews monthly"
 msgstr "Renews monthly"
 
-#: app/paywall.tsx:19
+#: app/paywall.tsx:18
 msgid "Renews weekly"
 msgstr "Renews weekly"
 
-#: app/paywall.tsx:24
+#: app/paywall.tsx:23
 msgid "Renews yearly"
 msgstr "Renews yearly"
 
@@ -411,8 +415,8 @@ msgstr "Reset All"
 msgid "Reset form"
 msgstr "Reset form"
 
-#: app/paywall.tsx:228
-#: app/paywall.tsx:233
+#: app/paywall.tsx:257
+#: app/paywall.tsx:262
 msgid "Restore purchase"
 msgstr "Restore purchase"
 
@@ -464,7 +468,7 @@ msgstr "Share"
 msgid "Small care, big growth"
 msgstr "Small care, big growth"
 
-#: app/paywall.tsx:107
+#: app/paywall.tsx:114
 msgid "Something went wrong. Please try again."
 msgstr "Something went wrong. Please try again."
 
@@ -480,7 +484,7 @@ msgstr "Something went wrong. Please try again."
 msgid "Start Chat"
 msgstr "Start Chat"
 
-#: app/paywall.tsx:212
+#: app/paywall.tsx:241
 msgid "Starts your KeepTend Pro subscription"
 msgstr "Starts your KeepTend Pro subscription"
 
@@ -488,12 +492,12 @@ msgstr "Starts your KeepTend Pro subscription"
 msgid "Submit"
 msgstr "Submit"
 
-#: app/paywall.tsx:211
-#: app/paywall.tsx:219
+#: app/paywall.tsx:240
+#: app/paywall.tsx:248
 msgid "Subscribe"
 msgstr "Subscribe"
 
-#: app/paywall.tsx:190
+#: app/paywall.tsx:200
 msgid "Subscriptions aren't available in this build."
 msgstr "Subscriptions aren't available in this build."
 
@@ -505,11 +509,11 @@ msgstr "Take a photo or select from library"
 msgid "Tend with a little love"
 msgstr "Tend with a little love"
 
-#: app/paywall.tsx:102
+#: app/paywall.tsx:109
 msgid "The store is having trouble right now. Please try again later."
 msgstr "The store is having trouble right now. Please try again later."
 
-#: app/paywall.tsx:45
+#: app/paywall.tsx:44
 msgid "The subscription isn't available right now. Please try again later."
 msgstr "The subscription isn't available right now. Please try again later."
 
@@ -518,13 +522,22 @@ msgstr "The subscription isn't available right now. Please try again later."
 msgid "this plant"
 msgstr "this plant"
 
-#: app/paywall.tsx:104
+#: app/paywall.tsx:111
 msgid "This subscription is no longer available."
 msgstr "This subscription is no longer available."
 
 #: utils/date-helpers.ts:11
 msgid "Today"
 msgstr "Today"
+
+#: app/paywall.tsx:218
+msgid "Tries loading the subscription again"
+msgstr "Tries loading the subscription again"
+
+#: app/paywall.tsx:217
+#: app/paywall.tsx:221
+msgid "Try again"
+msgstr "Try again"
 
 #: components/plant-form.tsx:240
 msgid "Try Again"
@@ -555,11 +568,11 @@ msgstr "What do you see in this photo?"
 msgid "Yesterday"
 msgstr "Yesterday"
 
-#: app/paywall.tsx:182
+#: app/paywall.tsx:192
 msgid "You're already subscribed to KeepTend Pro."
 msgstr "You're already subscribed to KeepTend Pro."
 
-#: app/paywall.tsx:159
+#: app/paywall.tsx:169
 msgid "You've used your free conversations"
 msgstr "You've used your free conversations"
 
