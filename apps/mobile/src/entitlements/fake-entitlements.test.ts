@@ -6,7 +6,7 @@ test("createFakeEntitlements returns canned ok results by default", async () => 
 
   let entitlement = await entitlements.getEntitlement();
   let offer = await entitlements.getOffer();
-  let purchase = await entitlements.purchase();
+  let purchase = await entitlements.purchase({ priceLabel: "$4.99", productId: "pro_monthly" });
   let restore = await entitlements.restore();
 
   expect(entitlement.ok).toBe(true);
@@ -27,7 +27,7 @@ test("createFakeEntitlements returns configured responses", async () => {
         managementUrl: "https://play.google.com/store/account/subscriptions",
       },
     },
-    offer: { ok: true, value: { priceLabel: "£4.99" } },
+    offer: { ok: true, value: { priceLabel: "£4.99", productId: "pro_monthly_gb" } },
   });
 
   let entitlement = await entitlements.getEntitlement();
@@ -43,6 +43,7 @@ test("createFakeEntitlements returns configured responses", async () => {
     "https://play.google.com/store/account/subscriptions"
   );
   expect(offer.value.priceLabel).toBe("£4.99");
+  expect(offer.value.productId).toBe("pro_monthly_gb");
 });
 
 test("createFakeEntitlements default not-pro state carries no expiry, renewal, or management URL", async () => {

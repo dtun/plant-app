@@ -38,7 +38,9 @@ export function createFakeEntitlements(
       return responses.entitlement ?? { ok: true, value: notPro };
     },
     async getOffer() {
-      return responses.offer ?? { ok: true, value: { priceLabel: "$9.99" } };
+      return (
+        responses.offer ?? { ok: true, value: { priceLabel: "$4.99", productId: "pro_monthly" } }
+      );
     },
     async purchase() {
       return responses.purchase ?? { ok: true, value: pro };

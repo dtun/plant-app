@@ -163,8 +163,7 @@ test("purchase maps PURCHASE_NOT_ALLOWED_ERROR to a not-allowed failure", async 
   );
   let entitlements = createRevenueCatEntitlements();
 
-  await entitlements.getOffer();
-  let result = await entitlements.purchase();
+  let result = await entitlements.purchase({ priceLabel: "$9.99", productId: "lifetime" });
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -230,19 +229,23 @@ test("getOffer returns no-offer when there is no current offering", async () => 
   expect(result.failure.kind).toBe("no-offer");
 });
 
-test("purchase returns no-offer when no offer has been resolved", async () => {
+test("getOffer exposes the product id the offer is backed by", async () => {
+  mockPurchases.getOfferings.mockResolvedValueOnce({
+    current: {
+      availablePackages: [{ product: { priceString: "$4.99", identifier: "pro_monthly" } }],
+    },
+    all: {},
+  });
   let entitlements = createRevenueCatEntitlements();
 
-  let result = await entitlements.purchase();
+  let result = await entitlements.getOffer();
 
-  expect(result.ok).toBe(false);
-  if (result.ok) return;
-  expect(result.failure.kind).toBe("no-offer");
-  expect(mockPurchases.purchasePackage).not.toHaveBeenCalled();
+  if (!result.ok) throw new Error("expected ok");
+  expect(result.value.productId).toBe("pro_monthly");
 });
 
-test("purchase buys the resolved offer and returns the new entitlement", async () => {
-  let pkg = { product: { priceString: "$9.99", identifier: "lifetime" } };
+test("purchase buys the given offer without getOffer having run first", async () => {
+  let pkg = { product: { priceString: "$4.99", identifier: "pro_monthly" } };
   mockPurchases.getOfferings.mockResolvedValueOnce({
     current: { availablePackages: [pkg] },
     all: {},
@@ -250,12 +253,43 @@ test("purchase buys the resolved offer and returns the new entitlement", async (
   mockPurchases.purchasePackage.mockResolvedValueOnce({ customerInfo: proInfo });
   let entitlements = createRevenueCatEntitlements();
 
-  await entitlements.getOffer();
-  let result = await entitlements.purchase();
+  let result = await entitlements.purchase({ priceLabel: "$4.99", productId: "pro_monthly" });
 
   expect(mockPurchases.purchasePackage).toHaveBeenCalledWith(pkg);
   if (!result.ok) throw new Error("expected ok");
   expect(result.value.isPro).toBe(true);
+});
+
+test("purchase picks the package matching the offer when several are on sale", async () => {
+  let monthly = { product: { priceString: "$4.99", identifier: "pro_monthly" } };
+  let annual = { product: { priceString: "$39.99", identifier: "pro_annual" } };
+  mockPurchases.getOfferings.mockResolvedValueOnce({
+    current: { availablePackages: [monthly, annual] },
+    all: {},
+  });
+  mockPurchases.purchasePackage.mockResolvedValueOnce({ customerInfo: proInfo });
+  let entitlements = createRevenueCatEntitlements();
+
+  await entitlements.purchase({ priceLabel: "$39.99", productId: "pro_annual" });
+
+  expect(mockPurchases.purchasePackage).toHaveBeenCalledWith(annual);
+});
+
+test("purchase returns no-offer when the offer is no longer on sale", async () => {
+  mockPurchases.getOfferings.mockResolvedValueOnce({
+    current: {
+      availablePackages: [{ product: { priceString: "$4.99", identifier: "pro_monthly" } }],
+    },
+    all: {},
+  });
+  let entitlements = createRevenueCatEntitlements();
+
+  let result = await entitlements.purchase({ priceLabel: "$9.99", productId: "retired_sku" });
+
+  expect(result.ok).toBe(false);
+  if (result.ok) return;
+  expect(result.failure.kind).toBe("no-offer");
+  expect(mockPurchases.purchasePackage).not.toHaveBeenCalled();
 });
 
 test("purchase maps the PURCHASE_CANCELLED_ERROR code to a cancelled failure", async () => {
@@ -270,8 +304,7 @@ test("purchase maps the PURCHASE_CANCELLED_ERROR code to a cancelled failure", a
   });
   let entitlements = createRevenueCatEntitlements();
 
-  await entitlements.getOffer();
-  let result = await entitlements.purchase();
+  let result = await entitlements.purchase({ priceLabel: "$9.99", productId: "lifetime" });
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -286,8 +319,7 @@ test("purchase still honours the legacy userCancelled flag when no code is prese
   mockPurchases.purchasePackage.mockRejectedValueOnce({ userCancelled: true });
   let entitlements = createRevenueCatEntitlements();
 
-  await entitlements.getOffer();
-  let result = await entitlements.purchase();
+  let result = await entitlements.purchase({ priceLabel: "$9.99", productId: "lifetime" });
 
   expect(result.ok).toBe(false);
   if (result.ok) return;

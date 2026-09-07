@@ -18,6 +18,10 @@ function entitlementFrom(info: CustomerInfo): Entitlement {
   };
 }
 
+function offerFrom(pkg: PurchasesPackage): ProOffer {
+  return { priceLabel: pkg.product.priceString, productId: pkg.product.identifier };
+}
+
 function isUserCancelled(error: unknown): boolean {
   return (
     typeof error === "object" &&
@@ -66,7 +70,6 @@ function mapError(error: unknown): EntitlementFailure {
 export function createRevenueCatEntitlements(): Entitlements {
   let apiKey = getRevenueCatApiKey();
   let configured = false;
-  let resolvedOffer: PurchasesPackage | null = null;
 
   function ensureConfigured(): boolean {
     if (!apiKey) {
@@ -77,6 +80,11 @@ export function createRevenueCatEntitlements(): Entitlements {
       configured = true;
     }
     return true;
+  }
+
+  async function currentPackages(): Promise<PurchasesPackage[]> {
+    let offerings = await Purchases.getOfferings();
+    return offerings.current?.availablePackages ?? [];
   }
 
   async function getEntitlement(): Promise<Result<Entitlement, EntitlementFailure>> {
@@ -96,27 +104,26 @@ export function createRevenueCatEntitlements(): Entitlements {
       if (!ensureConfigured()) {
         return { ok: false, failure: { kind: "no-config" } };
       }
-      let offerings = await Purchases.getOfferings();
-      let pkg = offerings.current?.availablePackages[0] ?? null;
-      resolvedOffer = pkg;
+      let pkg = (await currentPackages())[0] ?? null;
       if (!pkg) {
         return { ok: false, failure: { kind: "no-offer" } };
       }
-      return { ok: true, value: { priceLabel: pkg.product.priceString } };
+      return { ok: true, value: offerFrom(pkg) };
     } catch (error) {
       return { ok: false, failure: mapError(error) };
     }
   }
 
-  async function purchase(): Promise<Result<Entitlement, EntitlementFailure>> {
+  async function purchase(offer: ProOffer): Promise<Result<Entitlement, EntitlementFailure>> {
     try {
       if (!ensureConfigured()) {
         return { ok: false, failure: { kind: "no-config" } };
       }
-      if (!resolvedOffer) {
+      let pkg = (await currentPackages()).find((p) => p.product.identifier === offer.productId);
+      if (!pkg) {
         return { ok: false, failure: { kind: "no-offer" } };
       }
-      let { customerInfo } = await Purchases.purchasePackage(resolvedOffer);
+      let { customerInfo } = await Purchases.purchasePackage(pkg);
       return { ok: true, value: entitlementFrom(customerInfo) };
     } catch (error) {
       return { ok: false, failure: mapError(error) };
