@@ -120,3 +120,25 @@ test("createFakeEntitlements can model an unavailable app user id", async () => 
 
   expect(id).toBeNull();
 });
+
+test("createFakeEntitlements purchase grants the offer it was handed", async () => {
+  let entitlements = createFakeEntitlements();
+
+  let result = await entitlements.purchase({ priceLabel: "$39.99", productId: "pro_annual" });
+
+  if (!result.ok) throw new Error("expected ok");
+  expect(result.value.isPro).toBe(true);
+  expect(result.value.productId).toBe("pro_annual");
+});
+
+test("createFakeEntitlements hands out a fresh entitlement on every call", async () => {
+  let entitlements = createFakeEntitlements();
+
+  let first = await entitlements.getEntitlement();
+  if (!first.ok) throw new Error("expected ok");
+  first.value.isPro = true;
+  let second = await entitlements.getEntitlement();
+
+  if (!second.ok) throw new Error("expected ok");
+  expect(second.value.isPro).toBe(false);
+});
