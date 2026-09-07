@@ -6,7 +6,6 @@ import {
   type ProOffer,
   type ProOfferTerm,
 } from "@/src/entitlements";
-import { i18n } from "@/src/i18n";
 import type { MessageDescriptor } from "@lingui/core";
 import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
@@ -50,7 +49,7 @@ function OfferSection({ state }: { state: OfferState }) {
     );
   }
 
-  let term = state.offer.term ? i18n._(termLabels[state.offer.term]) : null;
+  let term = state.offer.term ? t(termLabels[state.offer.term]) : null;
   return (
     <View className="items-center gap-1">
       <Text className="text-3xl font-bold text-color">{state.offer.priceLabel}</Text>
