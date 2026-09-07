@@ -39,10 +39,23 @@ export function SubscriptionSection({ onSubscribe, onManage }: SubscriptionSecti
   let termCopy = entitlement ? subscriptionTermCopy(entitlement) : null;
 
   if (isPro) {
+    let managementUrl = entitlement?.managementUrl ?? null;
     return (
       <View className="mb-6 rounded-xl border border-icon p-4 gap-3" testID="subscriptionSection">
         <Text className="text-base font-semibold text-color">{t`Subscribed to KeepTend Pro`}</Text>
         {termCopy ? <Text className="text-sm text-icon">{termCopy}</Text> : null}
+        {managementUrl ? (
+          <TouchableOpacity
+            className="rounded-xl p-3 items-center border border-icon"
+            onPress={() => onManage(managementUrl)}
+            accessibilityRole="button"
+            accessibilityLabel={t`Manage subscription`}
+            accessibilityHint={t`Opens the store page where you can change or cancel it`}
+            testID="manageSubscriptionBtn"
+          >
+            <Text className="text-base font-semibold text-color">{t`Manage subscription`}</Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
     );
   }

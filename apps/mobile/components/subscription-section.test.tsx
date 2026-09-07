@@ -102,3 +102,41 @@ test("a lifetime unlock shows no renewal or expiry date", async () => {
   expect(await screen.findByText("Subscribed to KeepTend Pro")).toBeOnTheScreen();
   expect(screen.queryByText(/Renews on|Expires on/)).toBeNull();
 });
+
+test("Manage subscription opens the store's management page", async () => {
+  renderSection({
+    entitlement: {
+      ok: true,
+      value: {
+        isPro: true,
+        productId: "pro_monthly",
+        expiresAt: 1767268800000,
+        willRenew: true,
+        managementUrl: "https://example.test/manage",
+      },
+    },
+  });
+
+  fireEvent.press(await screen.findByRole("button", { name: "Manage subscription" }));
+
+  expect(onManage).toHaveBeenCalledWith("https://example.test/manage");
+});
+
+test("Manage subscription is hidden when the store offers no management page", async () => {
+  renderSection({
+    entitlement: {
+      ok: true,
+      value: {
+        isPro: true,
+        productId: "pro_monthly",
+        expiresAt: 1767268800000,
+        willRenew: true,
+        managementUrl: null,
+      },
+    },
+  });
+
+  await screen.findByText("Subscribed to KeepTend Pro");
+
+  expect(screen.queryByRole("button", { name: "Manage subscription" })).toBeNull();
+});
