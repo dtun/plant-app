@@ -40,12 +40,41 @@ type OfferState =
   | { status: "ready"; offer: ProOffer }
   | { status: "failed"; kind: EntitlementFailureKind };
 
+/** The price block, a spinner while it loads, or why it could not be loaded. */
+function OfferSection({ state }: { state: OfferState }) {
+  let { t } = useLingui();
+  let termLabel = useTermLabel();
+
+  if (state.status === "loading") {
+    return <ActivityIndicator />;
+  }
+
+  if (state.status === "failed") {
+    let copy =
+      state.kind === "network"
+        ? t`Couldn't load the subscription. Check your connection and try again.`
+        : t`The subscription isn't available right now. Please try again later.`;
+    return (
+      <Text className="text-base text-center text-color" accessibilityRole="alert">
+        {copy}
+      </Text>
+    );
+  }
+
+  let term = termLabel(state.offer.term);
+  return (
+    <View className="items-center gap-1">
+      <Text className="text-3xl font-bold text-color">{state.offer.priceLabel}</Text>
+      {term ? <Text className="text-base text-icon">{term}</Text> : null}
+    </View>
+  );
+}
+
 /** Why the user arrived; `allowance-exhausted` acknowledges spent free interactions. */
 type PaywallReason = "allowance-exhausted";
 
 export default function PaywallScreen() {
   let { t } = useLingui();
-  let termLabel = useTermLabel();
   let router = useRouter();
   let { reason } = useLocalSearchParams<{ reason?: PaywallReason }>();
   let { entitlement, purchase, restore } = useEntitlements();
@@ -120,14 +149,13 @@ export default function PaywallScreen() {
     router.back();
   }
 
-  function offerFailureCopy(kind: EntitlementFailureKind): string {
-    if (kind === "network") {
-      return t`Couldn't load the subscription. Check your connection and try again.`;
-    }
-    return t`The subscription isn't available right now. Please try again later.`;
+  function handleDismiss() {
+    router.back();
   }
 
   let subscribeDisabled = offerState.status !== "ready" || busy;
+  let dismissLabel = isPro ? t`Done` : t`Not now`;
+  let dismissHint = isPro ? t`Closes this screen` : t`Closes this screen without subscribing`;
   let included = [
     t`Chat with your plants, any time`,
     t`Names and personalities grounded in what each plant is`,
@@ -163,20 +191,7 @@ export default function PaywallScreen() {
         </Text>
       ) : null}
 
-      {!isPro && offerState.status === "loading" ? <ActivityIndicator /> : null}
-      {!isPro && offerState.status === "ready" ? (
-        <View className="items-center gap-1">
-          <Text className="text-3xl font-bold text-color">{offerState.offer.priceLabel}</Text>
-          {termLabel(offerState.offer.term) ? (
-            <Text className="text-base text-icon">{termLabel(offerState.offer.term)}</Text>
-          ) : null}
-        </View>
-      ) : null}
-      {!isPro && offerState.status === "failed" ? (
-        <Text className="text-base text-center text-color" accessibilityRole="alert">
-          {offerFailureCopy(offerState.kind)}
-        </Text>
-      ) : null}
+      {isPro ? null : <OfferSection state={offerState} />}
 
       {actionMessage ? (
         <Text className="mt-4 text-base text-center text-color" accessibilityRole="alert">
@@ -222,15 +237,13 @@ export default function PaywallScreen() {
 
         <TouchableOpacity
           className="rounded-xl p-4 items-center"
-          onPress={() => router.back()}
+          onPress={handleDismiss}
           accessibilityRole="button"
-          accessibilityLabel={isPro ? t`Done` : t`Not now`}
-          accessibilityHint={
-            isPro ? t`Closes this screen` : t`Closes this screen without subscribing`
-          }
+          accessibilityLabel={dismissLabel}
+          accessibilityHint={dismissHint}
           testID="dismissPaywallBtn"
         >
-          <Text className="text-base text-icon">{isPro ? t`Done` : t`Not now`}</Text>
+          <Text className="text-base text-icon">{dismissLabel}</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
