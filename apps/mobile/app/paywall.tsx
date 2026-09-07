@@ -74,20 +74,27 @@ export default function PaywallScreen() {
 
   useEffect(() => {
     let cancelled = false;
-    entitlements()
-      .getOffer()
-      .then((result) => {
-        if (cancelled) return;
-        setOfferState(
-          result.ok
-            ? { status: "ready", offer: result.value }
-            : { status: "failed", kind: result.failure.kind }
-        );
-      });
+    loadOffer(() => cancelled);
     return () => {
       cancelled = true;
     };
   }, []);
+
+  /** Reads the offer from the seam; `isStale` lets an unmounted screen drop the answer. */
+  async function loadOffer(isStale: () => boolean = () => false) {
+    setOfferState({ status: "loading" });
+    let result = await entitlements().getOffer();
+    if (isStale()) return;
+    setOfferState(
+      result.ok
+        ? { status: "ready", offer: result.value }
+        : { status: "failed", kind: result.failure.kind }
+    );
+  }
+
+  function handleRetry() {
+    loadOffer();
+  }
 
   /** Copy for a failed purchase or restore; `cancelled` is the user's choice, not an error. */
   function actionFailureCopy(kind: EntitlementFailureKind): string | null {
@@ -145,6 +152,7 @@ export default function PaywallScreen() {
   let isCheckingEntitlement = status === "loading" && !isPro;
   let isBillingUnavailable = status === "unavailable";
   let showBilling = status === "ready" && !isPro;
+  let canRetry = showBilling && offerState.status === "failed";
   let subscribeDisabled = offerState.status !== "ready" || busy;
   let dismissLabel = isPro ? t`Done` : t`Not now`;
   let dismissHint = isPro ? t`Closes this screen` : t`Closes this screen without subscribing`;
@@ -192,6 +200,19 @@ export default function PaywallScreen() {
       ) : null}
 
       {showBilling ? <OfferSection state={offerState} /> : null}
+
+      {canRetry ? (
+        <TouchableOpacity
+          className="mt-4 self-center rounded-xl px-4 py-2 border border-icon"
+          onPress={handleRetry}
+          accessibilityRole="button"
+          accessibilityLabel={t`Try again`}
+          accessibilityHint={t`Loads the subscription again`}
+          testID="retryBtn"
+        >
+          <Text className="text-base font-semibold text-color">{t`Try again`}</Text>
+        </TouchableOpacity>
+      ) : null}
 
       {actionMessage ? (
         <Text className="mt-4 text-base text-center text-color" accessibilityRole="alert">

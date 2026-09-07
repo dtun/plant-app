@@ -244,3 +244,27 @@ test("an unconfigured seam hides billing and explains why", async () => {
   expect(screen.queryByRole("button", { name: "Restore purchase" })).toBeNull();
   expect(screen.getByRole("button", { name: "Not now" })).toBeOnTheScreen();
 });
+
+test("a failed offer load can be retried", async () => {
+  let fake = createFakeEntitlements();
+  let attempts = 0;
+  __setEntitlementsForTests({
+    ...fake,
+    async getOffer() {
+      attempts += 1;
+      return attempts === 1 ? { ok: false, failure: { kind: "network" } } : fake.getOffer();
+    },
+  });
+  render(
+    <EntitlementsProvider>
+      <PaywallScreen />
+    </EntitlementsProvider>
+  );
+  await screen.findByText("Couldn't load the subscription. Check your connection and try again.");
+
+  fireEvent.press(screen.getByRole("button", { name: "Try again" }));
+
+  expect(await screen.findByText("$4.99")).toBeOnTheScreen();
+  expect(screen.queryByRole("button", { name: "Try again" })).toBeNull();
+  expect(screen.getByRole("button", { name: "Subscribe" })).toBeEnabled();
+});
