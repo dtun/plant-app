@@ -73,15 +73,27 @@ export function SubscriptionSection({ onSubscribe, onManage }: SubscriptionSecti
     return <ActivityIndicator />;
   }
 
+  // No billing in this build (web, dev, tests): the section has nothing to say.
+  if (status === "unavailable") {
+    return null;
+  }
+
   let isPro = entitlement?.isPro === true;
+  let entitlementFailed = status === "error";
   let termCopy = entitlement ? subscriptionTermCopy(entitlement) : null;
   let managementUrl = entitlement?.managementUrl ?? null;
 
   return (
     <View className="mb-6 rounded-xl border border-icon p-4 gap-3" testID="subscriptionSection">
-      <Text className="text-base font-semibold text-color">
-        {isPro ? t`Subscribed to KeepTend Pro` : t`Not subscribed`}
-      </Text>
+      {entitlementFailed ? (
+        <Text className="text-base font-semibold text-color" accessibilityRole="alert">
+          {t`Couldn't check your subscription right now.`}
+        </Text>
+      ) : (
+        <Text className="text-base font-semibold text-color">
+          {isPro ? t`Subscribed to KeepTend Pro` : t`Not subscribed`}
+        </Text>
+      )}
 
       {isPro && termCopy ? <Text className="text-sm text-icon">{termCopy}</Text> : null}
 

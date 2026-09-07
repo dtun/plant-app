@@ -5,7 +5,7 @@ import {
   createRevenueCatEntitlements,
   type FakeEntitlementsResponses,
 } from "@/src/entitlements";
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 
 import { SubscriptionSection } from "./subscription-section";
 
@@ -183,4 +183,22 @@ test("a network failure during restore explains itself and leaves the actions in
     await screen.findByText("Couldn't reach the store. Check your connection and try again.")
   ).toBeOnTheScreen();
   expect(screen.getByRole("button", { name: "Restore purchase" })).toBeEnabled();
+});
+
+test("an unconfigured seam renders no subscription section at all", async () => {
+  renderSection({ entitlement: { ok: false, failure: { kind: "no-config" } } });
+
+  await waitFor(() => expect(screen.queryByTestId("subscriptionSection")).toBeNull());
+  expect(screen.queryByRole("button", { name: "Subscribe" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Restore purchase" })).toBeNull();
+  expect(screen.queryByText("Not subscribed")).toBeNull();
+});
+
+test("a failed entitlement read says so and keeps Subscribe and Restore reachable", async () => {
+  renderSection({ entitlement: { ok: false, failure: { kind: "network" } } });
+
+  expect(await screen.findByText("Couldn't check your subscription right now.")).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Subscribe" })).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Restore purchase" })).toBeOnTheScreen();
+  expect(screen.queryByText("Not subscribed")).toBeNull();
 });
