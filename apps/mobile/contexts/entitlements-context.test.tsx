@@ -142,3 +142,31 @@ test("unmounting the provider unsubscribes from vendor changes", async () => {
 
   expect(unsubscribed).toBe(true);
 });
+
+test("reports error when the entitlement read fails for a reason other than no-config", async () => {
+  __setEntitlementsForTests(
+    createFakeEntitlements({ entitlement: { ok: false, failure: { kind: "network" } } })
+  );
+
+  let { result } = renderEntitlements();
+
+  await waitFor(() => expect(result.current.status).toBe("error"));
+  expect(result.current.entitlement).toBeNull();
+});
+
+test("a successful refresh after an error moves the status to ready", async () => {
+  let fake = createFakeEntitlements();
+  let current: Result<Entitlement, EntitlementFailure> = {
+    ok: false,
+    failure: { kind: "network" },
+  };
+  __setEntitlementsForTests({ ...fake, getEntitlement: async () => current });
+  let { result } = renderEntitlements();
+  await waitFor(() => expect(result.current.status).toBe("error"));
+
+  current = { ok: true, value: pro };
+  await act(() => result.current.refresh());
+
+  expect(result.current.status).toBe("ready");
+  expect(result.current.entitlement).toEqual(pro);
+});
