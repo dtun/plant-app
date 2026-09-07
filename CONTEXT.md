@@ -57,7 +57,7 @@ The seam between the app and the billing vendor (lives in `src/entitlements/`). 
 
 Domain types are vendor-agnostic: `Entitlement` (`isPro` + the backing `productId`) and `ProOffer` (`priceLabel`). The vendor's own types (`PurchasesPackage`, `CustomerInfo`) never cross the seam — callers never see the vendor name. The lifetime "pro" unlock is the only entitlement today.
 
-Failures cross as a discriminated `EntitlementFailure` (`cancelled | no-config | no-offer | network | unknown`), never as thrown errors. Copy belongs to the calling screen, which maps each kind to localized text, mirroring PhotoPicker. "Nothing to restore" is **not** a failure — `restore` succeeds with an `Entitlement` whose `isPro` is false.
+Failures cross as a discriminated `EntitlementFailure` (`cancelled | no-config | no-offer | network | store-error | unknown`), never as thrown errors. Copy belongs to the calling screen, which maps each kind to localized text, mirroring PhotoPicker. "Nothing to restore" is **not** a failure — `restore` succeeds with an `Entitlement` whose `isPro` is false.
 
 Adapters:
 

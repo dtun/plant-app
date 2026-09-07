@@ -1,6 +1,13 @@
 import type { Result } from "@/src/intelligence/types";
 
-export type EntitlementFailureKind = "cancelled" | "no-config" | "no-offer" | "network" | "unknown";
+export type EntitlementFailureKind =
+  | "cancelled"
+  | "no-config"
+  | "no-offer"
+  | "network"
+  /** The app store itself is unavailable or misbehaving; retrying later usually helps. */
+  | "store-error"
+  | "unknown";
 
 export interface EntitlementFailure {
   kind: EntitlementFailureKind;
