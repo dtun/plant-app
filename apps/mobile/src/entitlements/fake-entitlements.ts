@@ -12,6 +12,22 @@ export interface FakeEntitlements extends Entitlements {
   emit(entitlement: Entitlement): void;
 }
 
+let notPro: Entitlement = {
+  isPro: false,
+  productId: null,
+  expiresAt: null,
+  willRenew: false,
+  managementUrl: null,
+};
+
+let pro: Entitlement = {
+  isPro: true,
+  productId: "pro_monthly",
+  expiresAt: 4102444800000,
+  willRenew: true,
+  managementUrl: "https://example.test/manage",
+};
+
 export function createFakeEntitlements(
   responses: FakeEntitlementsResponses = {}
 ): FakeEntitlements {
@@ -19,16 +35,16 @@ export function createFakeEntitlements(
 
   return {
     async getEntitlement() {
-      return responses.entitlement ?? { ok: true, value: { isPro: false, productId: null } };
+      return responses.entitlement ?? { ok: true, value: notPro };
     },
     async getOffer() {
       return responses.offer ?? { ok: true, value: { priceLabel: "$9.99" } };
     },
     async purchase() {
-      return responses.purchase ?? { ok: true, value: { isPro: true, productId: "lifetime" } };
+      return responses.purchase ?? { ok: true, value: pro };
     },
     async restore() {
-      return responses.restore ?? { ok: true, value: { isPro: false, productId: null } };
+      return responses.restore ?? { ok: true, value: notPro };
     },
     subscribe(onChange) {
       listeners.add(onChange);

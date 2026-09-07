@@ -9,7 +9,13 @@ import type { Entitlements, EntitlementFailure, Entitlement, ProOffer, Result } 
 
 function entitlementFrom(info: CustomerInfo): Entitlement {
   let active = info.entitlements.active[PRO_ENTITLEMENT_ID];
-  return { isPro: active !== undefined, productId: active?.productIdentifier ?? null };
+  return {
+    isPro: active !== undefined,
+    productId: active?.productIdentifier ?? null,
+    expiresAt: active?.expirationDateMillis ?? null,
+    willRenew: active?.willRenew ?? false,
+    managementUrl: info.managementURL ?? null,
+  };
 }
 
 function isUserCancelled(error: unknown): boolean {

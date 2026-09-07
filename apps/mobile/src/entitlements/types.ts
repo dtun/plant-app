@@ -13,11 +13,17 @@ export interface EntitlementFailure {
   kind: EntitlementFailureKind;
 }
 
-/** What the app owns. The lifetime "pro" unlock is the only entitlement today. */
+/** What the app owns: the "pro" entitlement, backed by a subscription or a lifetime unlock. */
 export interface Entitlement {
   isPro: boolean;
   /** Store product identifier backing the entitlement, recorded for analytics. */
   productId: string | null;
+  /** Epoch milliseconds when access lapses; null for a lifetime unlock or when not pro. */
+  expiresAt: number | null;
+  /** True when the store will bill again at expiresAt. */
+  willRenew: boolean;
+  /** Where the user manages or cancels the subscription; null when the store offers none. */
+  managementUrl: string | null;
 }
 
 /** The pro unlock as the UI needs to see it. The vendor package stays behind the seam. */
