@@ -7,14 +7,17 @@ import {
 } from "@/src/entitlements";
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
-type EntitlementsStatus = "loading" | "ready" | "unavailable";
+type EntitlementsStatus = "loading" | "ready" | "unavailable" | "error";
 
 type EntitlementResult = Result<Entitlement, EntitlementFailure>;
 
 interface EntitlementsContextValue {
   /** What the user currently owns; null until the seam has answered. */
   entitlement: Entitlement | null;
-  /** `unavailable` when the seam is unconfigured, so callers can hide billing UI entirely. */
+  /**
+   * `unavailable` when the seam is unconfigured, so callers can hide billing UI entirely;
+   * `error` when the read failed for any other reason and a `refresh` may succeed.
+   */
   status: EntitlementsStatus;
   /** Buy the given offer; the seam's Result comes back unchanged. */
   purchase: (offer: ProOffer) => Promise<EntitlementResult>;
@@ -35,8 +38,8 @@ export function EntitlementsProvider({ children }: { children: React.ReactNode }
     if (result.ok) {
       setEntitlement(result.value);
       setStatus("ready");
-    } else if (result.failure.kind === "no-config") {
-      setStatus("unavailable");
+    } else {
+      setStatus(result.failure.kind === "no-config" ? "unavailable" : "error");
     }
     return result;
   }, []);
