@@ -60,6 +60,7 @@ export default function RootLayout() {
                   <Stack screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="(drawer)" />
                     <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
+                    <Stack.Screen name="paywall" options={{ presentation: "modal" }} />
                   </Stack>
                   <StatusBar style="auto" />
                 </ThemeProvider>
