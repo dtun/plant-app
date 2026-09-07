@@ -5,6 +5,7 @@ export interface FakeEntitlementsResponses {
   offer?: Result<ProOffer, EntitlementFailure>;
   purchase?: Result<Entitlement, EntitlementFailure>;
   restore?: Result<Entitlement, EntitlementFailure>;
+  appUserId?: string | null;
 }
 
 export interface FakeEntitlements extends Entitlements {
@@ -47,6 +48,9 @@ export function createFakeEntitlements(
     },
     async restore() {
       return responses.restore ?? { ok: true, value: notPro };
+    },
+    async getAppUserId() {
+      return responses.appUserId === undefined ? "fake-app-user" : responses.appUserId;
     },
     subscribe(onChange) {
       listeners.add(onChange);

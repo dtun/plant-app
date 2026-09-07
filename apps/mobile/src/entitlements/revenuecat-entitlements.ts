@@ -142,6 +142,17 @@ export function createRevenueCatEntitlements(): Entitlements {
     }
   }
 
+  async function getAppUserId(): Promise<string | null> {
+    try {
+      if (!ensureConfigured()) {
+        return null;
+      }
+      return await Purchases.getAppUserID();
+    } catch {
+      return null;
+    }
+  }
+
   function subscribe(onChange: (entitlement: Entitlement) => void): () => void {
     try {
       if (!ensureConfigured()) {
@@ -159,5 +170,5 @@ export function createRevenueCatEntitlements(): Entitlements {
     }
   }
 
-  return { getEntitlement, getOffer, purchase, restore, subscribe };
+  return { getEntitlement, getOffer, purchase, restore, getAppUserId, subscribe };
 }
