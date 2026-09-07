@@ -6,34 +6,24 @@ import {
   type ProOffer,
   type ProOfferTerm,
 } from "@/src/entitlements";
+import { i18n } from "@/src/i18n";
+import type { MessageDescriptor } from "@lingui/core";
+import { msg } from "@lingui/core/macro";
 import { useLingui } from "@lingui/react/macro";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
-function useTermLabel(): (term: ProOfferTerm | null) => string | null {
-  let { t } = useLingui();
-  return function termLabel(term) {
-    switch (term) {
-      case "weekly":
-        return t`Renews weekly`;
-      case "monthly":
-        return t`Renews monthly`;
-      case "two-month":
-        return t`Renews every 2 months`;
-      case "three-month":
-        return t`Renews every 3 months`;
-      case "six-month":
-        return t`Renews every 6 months`;
-      case "annual":
-        return t`Renews yearly`;
-      case "lifetime":
-        return t`One-time purchase`;
-      default:
-        return null;
-    }
-  };
-}
+/** Every term the seam can report has a label; the record makes the compiler check that. */
+let termLabels: Record<ProOfferTerm, MessageDescriptor> = {
+  weekly: msg`Renews weekly`,
+  monthly: msg`Renews monthly`,
+  "two-month": msg`Renews every 2 months`,
+  "three-month": msg`Renews every 3 months`,
+  "six-month": msg`Renews every 6 months`,
+  annual: msg`Renews yearly`,
+  lifetime: msg`One-time purchase`,
+};
 
 type OfferState =
   | { status: "loading" }
@@ -43,7 +33,6 @@ type OfferState =
 /** The price block, a spinner while it loads, or why it could not be loaded. */
 function OfferSection({ state }: { state: OfferState }) {
   let { t } = useLingui();
-  let termLabel = useTermLabel();
 
   if (state.status === "loading") {
     return <ActivityIndicator />;
@@ -61,7 +50,7 @@ function OfferSection({ state }: { state: OfferState }) {
     );
   }
 
-  let term = termLabel(state.offer.term);
+  let term = state.offer.term ? i18n._(termLabels[state.offer.term]) : null;
   return (
     <View className="items-center gap-1">
       <Text className="text-3xl font-bold text-color">{state.offer.priceLabel}</Text>
