@@ -436,12 +436,20 @@ test("getAppUserId returns null instead of throwing when the SDK fails", async (
   expect(id).toBeNull();
 });
 
-test("getOffer reports the renewal term from the package type", async () => {
+test.each([
+  ["WEEKLY", "weekly"],
+  ["MONTHLY", "monthly"],
+  ["TWO_MONTH", "two-month"],
+  ["THREE_MONTH", "three-month"],
+  ["SIX_MONTH", "six-month"],
+  ["ANNUAL", "annual"],
+  ["LIFETIME", "lifetime"],
+  ["UNKNOWN", null],
+  ["CUSTOM", null],
+])("getOffer reports the renewal term for a %s package as %s", async (packageType, term) => {
   mockPurchases.getOfferings.mockResolvedValueOnce({
     current: {
-      availablePackages: [
-        { packageType: "MONTHLY", product: { priceString: "$4.99", identifier: "pro_monthly" } },
-      ],
+      availablePackages: [{ packageType, product: { priceString: "$4.99", identifier: "pro" } }],
     },
     all: {},
   });
@@ -450,22 +458,5 @@ test("getOffer reports the renewal term from the package type", async () => {
   let result = await entitlements.getOffer();
 
   if (!result.ok) throw new Error("expected ok");
-  expect(result.value.term).toBe("monthly");
-});
-
-test("getOffer reports no term for a custom package", async () => {
-  mockPurchases.getOfferings.mockResolvedValueOnce({
-    current: {
-      availablePackages: [
-        { packageType: "CUSTOM", product: { priceString: "$4.99", identifier: "pro_custom" } },
-      ],
-    },
-    all: {},
-  });
-  let entitlements = createRevenueCatEntitlements();
-
-  let result = await entitlements.getOffer();
-
-  if (!result.ok) throw new Error("expected ok");
-  expect(result.value.term).toBeNull();
+  expect(result.value.term).toBe(term);
 });
