@@ -153,6 +153,24 @@ test("getEntitlement maps STORE_PROBLEM_ERROR to a store-error failure", async (
   expect(result.failure.kind).toBe("store-error");
 });
 
+test("purchase maps PURCHASE_NOT_ALLOWED_ERROR to a not-allowed failure", async () => {
+  mockPurchases.getOfferings.mockResolvedValueOnce({
+    current: { availablePackages: [{ product: { priceString: "$9.99", identifier: "lifetime" } }] },
+    all: {},
+  });
+  mockPurchases.purchasePackage.mockRejectedValueOnce(
+    sdkError(PURCHASES_ERROR_CODE.PURCHASE_NOT_ALLOWED_ERROR, "Achats désactivés sur cet appareil")
+  );
+  let entitlements = createRevenueCatEntitlements();
+
+  await entitlements.getOffer();
+  let result = await entitlements.purchase();
+
+  expect(result.ok).toBe(false);
+  if (result.ok) return;
+  expect(result.failure.kind).toBe("not-allowed");
+});
+
 test("getEntitlement does not classify by message text alone", async () => {
   mockPurchases.getCustomerInfo.mockRejectedValueOnce(new Error("network request failed"));
   let entitlements = createRevenueCatEntitlements();
