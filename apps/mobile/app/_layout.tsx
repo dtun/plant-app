@@ -1,3 +1,4 @@
+import { EntitlementsProvider } from "@/contexts/entitlements-context";
 import { createAdapter, getStoreId } from "@/db/store";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import "@/polyfills/crypto";
@@ -46,24 +47,26 @@ export default function RootLayout() {
   return (
     <RootErrorBoundary>
       <I18nProvider i18n={i18n}>
-        <StorageErrorBoundary>
-          <LiveStoreProvider
-            schema={schema}
-            storeId={storeId}
-            adapter={adapter}
-            batchUpdates={batchUpdates}
-          >
-            <KeyboardProvider>
-              <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-                <Stack screenOptions={{ headerShown: false }}>
-                  <Stack.Screen name="(drawer)" />
-                  <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
-                </Stack>
-                <StatusBar style="auto" />
-              </ThemeProvider>
-            </KeyboardProvider>
-          </LiveStoreProvider>
-        </StorageErrorBoundary>
+        <EntitlementsProvider>
+          <StorageErrorBoundary>
+            <LiveStoreProvider
+              schema={schema}
+              storeId={storeId}
+              adapter={adapter}
+              batchUpdates={batchUpdates}
+            >
+              <KeyboardProvider>
+                <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+                  <Stack screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="(drawer)" />
+                    <Stack.Screen name="chat/[plantId]" options={{ headerShown: true }} />
+                  </Stack>
+                  <StatusBar style="auto" />
+                </ThemeProvider>
+              </KeyboardProvider>
+            </LiveStoreProvider>
+          </StorageErrorBoundary>
+        </EntitlementsProvider>
       </I18nProvider>
     </RootErrorBoundary>
   );
