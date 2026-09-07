@@ -53,7 +53,7 @@ The seam between the app and the billing vendor (lives in `src/entitlements/`). 
 - `getOffer` — the pro subscription as the UI needs to price it.
 - `purchase(offer)` — buy the given offer. The offer is re-resolved against the store at purchase time, so there is no ordering dependency on `getOffer`; an offer that has left the storefront returns `no-offer`.
 - `restore` — recover a prior purchase on the account.
-- `getAppUserId` — the vendor's anonymous app user id. RemoteIntelligence sends it with every built-in AI request and the server meters free allowance and verifies entitlement by it. Null when the vendor is unconfigured or unreachable; never throws.
+- `getAppUserId` — the vendor's anonymous app user id. The planned RemoteIntelligence adapter will send it with every built-in AI request, and the server will meter free allowance and verify entitlement by it. Null when the vendor is unconfigured or unreachable; never throws.
 - `subscribe` — register for entitlement changes the vendor pushes asynchronously (cross-device purchase, refund, family share); returns an unsubscribe function.
 
 Domain types are vendor-agnostic. `Entitlement` carries `isPro`, the backing `productId`, `expiresAt` (epoch ms; null for a lifetime unlock or when not pro), `willRenew` (the store will bill again at `expiresAt`), and `managementUrl` (where the user manages or cancels; null when the store offers none). `ProOffer` carries `priceLabel` and the store `productId` that `purchase` resolves it by. The vendor's own types (`PurchasesPackage`, `CustomerInfo`) never cross the seam — callers never see the vendor name. "Pro" is the only entitlement; it may be backed by a subscription or a lifetime unlock.
