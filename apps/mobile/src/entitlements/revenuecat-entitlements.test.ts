@@ -88,6 +88,19 @@ test.each([
   expect(result.failure.kind).toBe("network");
 });
 
+test("getEntitlement maps STORE_PROBLEM_ERROR to a store-error failure", async () => {
+  mockPurchases.getCustomerInfo.mockRejectedValueOnce(
+    sdkError(PURCHASES_ERROR_CODE.STORE_PROBLEM_ERROR, "Es gab ein Problem mit dem App Store")
+  );
+  let entitlements = createRevenueCatEntitlements();
+
+  let result = await entitlements.getEntitlement();
+
+  expect(result.ok).toBe(false);
+  if (result.ok) return;
+  expect(result.failure.kind).toBe("store-error");
+});
+
 test("getEntitlement does not classify by message text alone", async () => {
   mockPurchases.getCustomerInfo.mockRejectedValueOnce(new Error("network request failed"));
   let entitlements = createRevenueCatEntitlements();

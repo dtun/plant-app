@@ -48,6 +48,8 @@ function mapError(error: unknown): EntitlementFailure {
     case PURCHASES_ERROR_CODE.NETWORK_ERROR:
     case PURCHASES_ERROR_CODE.OFFLINE_CONNECTION_ERROR:
       return { kind: "network" };
+    case PURCHASES_ERROR_CODE.STORE_PROBLEM_ERROR:
+      return { kind: "store-error" };
     default:
       return { kind: "unknown" };
   }
