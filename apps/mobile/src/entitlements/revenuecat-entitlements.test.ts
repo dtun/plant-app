@@ -164,7 +164,11 @@ test("purchase maps PURCHASE_NOT_ALLOWED_ERROR to a not-allowed failure", async 
   );
   let entitlements = createRevenueCatEntitlements();
 
-  let result = await entitlements.purchase({ priceLabel: "$9.99", productId: "lifetime" });
+  let result = await entitlements.purchase({
+    priceLabel: "$9.99",
+    productId: "lifetime",
+    term: "monthly",
+  });
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -254,7 +258,11 @@ test("purchase buys the given offer without getOffer having run first", async ()
   mockPurchases.purchasePackage.mockResolvedValueOnce({ customerInfo: proInfo });
   let entitlements = createRevenueCatEntitlements();
 
-  let result = await entitlements.purchase({ priceLabel: "$4.99", productId: "pro_monthly" });
+  let result = await entitlements.purchase({
+    priceLabel: "$4.99",
+    productId: "pro_monthly",
+    term: "monthly",
+  });
 
   expect(mockPurchases.purchasePackage).toHaveBeenCalledWith(pkg);
   if (!result.ok) throw new Error("expected ok");
@@ -271,7 +279,7 @@ test("purchase picks the package matching the offer when several are on sale", a
   mockPurchases.purchasePackage.mockResolvedValueOnce({ customerInfo: proInfo });
   let entitlements = createRevenueCatEntitlements();
 
-  await entitlements.purchase({ priceLabel: "$39.99", productId: "pro_annual" });
+  await entitlements.purchase({ priceLabel: "$39.99", productId: "pro_annual", term: "monthly" });
 
   expect(mockPurchases.purchasePackage).toHaveBeenCalledWith(annual);
 });
@@ -285,7 +293,11 @@ test("purchase returns no-offer when the offer is no longer on sale", async () =
   });
   let entitlements = createRevenueCatEntitlements();
 
-  let result = await entitlements.purchase({ priceLabel: "$9.99", productId: "retired_sku" });
+  let result = await entitlements.purchase({
+    priceLabel: "$9.99",
+    productId: "retired_sku",
+    term: "monthly",
+  });
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -305,7 +317,11 @@ test("purchase maps the PURCHASE_CANCELLED_ERROR code to a cancelled failure", a
   });
   let entitlements = createRevenueCatEntitlements();
 
-  let result = await entitlements.purchase({ priceLabel: "$9.99", productId: "lifetime" });
+  let result = await entitlements.purchase({
+    priceLabel: "$9.99",
+    productId: "lifetime",
+    term: "monthly",
+  });
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -320,7 +336,11 @@ test("purchase still honours the legacy userCancelled flag when no code is prese
   mockPurchases.purchasePackage.mockRejectedValueOnce({ userCancelled: true });
   let entitlements = createRevenueCatEntitlements();
 
-  let result = await entitlements.purchase({ priceLabel: "$9.99", productId: "lifetime" });
+  let result = await entitlements.purchase({
+    priceLabel: "$9.99",
+    productId: "lifetime",
+    term: "monthly",
+  });
 
   expect(result.ok).toBe(false);
   if (result.ok) return;
@@ -414,4 +434,38 @@ test("getAppUserId returns null instead of throwing when the SDK fails", async (
   let id = await entitlements.getAppUserId();
 
   expect(id).toBeNull();
+});
+
+test("getOffer reports the renewal term from the package type", async () => {
+  mockPurchases.getOfferings.mockResolvedValueOnce({
+    current: {
+      availablePackages: [
+        { packageType: "MONTHLY", product: { priceString: "$4.99", identifier: "pro_monthly" } },
+      ],
+    },
+    all: {},
+  });
+  let entitlements = createRevenueCatEntitlements();
+
+  let result = await entitlements.getOffer();
+
+  if (!result.ok) throw new Error("expected ok");
+  expect(result.value.term).toBe("monthly");
+});
+
+test("getOffer reports no term for a custom package", async () => {
+  mockPurchases.getOfferings.mockResolvedValueOnce({
+    current: {
+      availablePackages: [
+        { packageType: "CUSTOM", product: { priceString: "$4.99", identifier: "pro_custom" } },
+      ],
+    },
+    all: {},
+  });
+  let entitlements = createRevenueCatEntitlements();
+
+  let result = await entitlements.getOffer();
+
+  if (!result.ok) throw new Error("expected ok");
+  expect(result.value.term).toBeNull();
 });
