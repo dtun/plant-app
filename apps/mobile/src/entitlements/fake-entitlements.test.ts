@@ -96,3 +96,27 @@ test("subscribe notifies listeners on emit and stops after unsubscribe", () => {
   expect(seen).toHaveLength(1);
   expect(seen[0].isPro).toBe(true);
 });
+
+test("createFakeEntitlements returns a canned app user id by default", async () => {
+  let entitlements = createFakeEntitlements();
+
+  let id = await entitlements.getAppUserId();
+
+  expect(id).toBe("fake-app-user");
+});
+
+test("createFakeEntitlements returns the configured app user id", async () => {
+  let entitlements = createFakeEntitlements({ appUserId: "device-42" });
+
+  let id = await entitlements.getAppUserId();
+
+  expect(id).toBe("device-42");
+});
+
+test("createFakeEntitlements can model an unavailable app user id", async () => {
+  let entitlements = createFakeEntitlements({ appUserId: null });
+
+  let id = await entitlements.getAppUserId();
+
+  expect(id).toBeNull();
+});

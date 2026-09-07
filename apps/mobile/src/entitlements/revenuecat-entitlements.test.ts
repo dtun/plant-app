@@ -4,6 +4,7 @@ import { createRevenueCatEntitlements } from "./revenuecat-entitlements";
 
 let mockPurchases = Purchases as unknown as {
   configure: jest.Mock;
+  getAppUserID: jest.Mock;
   getCustomerInfo: jest.Mock;
   getOfferings: jest.Mock;
   purchasePackage: jest.Mock;
@@ -384,4 +385,33 @@ test("subscribe maps vendor updates to entitlements and unsubscribes cleanly", (
 
   expect(seen).toEqual([true]);
   expect(mockPurchases.removeCustomerInfoUpdateListener).toHaveBeenCalledWith(listener);
+});
+
+test("getAppUserId returns the vendor's anonymous app user id", async () => {
+  mockPurchases.getAppUserID.mockResolvedValueOnce("$RCAnonymousID:2f8c1a9e");
+  let entitlements = createRevenueCatEntitlements();
+
+  let id = await entitlements.getAppUserId();
+
+  expect(id).toBe("$RCAnonymousID:2f8c1a9e");
+});
+
+test("getAppUserId returns null when no API key is set", async () => {
+  delete process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
+  delete process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY;
+  let entitlements = createRevenueCatEntitlements();
+
+  let id = await entitlements.getAppUserId();
+
+  expect(id).toBeNull();
+  expect(mockPurchases.getAppUserID).not.toHaveBeenCalled();
+});
+
+test("getAppUserId returns null instead of throwing when the SDK fails", async () => {
+  mockPurchases.getAppUserID.mockRejectedValueOnce(new Error("native module unavailable"));
+  let entitlements = createRevenueCatEntitlements();
+
+  let id = await entitlements.getAppUserId();
+
+  expect(id).toBeNull();
 });

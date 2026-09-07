@@ -46,6 +46,11 @@ export interface Entitlements {
   /** Buy the given offer. Independent of getOffer: the offer is re-resolved against the store. */
   purchase(offer: ProOffer): Promise<Result<Entitlement, EntitlementFailure>>;
   restore(): Promise<Result<Entitlement, EntitlementFailure>>;
+  /**
+   * The vendor's anonymous app user id, which the server meters built-in AI by.
+   * Null when the vendor is unconfigured or unreachable; never throws.
+   */
+  getAppUserId(): Promise<string | null>;
   /** Subscribe to entitlement changes pushed by the vendor; returns an unsubscribe fn. */
   subscribe(onChange: (entitlement: Entitlement) => void): () => void;
 }

@@ -12,6 +12,7 @@ let emptyCustomerInfo = {
 
 let Purchases = {
   configure: jest.fn(),
+  getAppUserID: jest.fn(async () => "$RCAnonymousID:mock"),
   setLogLevel: jest.fn(),
   getCustomerInfo: jest.fn(async () => emptyCustomerInfo),
   getOfferings: jest.fn(async () => ({ current: null, all: {} })),
