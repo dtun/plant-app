@@ -268,3 +268,32 @@ test("a failed offer load can be retried", async () => {
   expect(screen.queryByRole("button", { name: "Try again" })).toBeNull();
   expect(screen.getByRole("button", { name: "Subscribe" })).toBeEnabled();
 });
+
+test("a failed entitlement read keeps billing reachable and can be retried", async () => {
+  let fake = createFakeEntitlements();
+  let attempts = 0;
+  __setEntitlementsForTests({
+    ...fake,
+    async getEntitlement() {
+      attempts += 1;
+      return attempts === 1 ? { ok: false, failure: { kind: "network" } } : fake.getEntitlement();
+    },
+  });
+  render(
+    <EntitlementsProvider>
+      <PaywallScreen />
+    </EntitlementsProvider>
+  );
+
+  expect(await screen.findByText("Couldn't check your subscription right now.")).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Restore purchase" })).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Subscribe" })).toBeOnTheScreen();
+
+  fireEvent.press(screen.getByRole("button", { name: "Try again" }));
+
+  await waitFor(() =>
+    expect(screen.queryByText("Couldn't check your subscription right now.")).toBeNull()
+  );
+  expect(attempts).toBe(2);
+  expect(screen.queryByRole("button", { name: "Try again" })).toBeNull();
+});
