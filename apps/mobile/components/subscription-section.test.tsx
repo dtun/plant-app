@@ -1,0 +1,204 @@
+import { EntitlementsProvider } from "@/contexts/entitlements-context";
+import {
+  __setEntitlementsForTests,
+  createFakeEntitlements,
+  createRevenueCatEntitlements,
+  type FakeEntitlementsResponses,
+} from "@/src/entitlements";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
+
+import { SubscriptionSection } from "./subscription-section";
+
+let onSubscribe = jest.fn();
+let onManage = jest.fn();
+
+function renderSection(responses: FakeEntitlementsResponses = {}) {
+  let fake = createFakeEntitlements(responses);
+  __setEntitlementsForTests(fake);
+  render(
+    <EntitlementsProvider>
+      <SubscriptionSection onSubscribe={onSubscribe} onManage={onManage} />
+    </EntitlementsProvider>
+  );
+  return fake;
+}
+
+beforeEach(() => {
+  onSubscribe.mockClear();
+  onManage.mockClear();
+});
+
+afterEach(() => {
+  __setEntitlementsForTests(createRevenueCatEntitlements());
+});
+
+test("a user without a subscription sees that and can subscribe or restore", async () => {
+  renderSection();
+
+  expect(await screen.findByText("Not subscribed")).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Subscribe" })).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Restore purchase" })).toBeOnTheScreen();
+});
+
+test("Subscribe hands off to the injected navigation", async () => {
+  renderSection();
+
+  fireEvent.press(await screen.findByRole("button", { name: "Subscribe" }));
+
+  expect(onSubscribe).toHaveBeenCalledTimes(1);
+});
+
+test("a renewing subscriber sees their plan and the renewal date", async () => {
+  renderSection({
+    entitlement: {
+      ok: true,
+      value: {
+        isPro: true,
+        productId: "pro_monthly",
+        expiresAt: 1767268800000,
+        willRenew: true,
+        managementUrl: null,
+      },
+    },
+  });
+
+  expect(await screen.findByText("Subscribed to KeepTend Pro")).toBeOnTheScreen();
+  expect(screen.getByText("Renews on January 1, 2026")).toBeOnTheScreen();
+  expect(screen.queryByRole("button", { name: "Subscribe" })).toBeNull();
+});
+
+test("a cancelled-but-active subscriber sees when access ends", async () => {
+  renderSection({
+    entitlement: {
+      ok: true,
+      value: {
+        isPro: true,
+        productId: "pro_monthly",
+        expiresAt: 1767268800000,
+        willRenew: false,
+        managementUrl: null,
+      },
+    },
+  });
+
+  expect(await screen.findByText("Expires on January 1, 2026")).toBeOnTheScreen();
+  expect(screen.queryByText("Renews on January 1, 2026")).toBeNull();
+});
+
+test("a lifetime unlock shows no renewal or expiry date", async () => {
+  renderSection({
+    entitlement: {
+      ok: true,
+      value: {
+        isPro: true,
+        productId: "pro_lifetime",
+        expiresAt: null,
+        willRenew: false,
+        managementUrl: null,
+      },
+    },
+  });
+
+  expect(await screen.findByText("Subscribed to KeepTend Pro")).toBeOnTheScreen();
+  expect(screen.queryByText(/Renews on|Expires on/)).toBeNull();
+});
+
+test("Manage subscription opens the store's management page", async () => {
+  renderSection({
+    entitlement: {
+      ok: true,
+      value: {
+        isPro: true,
+        productId: "pro_monthly",
+        expiresAt: 1767268800000,
+        willRenew: true,
+        managementUrl: "https://example.test/manage",
+      },
+    },
+  });
+
+  fireEvent.press(await screen.findByRole("button", { name: "Manage subscription" }));
+
+  expect(onManage).toHaveBeenCalledWith("https://example.test/manage");
+});
+
+test("Manage subscription is hidden when the store offers no management page", async () => {
+  renderSection({
+    entitlement: {
+      ok: true,
+      value: {
+        isPro: true,
+        productId: "pro_monthly",
+        expiresAt: 1767268800000,
+        willRenew: true,
+        managementUrl: null,
+      },
+    },
+  });
+
+  await screen.findByText("Subscribed to KeepTend Pro");
+
+  expect(screen.queryByRole("button", { name: "Manage subscription" })).toBeNull();
+});
+
+test("a restore that recovers a purchase flips the section to subscribed", async () => {
+  renderSection({
+    restore: {
+      ok: true,
+      value: {
+        isPro: true,
+        productId: "pro_monthly",
+        expiresAt: 1767268800000,
+        willRenew: true,
+        managementUrl: null,
+      },
+    },
+  });
+
+  fireEvent.press(await screen.findByRole("button", { name: "Restore purchase" }));
+
+  expect(await screen.findByText("Your subscription has been restored.")).toBeOnTheScreen();
+  expect(screen.getByText("Subscribed to KeepTend Pro")).toBeOnTheScreen();
+  expect(screen.queryByRole("button", { name: "Subscribe" })).toBeNull();
+});
+
+test("a restore that finds no purchase says so without treating it as an error", async () => {
+  renderSection();
+
+  fireEvent.press(await screen.findByRole("button", { name: "Restore purchase" }));
+
+  expect(
+    await screen.findByText("No previous purchase was found for this account.")
+  ).toBeOnTheScreen();
+  expect(screen.getByText("Not subscribed")).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Subscribe" })).toBeOnTheScreen();
+});
+
+test("a network failure during restore explains itself and leaves the actions in place", async () => {
+  renderSection({ restore: { ok: false, failure: { kind: "network" } } });
+
+  fireEvent.press(await screen.findByRole("button", { name: "Restore purchase" }));
+
+  expect(
+    await screen.findByText("Couldn't reach the store. Check your connection and try again.")
+  ).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Restore purchase" })).toBeEnabled();
+});
+
+test("an unconfigured seam renders no subscription section at all", async () => {
+  renderSection({ entitlement: { ok: false, failure: { kind: "no-config" } } });
+
+  await waitFor(() => expect(screen.queryByTestId("subscriptionSection")).toBeNull());
+  expect(screen.queryByRole("button", { name: "Subscribe" })).toBeNull();
+  expect(screen.queryByRole("button", { name: "Restore purchase" })).toBeNull();
+  expect(screen.queryByText("Not subscribed")).toBeNull();
+});
+
+test("a failed entitlement read says so and keeps Subscribe and Restore reachable", async () => {
+  renderSection({ entitlement: { ok: false, failure: { kind: "network" } } });
+
+  expect(await screen.findByText("Couldn't check your subscription right now.")).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Subscribe" })).toBeOnTheScreen();
+  expect(screen.getByRole("button", { name: "Restore purchase" })).toBeOnTheScreen();
+  expect(screen.queryByText("Not subscribed")).toBeNull();
+});

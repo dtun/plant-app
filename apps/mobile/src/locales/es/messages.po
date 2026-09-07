@@ -142,6 +142,7 @@ msgid "Copy"
 msgstr "Copiar"
 
 #: app/paywall.tsx:206
+#: components/subscription-section.tsx:90
 msgid "Couldn't check your subscription right now."
 msgstr "No se pudo comprobar tu suscripción en este momento."
 
@@ -150,6 +151,7 @@ msgid "Couldn't load the subscription. Check your connection and try again."
 msgstr "No se pudo cargar la suscripción. Revisa tu conexión e inténtalo de nuevo."
 
 #: app/paywall.tsx:105
+#: components/subscription-section.tsx:43
 msgid "Couldn't reach the store. Check your connection and try again."
 msgstr "No se pudo conectar con la tienda. Revisa tu conexión e inténtalo de nuevo."
 
@@ -195,6 +197,10 @@ msgstr "Error"
 #: components/plant-form.tsx:42
 msgid "Every leaf thanks you"
 msgstr ""
+
+#: components/subscription-section.tsx:34
+msgid "Expires on {date}"
+msgstr "Vence el {date}"
 
 #: utils/ai-service.ts:161
 #~ msgid "Failed to {operation}. Please try again."
@@ -255,6 +261,11 @@ msgstr "Clave API inválida. Revisa tus ajustes de IA."
 msgid "Loading"
 msgstr "Cargando"
 
+#: components/subscription-section.tsx:111
+#: components/subscription-section.tsx:115
+msgid "Manage subscription"
+msgstr "Gestionar suscripción"
+
 #: app/(drawer)/chats.tsx:72
 msgid "Name a plant to start chatting"
 msgstr "Nombra una planta para empezar a chatear"
@@ -284,12 +295,17 @@ msgid "No messages yet"
 msgstr "Sin mensajes aún"
 
 #: app/paywall.tsx:142
+#: components/subscription-section.tsx:68
 msgid "No previous purchase was found for this account."
 msgstr "No se encontró ninguna compra anterior en esta cuenta."
 
 #: app/paywall.tsx:159
 msgid "Not now"
 msgstr "Ahora no"
+
+#: components/subscription-section.tsx:94
+msgid "Not subscribed"
+msgstr "Sin suscripción"
 
 #: components/plant-form.tsx:43
 msgid "Nurture today, bloom tomorrow"
@@ -306,6 +322,14 @@ msgstr "Abre la conversación con esta planta"
 #: components/chat/chat-header-menu.tsx:22
 msgid "Opens chat options menu"
 msgstr "Abre el menú de opciones del chat"
+
+#: components/subscription-section.tsx:126
+msgid "Opens the KeepTend Pro subscription"
+msgstr "Abre la suscripción a KeepTend Pro"
+
+#: components/subscription-section.tsx:112
+msgid "Opens the store page where you can change or cancel it"
+msgstr "Abre la página de la tienda donde puedes cambiarla o cancelarla"
 
 #: components/plant-form.tsx:142
 #: contexts/composer-context.tsx:51
@@ -360,10 +384,12 @@ msgid "Provider is required"
 msgstr "El proveedor es obligatorio"
 
 #: app/paywall.tsx:107
+#: components/subscription-section.tsx:45
 msgid "Purchases aren't allowed on this device or account."
 msgstr "Las compras no están permitidas en este dispositivo o cuenta."
 
 #: app/paywall.tsx:258
+#: components/subscription-section.tsx:138
 msgid "Recovers a subscription you already bought"
 msgstr "Recupera una suscripción que ya compraste"
 
@@ -395,6 +421,10 @@ msgstr "Se renueva cada 6 meses"
 msgid "Renews monthly"
 msgstr "Se renueva cada mes"
 
+#: components/subscription-section.tsx:34
+msgid "Renews on {date}"
+msgstr "Se renueva el {date}"
+
 #: app/paywall.tsx:18
 msgid "Renews weekly"
 msgstr "Se renueva cada semana"
@@ -417,6 +447,8 @@ msgstr "Restablecer formulario"
 
 #: app/paywall.tsx:257
 #: app/paywall.tsx:262
+#: components/subscription-section.tsx:137
+#: components/subscription-section.tsx:145
 msgid "Restore purchase"
 msgstr "Restaurar compra"
 
@@ -469,6 +501,7 @@ msgid "Small care, big growth"
 msgstr ""
 
 #: app/paywall.tsx:114
+#: components/subscription-section.tsx:51
 msgid "Something went wrong. Please try again."
 msgstr "Algo salió mal. Inténtalo de nuevo."
 
@@ -494,8 +527,14 @@ msgstr "Enviar"
 
 #: app/paywall.tsx:240
 #: app/paywall.tsx:248
+#: components/subscription-section.tsx:125
+#: components/subscription-section.tsx:129
 msgid "Subscribe"
 msgstr "Suscribirse"
+
+#: components/subscription-section.tsx:94
+msgid "Subscribed to KeepTend Pro"
+msgstr "Suscrito a KeepTend Pro"
 
 #: app/paywall.tsx:200
 msgid "Subscriptions aren't available in this build."
@@ -510,6 +549,7 @@ msgid "Tend with a little love"
 msgstr ""
 
 #: app/paywall.tsx:109
+#: components/subscription-section.tsx:47
 msgid "The store is having trouble right now. Please try again later."
 msgstr "La tienda tiene problemas en este momento. Inténtalo más tarde."
 
@@ -547,11 +587,11 @@ msgstr "Reintentar"
 msgid "Type a message..."
 msgstr "Escribe un mensaje..."
 
-#: app/(drawer)/ai-settings.tsx:30
+#: app/(drawer)/ai-settings.tsx:43
 msgid "Using default key"
 msgstr "Usando clave predeterminada"
 
-#: app/(drawer)/ai-settings.tsx:30
+#: app/(drawer)/ai-settings.tsx:43
 msgid "Using your API key"
 msgstr "Usando tu clave API"
 
@@ -603,3 +643,7 @@ msgstr "El nombre de tu planta"
 #: components/plant-form.tsx:39
 msgid "Your plants are lucky to have you"
 msgstr ""
+
+#: components/subscription-section.tsx:67
+msgid "Your subscription has been restored."
+msgstr "Tu suscripción se ha restaurado."
