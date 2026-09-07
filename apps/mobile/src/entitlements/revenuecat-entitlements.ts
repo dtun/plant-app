@@ -56,6 +56,8 @@ function mapError(error: unknown): EntitlementFailure {
       return { kind: "network" };
     case PURCHASES_ERROR_CODE.STORE_PROBLEM_ERROR:
       return { kind: "store-error" };
+    case PURCHASES_ERROR_CODE.PURCHASE_NOT_ALLOWED_ERROR:
+      return { kind: "not-allowed" };
     default:
       return { kind: "unknown" };
   }

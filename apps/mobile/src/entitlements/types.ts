@@ -2,6 +2,8 @@ import type { Result } from "@/src/intelligence/types";
 
 export type EntitlementFailureKind =
   | "cancelled"
+  /** The device or account may not make purchases (parental controls, managed device). */
+  | "not-allowed"
   | "no-config"
   | "no-offer"
   | "network"
