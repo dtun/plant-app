@@ -28,11 +28,23 @@ export interface Entitlement {
   managementUrl: string | null;
 }
 
+/** How often the store bills for an offer; `lifetime` is a single charge. */
+export type ProOfferTerm =
+  | "weekly"
+  | "monthly"
+  | "two-month"
+  | "three-month"
+  | "six-month"
+  | "annual"
+  | "lifetime";
+
 /** The pro offer as the UI needs to see it. The vendor package stays behind the seam. */
 export interface ProOffer {
   priceLabel: string;
   /** Store product identifier; lets `purchase` resolve the offer without prior state. */
   productId: string;
+  /** Renewal term; null when the store's package carries no recognized term. */
+  term: ProOfferTerm | null;
 }
 
 /**

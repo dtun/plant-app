@@ -1,11 +1,19 @@
 import Purchases, {
+  PACKAGE_TYPE,
   PURCHASES_ERROR_CODE,
   type CustomerInfo,
   type PurchasesPackage,
 } from "react-native-purchases";
 
 import { PRO_ENTITLEMENT_ID, getRevenueCatApiKey } from "./config";
-import type { Entitlements, EntitlementFailure, Entitlement, ProOffer, Result } from "./types";
+import type {
+  Entitlements,
+  EntitlementFailure,
+  Entitlement,
+  ProOffer,
+  ProOfferTerm,
+  Result,
+} from "./types";
 
 function entitlementFrom(info: CustomerInfo): Entitlement {
   let active = info.entitlements.active[PRO_ENTITLEMENT_ID];
@@ -18,8 +26,33 @@ function entitlementFrom(info: CustomerInfo): Entitlement {
   };
 }
 
+function termFrom(packageType: PACKAGE_TYPE): ProOfferTerm | null {
+  switch (packageType) {
+    case PACKAGE_TYPE.WEEKLY:
+      return "weekly";
+    case PACKAGE_TYPE.MONTHLY:
+      return "monthly";
+    case PACKAGE_TYPE.TWO_MONTH:
+      return "two-month";
+    case PACKAGE_TYPE.THREE_MONTH:
+      return "three-month";
+    case PACKAGE_TYPE.SIX_MONTH:
+      return "six-month";
+    case PACKAGE_TYPE.ANNUAL:
+      return "annual";
+    case PACKAGE_TYPE.LIFETIME:
+      return "lifetime";
+    default:
+      return null;
+  }
+}
+
 function offerFrom(pkg: PurchasesPackage): ProOffer {
-  return { priceLabel: pkg.product.priceString, productId: pkg.product.identifier };
+  return {
+    priceLabel: pkg.product.priceString,
+    productId: pkg.product.identifier,
+    term: termFrom(pkg.packageType),
+  };
 }
 
 function isUserCancelled(error: unknown): boolean {

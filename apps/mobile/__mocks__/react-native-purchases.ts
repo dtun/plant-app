@@ -4,7 +4,7 @@
  */
 
 // Re-exported from the SDK's pure-JS core so tests classify against the real codes.
-export { PURCHASES_ERROR_CODE } from "@revenuecat/purchases-typescript-internal";
+export { PACKAGE_TYPE, PURCHASES_ERROR_CODE } from "@revenuecat/purchases-typescript-internal";
 
 let emptyCustomerInfo = {
   entitlements: { active: {}, all: {} },

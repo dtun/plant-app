@@ -21,5 +21,6 @@ export type {
   EntitlementFailureKind,
   Entitlement,
   ProOffer,
+  ProOfferTerm,
   Result,
 } from "./types";

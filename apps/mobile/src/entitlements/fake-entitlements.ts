@@ -39,7 +39,10 @@ export function createFakeEntitlements(
     },
     async getOffer() {
       return (
-        responses.offer ?? { ok: true, value: { priceLabel: "$4.99", productId: "pro_monthly" } }
+        responses.offer ?? {
+          ok: true,
+          value: { priceLabel: "$4.99", productId: "pro_monthly", term: "monthly" },
+        }
       );
     },
     async purchase(offer) {

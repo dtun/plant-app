@@ -70,7 +70,7 @@ test("purchase forwards the seam's result and updates the entitlement on success
   await waitFor(() => expect(result.current.status).toBe("ready"));
 
   let purchase = await act(() =>
-    result.current.purchase({ priceLabel: "$4.99", productId: "pro_monthly" })
+    result.current.purchase({ priceLabel: "$4.99", productId: "pro_monthly", term: "monthly" })
   );
 
   if (!purchase.ok) throw new Error("expected ok");
@@ -88,7 +88,7 @@ test("a failed purchase forwards the failure and leaves the entitlement alone", 
   let before = result.current.entitlement;
 
   let purchase = await act(() =>
-    result.current.purchase({ priceLabel: "$4.99", productId: "pro_monthly" })
+    result.current.purchase({ priceLabel: "$4.99", productId: "pro_monthly", term: "monthly" })
   );
 
   expect(purchase).toEqual({ ok: false, failure: { kind: "cancelled" } });

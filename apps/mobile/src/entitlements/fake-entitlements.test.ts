@@ -6,7 +6,11 @@ test("createFakeEntitlements returns canned ok results by default", async () => 
 
   let entitlement = await entitlements.getEntitlement();
   let offer = await entitlements.getOffer();
-  let purchase = await entitlements.purchase({ priceLabel: "$4.99", productId: "pro_monthly" });
+  let purchase = await entitlements.purchase({
+    priceLabel: "$4.99",
+    productId: "pro_monthly",
+    term: "monthly",
+  });
   let restore = await entitlements.restore();
 
   expect(entitlement.ok).toBe(true);
@@ -27,7 +31,10 @@ test("createFakeEntitlements returns configured responses", async () => {
         managementUrl: "https://play.google.com/store/account/subscriptions",
       },
     },
-    offer: { ok: true, value: { priceLabel: "£4.99", productId: "pro_monthly_gb" } },
+    offer: {
+      ok: true,
+      value: { priceLabel: "£4.99", productId: "pro_monthly_gb", term: "monthly" },
+    },
   });
 
   let entitlement = await entitlements.getEntitlement();
@@ -124,7 +131,11 @@ test("createFakeEntitlements can model an unavailable app user id", async () => 
 test("createFakeEntitlements purchase grants the offer it was handed", async () => {
   let entitlements = createFakeEntitlements();
 
-  let result = await entitlements.purchase({ priceLabel: "$39.99", productId: "pro_annual" });
+  let result = await entitlements.purchase({
+    priceLabel: "$39.99",
+    productId: "pro_annual",
+    term: "annual",
+  });
 
   if (!result.ok) throw new Error("expected ok");
   expect(result.value.isPro).toBe(true);
@@ -141,4 +152,13 @@ test("createFakeEntitlements hands out a fresh entitlement on every call", async
 
   if (!second.ok) throw new Error("expected ok");
   expect(second.value.isPro).toBe(false);
+});
+
+test("createFakeEntitlements default offer carries a renewal term", async () => {
+  let entitlements = createFakeEntitlements();
+
+  let offer = await entitlements.getOffer();
+
+  if (!offer.ok) throw new Error("expected ok");
+  expect(offer.value.term).toBe("monthly");
 });
