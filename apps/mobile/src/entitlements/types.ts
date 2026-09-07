@@ -28,9 +28,11 @@ export interface Entitlement {
   managementUrl: string | null;
 }
 
-/** The pro unlock as the UI needs to see it. The vendor package stays behind the seam. */
+/** The pro offer as the UI needs to see it. The vendor package stays behind the seam. */
 export interface ProOffer {
   priceLabel: string;
+  /** Store product identifier; lets `purchase` resolve the offer without prior state. */
+  productId: string;
 }
 
 /**
@@ -41,7 +43,8 @@ export interface ProOffer {
 export interface Entitlements {
   getEntitlement(): Promise<Result<Entitlement, EntitlementFailure>>;
   getOffer(): Promise<Result<ProOffer, EntitlementFailure>>;
-  purchase(): Promise<Result<Entitlement, EntitlementFailure>>;
+  /** Buy the given offer. Independent of getOffer: the offer is re-resolved against the store. */
+  purchase(offer: ProOffer): Promise<Result<Entitlement, EntitlementFailure>>;
   restore(): Promise<Result<Entitlement, EntitlementFailure>>;
   /** Subscribe to entitlement changes pushed by the vendor; returns an unsubscribe fn. */
   subscribe(onChange: (entitlement: Entitlement) => void): () => void;
