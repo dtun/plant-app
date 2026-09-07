@@ -13,21 +13,20 @@ export interface FakeEntitlements extends Entitlements {
   emit(entitlement: Entitlement): void;
 }
 
-let notPro: Entitlement = {
-  isPro: false,
-  productId: null,
-  expiresAt: null,
-  willRenew: false,
-  managementUrl: null,
-};
+/** Fresh literals per call so a test that mutates a result cannot leak into the next. */
+function notPro(): Entitlement {
+  return { isPro: false, productId: null, expiresAt: null, willRenew: false, managementUrl: null };
+}
 
-let pro: Entitlement = {
-  isPro: true,
-  productId: "pro_monthly",
-  expiresAt: 4102444800000,
-  willRenew: true,
-  managementUrl: "https://example.test/manage",
-};
+function proFor(offer: ProOffer): Entitlement {
+  return {
+    isPro: true,
+    productId: offer.productId,
+    expiresAt: 4102444800000,
+    willRenew: true,
+    managementUrl: "https://example.test/manage",
+  };
+}
 
 export function createFakeEntitlements(
   responses: FakeEntitlementsResponses = {}
@@ -36,18 +35,18 @@ export function createFakeEntitlements(
 
   return {
     async getEntitlement() {
-      return responses.entitlement ?? { ok: true, value: notPro };
+      return responses.entitlement ?? { ok: true, value: notPro() };
     },
     async getOffer() {
       return (
         responses.offer ?? { ok: true, value: { priceLabel: "$4.99", productId: "pro_monthly" } }
       );
     },
-    async purchase() {
-      return responses.purchase ?? { ok: true, value: pro };
+    async purchase(offer) {
+      return responses.purchase ?? { ok: true, value: proFor(offer) };
     },
     async restore() {
-      return responses.restore ?? { ok: true, value: notPro };
+      return responses.restore ?? { ok: true, value: notPro() };
     },
     async getAppUserId() {
       return responses.appUserId === undefined ? "fake-app-user" : responses.appUserId;
