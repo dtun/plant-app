@@ -64,3 +64,5 @@ Adapters:
 
 - **RevenueCatEntitlements** — the only production adapter. Resolves its public SDK key from env (`config.ts`); when no key is present it returns `no-config` from every operation without ever touching the SDK, so web/dev/tests stay unconfigured safely.
 - **FakeEntitlements** — test adapter. Constructed with canned outcomes (entitlement, offer, purchase, restore, app user id) and can `emit` synthetic entitlement changes; replaces module-level mocking of the vendor SDK.
+
+In the app, `EntitlementsProvider` / `useEntitlements()` (`apps/mobile/contexts/`) is the single reactive source of subscription state for the paywall, AI settings, and adapter selection. It reads the entitlement on mount, subscribes to vendor-pushed changes for its lifetime, and exposes `status` (`loading | ready | unavailable`, the last when the seam is unconfigured) plus `purchase`, `restore`, and `refresh`, which return the seam's `Result` unchanged.
