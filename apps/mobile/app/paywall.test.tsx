@@ -291,8 +291,10 @@ test("a failed entitlement read keeps billing reachable and can be retried", asy
 
   fireEvent.press(screen.getByRole("button", { name: "Try again" }));
 
+  // Not `toBeNull()`: each failed poll would pretty-print the element's whole React fiber
+  // graph, blocking the event loop long enough to eat waitFor's timeout on a slow machine.
   await waitFor(() =>
-    expect(screen.queryByText("Couldn't check your subscription right now.")).toBeNull()
+    expect(screen.queryByText("Couldn't check your subscription right now.")).not.toBeOnTheScreen()
   );
   expect(attempts).toBe(2);
   expect(screen.queryByRole("button", { name: "Try again" })).toBeNull();
