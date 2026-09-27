@@ -1,0 +1,45 @@
+name: Ralph
+
+on:
+  issues:
+    types: [labeled]
+
+# One agent per issue. Re-labelling while a run is in flight replaces it.
+concurrency:
+  group: ralph-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  implement:
+    # Only people with triage access can apply labels, so an outside
+    # contributor cannot start a run by opening or labelling an issue.
+    if: github.event.label.name == 'ready-for-agent'
+    runs-on: [self-hosted, macOS]
+    timeout-minutes: 75
+
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - uses: dtun/ralph-alpha/packages/action@v0
+        with:
+          setup: npm ci
+
+          # With the default token, test.yaml, typecheck.yaml and lint.yaml do
+          # not run on Ralph's PRs, so this is the only check they get. Mobile
+          # typecheck is left out: it needs an `expo export` to generate the
+          # uniwind types first, which is too slow to run on every attempt.
+          verify: >-
+            npm test --workspace apps/mobile &&
+            npm test --workspace apps/web &&
+            npm run typecheck --workspace apps/web
+
+          timeout-minutes: 60
+
+          skills-repo: mattpocock/skills
+          skills-ref: v1.1.0
+
+          # Pass a PAT or GitHub App token to get CI on Ralph's PRs.
+          # github-token: ${{ secrets.RALPH_PAT }}
