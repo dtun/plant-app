@@ -20,10 +20,10 @@
 
 ## Current ids
 
-| Screen      | Container          | Elements                                                                                                       |
-| ----------- | ------------------ | -------------------------------------------------------------------------------------------------------------- |
-| Home        | `homeScreen`       | `plantDescriptionInput`, `addPhotoBtn`, `plantFormSubmitBtn`, `removePhotoBtn`, `resetFormBtn`                 |
-| Chats       | `chatsScreen`      | `namePlantBtn`, `plantItem-${plantId}`                                                                         |
-| Chat        | `chatScreen`       | `composerInput`, `sendBtn`, `attachPhotoBtn`, `removeAttachmentBtn`, `chatMenuBtn`, `chatMessage-${messageId}` |
-| AI settings | `aiSettingsScreen` | `apiKeyInput`, `providerSelector-OpenAI`, `providerSelector-Anthropic`, `saveSettingsBtn`, `resetSettingsBtn`  |
-| Paywall     | `paywallScreen`    | `subscribeBtn`, `restorePurchaseBtn`, `dismissPaywallBtn`                                                      |
+| Screen      | Container          | Elements                                                                                                                                                                                            |
+| ----------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Home        | `homeScreen`       | `plantDescriptionInput`, `addPhotoBtn`, `plantFormSubmitBtn`, `removePhotoBtn`, `resetFormBtn`                                                                                                      |
+| Chats       | `chatsScreen`      | `namePlantBtn`, `plantItem-${plantId}`                                                                                                                                                              |
+| Chat        | `chatScreen`       | `composerInput`, `sendBtn`, `attachPhotoBtn`, `removeAttachmentBtn`, `chatMenuBtn`, `chatMessage-${messageId}`                                                                                      |
+| AI settings | `aiSettingsScreen` | `subscriptionSection`, `subscribeBtn`, `restorePurchaseBtn`, `manageSubscriptionBtn`, `apiKeyInput`, `providerSelector-OpenAI`, `providerSelector-Anthropic`, `saveSettingsBtn`, `resetSettingsBtn` |
+| Paywall     | `paywallScreen`    | `subscribeBtn`, `restorePurchaseBtn`, `dismissPaywallBtn`                                                                                                                                           |
