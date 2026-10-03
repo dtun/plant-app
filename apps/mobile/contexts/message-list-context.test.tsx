@@ -75,3 +75,74 @@ test("tracks whether the plant is composing a reply", () => {
 
   expect(result.current.isGenerating).toBe(true);
 });
+
+describe("scrolling", () => {
+  let scrollToEnd = jest.fn();
+
+  beforeEach(() => {
+    jest.useFakeTimers();
+    scrollToEnd.mockClear();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  /** Open a chat on a stubbed list and let the open-time snap settle. */
+  function openChat(messages: Message[]) {
+    stubStore(messages);
+    let hook = renderHook(() => useMessageList(), { wrapper });
+    hook.result.current.flatListRef.current = { scrollToEnd } as never;
+    act(() => jest.runAllTimers());
+    return hook;
+  }
+
+  test("opening a chat snaps to the end without animating", () => {
+    openChat([message("hello", "user", NOON)]);
+
+    expect(scrollToEnd).toHaveBeenCalled();
+    for (let [options] of scrollToEnd.mock.calls) {
+      expect(options).toEqual({ animated: false });
+    }
+  });
+
+  test("sending scrolls to the end once the typing indicator is laid out", () => {
+    let { result } = openChat([message("hello", "user", NOON)]);
+    scrollToEnd.mockClear();
+
+    act(() => {
+      result.current.scrollToBottom();
+      result.current.setIsGenerating(true);
+    });
+    act(() => jest.runAllTimers());
+    expect(scrollToEnd).not.toHaveBeenCalled();
+
+    act(() => result.current.handleTypingIndicatorLayout());
+    act(() => jest.runAllTimers());
+
+    expect(scrollToEnd).toHaveBeenCalledTimes(1);
+    expect(scrollToEnd).toHaveBeenCalledWith({ animated: true });
+  });
+
+  test("the plant's reply does not move the list", () => {
+    let hello = message("hello", "user", NOON);
+    let { result, rerender } = openChat([hello]);
+    scrollToEnd.mockClear();
+
+    // A send whose reply lands before the typing indicator was ever laid out.
+    act(() => {
+      result.current.scrollToBottom();
+      result.current.setIsGenerating(true);
+    });
+    stubStore([hello, message("reply", "assistant", NOON + 1)]);
+    rerender({});
+    act(() => result.current.setIsGenerating(false));
+    act(() => jest.runAllTimers());
+
+    // A later footer layout must not replay the stale send scroll.
+    act(() => result.current.handleTypingIndicatorLayout());
+    act(() => jest.runAllTimers());
+
+    expect(scrollToEnd).not.toHaveBeenCalled();
+  });
+});
