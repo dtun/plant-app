@@ -24,7 +24,14 @@ const EDGE_GAP = 8;
 export function MessageList() {
   let { t } = useLingui();
   let { plant } = useChatContext();
-  let { messages, listData, flatListRef, isGenerating, getAnimationType } = useMessageList();
+  let {
+    messages,
+    listData,
+    flatListRef,
+    isGenerating,
+    getAnimationType,
+    handleTypingIndicatorLayout,
+  } = useMessageList();
   let { composerHeight } = useComposer();
   let headerHeight = useHeaderHeight();
   let hasMessages = messages.length > 0;
@@ -72,10 +79,14 @@ export function MessageList() {
             />
           );
         }}
-        ListFooterComponent={isGenerating ? <TypingIndicator /> : null}
+        ListFooterComponent={
+          isGenerating ? (
+            <View onLayout={handleTypingIndicatorLayout}>
+              <TypingIndicator />
+            </View>
+          ) : null
+        }
         alignItemsAtEnd
-        maintainScrollAtEnd
-        maintainScrollAtEndThreshold={0.1}
         maintainVisibleContentPosition
         contentContainerStyle={{
           // Leave sizing to alignItemsAtEnd: flexGrow would inflate the

@@ -58,6 +58,7 @@ beforeEach(() => {
 afterEach(() => {
   // The seam is module-global; put the default back so no test inherits a previous fake.
   __setPlantIntelligenceForTests(createLocalIntelligence());
+  jest.useRealTimers();
 });
 
 test("sending commits the owner's message, asks the plant through the seam, then commits its reply", async () => {
@@ -143,4 +144,37 @@ test("a blank message is not sent", async () => {
 
   expect(commit).not.toHaveBeenCalled();
   expect(ask).not.toHaveBeenCalled();
+});
+
+test("sending scrolls once to land the typing indicator, and the reply leaves the list put", async () => {
+  jest.useFakeTimers();
+  let answer!: (result: Result<string, AIFailure>) => void;
+  __setPlantIntelligenceForTests({
+    ...createFakeIntelligence(),
+    generateChatResponse: () => new Promise((resolve) => (answer = resolve)),
+  });
+  let scrollToEnd = jest.fn();
+  let { result } = renderHook(() => ({ composer: useComposer(), messageList: useMessageList() }), {
+    wrapper,
+  });
+  result.current.messageList.flatListRef.current = { scrollToEnd } as never;
+
+  act(() => result.current.composer.setInputText("Hello Fern"));
+  let send!: Promise<void>;
+  act(() => {
+    send = result.current.composer.handleSend();
+  });
+  act(() => result.current.messageList.handleTypingIndicatorLayout());
+  act(() => jest.runAllTimers());
+
+  expect(scrollToEnd).toHaveBeenCalledTimes(1);
+  expect(scrollToEnd).toHaveBeenCalledWith({ animated: true });
+
+  await act(async () => {
+    answer({ ok: true, value: "Hello back!" });
+    await send;
+  });
+  act(() => jest.runAllTimers());
+
+  expect(scrollToEnd).toHaveBeenCalledTimes(1);
 });

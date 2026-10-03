@@ -13,6 +13,8 @@ interface MessageListContextValue {
   listData: ListItem[];
   flatListRef: React.RefObject<LegendListRef | null>;
   scrollToBottom: () => void;
+  /** `onLayout` for the typing indicator footer; lands a pending send scroll. */
+  handleTypingIndicatorLayout: () => void;
   isGenerating: boolean;
   setIsGenerating: (value: boolean) => void;
   markAsNew: (id: string) => void;
@@ -29,15 +31,30 @@ export function MessageListProvider({ children }: { children: React.ReactNode })
   let flatListRef = useRef<LegendListRef>(null);
   let { markAsNew, getAnimationType } = useMessageAnimation();
 
-  // Explicit scroll for deliberate moments (e.g. the user sending a message).
-  // Routine follow-on-new-content is handled by LegendList's maintainScrollAtEnd.
+  // The list follows new content at exactly two moments: opening a chat
+  // (below) and the owner sending. A send scroll waits for the typing
+  // indicator, which arrives with the owner's message, so both land in view.
+  // The plant's reply then replaces the indicator in place without moving.
+  let pendingSendScroll = useRef(false);
   let scrollToBottom = useCallback(() => {
-    if (flatListRef.current && messages.length > 0) {
-      setTimeout(() => {
-        flatListRef.current?.scrollToEnd({ animated: true });
-      }, 100);
-    }
-  }, [messages.length]);
+    pendingSendScroll.current = true;
+  }, []);
+
+  let handleTypingIndicatorLayout = useCallback(() => {
+    if (!pendingSendScroll.current) return;
+    pendingSendScroll.current = false;
+    // LegendList measures its footer in a sibling onLayout and reads that
+    // size in scrollToEnd; wait a frame so it has the indicator's height.
+    requestAnimationFrame(() => {
+      flatListRef.current?.scrollToEnd({ animated: true });
+    });
+  }, []);
+
+  // A reply that beat the indicator to layout cancels the send scroll, so a
+  // later layout can't replay it.
+  useEffect(() => {
+    if (!isGenerating) pendingSendScroll.current = false;
+  }, [isGenerating]);
 
   // Land at the bottom once when a chat first opens. alignItemsAtEnd only
   // bottom-aligns content shorter than the viewport, so long chats need this.
@@ -48,7 +65,7 @@ export function MessageListProvider({ children }: { children: React.ReactNode })
     if (didInitialScroll.current || messages.length === 0) return;
     didInitialScroll.current = true;
 
-    let pending: Array<ReturnType<typeof setTimeout>> = [];
+    let pending: ReturnType<typeof setTimeout>[] = [];
     function snapToEnd() {
       flatListRef.current?.scrollToEnd({ animated: false });
     }
@@ -84,6 +101,7 @@ export function MessageListProvider({ children }: { children: React.ReactNode })
         listData,
         flatListRef,
         scrollToBottom,
+        handleTypingIndicatorLayout,
         isGenerating,
         setIsGenerating,
         markAsNew,
