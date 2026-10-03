@@ -23,7 +23,7 @@ jobs:
       issues: write
 
     steps:
-      - uses: dtun/ralph-alpha/packages/action@v0
+      - uses: dtun/ralph-alpha/packages/action@v0.1.1
         with:
           setup: npm ci
 
