@@ -1,5 +1,6 @@
 import { ChatListItem } from "@/components/chat-list-item";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { useHopAnimation } from "@/hooks/use-hop-animation";
 import { plantsWithLastMessage$ } from "@/src/livestore/queries";
 import { events } from "@/src/livestore/schema";
 import { Trans, useLingui } from "@lingui/react/macro";
@@ -7,16 +8,8 @@ import { FlashList } from "@shopify/flash-list";
 import { useQuery, useStore } from "@livestore/react";
 import * as haptics from "@/utils/haptics";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withSequence,
-  withTiming,
-  Easing,
-} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 
 export default function ChatsScreen() {
   let { t } = useLingui();
@@ -44,21 +37,7 @@ export default function ChatsScreen() {
     );
   }
 
-  let hopOffset = useSharedValue(0);
-
-  useEffect(() => {
-    hopOffset.value = withRepeat(
-      withSequence(
-        withTiming(-2.4, { duration: 240, easing: Easing.out(Easing.ease) }),
-        withTiming(0, { duration: 240, easing: Easing.in(Easing.ease) })
-      ),
-      -1
-    );
-  }, [hopOffset]);
-
-  let hopStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: hopOffset.value }],
-  }));
+  let hopStyle = useHopAnimation();
 
   if (plants.length === 0) {
     return (
