@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import { useQuery } from "@livestore/react";
 
 import ChatsScreen from "./chats";
@@ -15,9 +15,21 @@ jest.mock("@shopify/flash-list", () => {
   return { FlashList: FlatList };
 });
 
-jest.mock("@/components/ui/icon-symbol", () => ({
-  IconSymbol: () => null,
-}));
+jest.mock("@/components/ui/icon-symbol", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  let { View } = require("react-native");
+  return {
+    IconSymbol: ({ name }: { name: string }) => <View testID={`iconSymbol-${name}`} />,
+  };
+});
+
+function hostParentOf(element: ReturnType<typeof screen.getByTestId>) {
+  let parent = element.parent;
+  while (parent && typeof parent.type !== "string") {
+    parent = parent.parent;
+  }
+  return parent!;
+}
 
 beforeEach(() => {
   mockPush.mockClear();
@@ -39,6 +51,27 @@ test("empty state navigates to root screen on press", () => {
   fireEvent.press(screen.getByRole("button", { name: "Name a plant to start chatting" }));
 
   expect(mockPush).toHaveBeenCalledWith("/");
+});
+
+test("empty state arrow hops up and back down on repeat", () => {
+  jest.useFakeTimers();
+  (useQuery as jest.Mock).mockReturnValue([]);
+
+  render(<ChatsScreen />);
+  let hoppingArrow = hostParentOf(screen.getByTestId("iconSymbol-arrow.up.right"));
+
+  expect(hoppingArrow).toHaveAnimatedStyle({ transform: [{ translateY: 0 }] });
+
+  act(() => jest.advanceTimersByTime(240));
+  expect(hoppingArrow).toHaveAnimatedStyle({ transform: [{ translateY: -2.4 }] });
+
+  act(() => jest.advanceTimersByTime(240));
+  expect(hoppingArrow).toHaveAnimatedStyle({ transform: [{ translateY: 0 }] });
+
+  act(() => jest.advanceTimersByTime(240));
+  expect(hoppingArrow).toHaveAnimatedStyle({ transform: [{ translateY: -2.4 }] });
+
+  jest.useRealTimers();
 });
 
 test("renders list items when plants with messages exist", () => {
