@@ -4,6 +4,7 @@ import { plantsWithLastMessage$ } from "@/src/livestore/queries";
 import { events } from "@/src/livestore/schema";
 import { Trans, useLingui } from "@lingui/react/macro";
 import { FlashList } from "@shopify/flash-list";
+import { useHeaderHeight } from "@react-navigation/elements";
 import { useQuery, useStore } from "@livestore/react";
 import * as haptics from "@/utils/haptics";
 import { useRouter } from "expo-router";
@@ -23,6 +24,7 @@ export default function ChatsScreen() {
   let plants = useQuery(plantsWithLastMessage$);
   let { store } = useStore();
   let router = useRouter();
+  let headerHeight = useHeaderHeight();
 
   function handleDeletePlant(plantId: string) {
     let plant = plants.find((p) => p.id === plantId);
@@ -62,7 +64,11 @@ export default function ChatsScreen() {
 
   if (plants.length === 0) {
     return (
-      <View className="flex-1 bg-background items-center justify-center px-8" testID="chatsScreen">
+      <View
+        className="flex-1 bg-background items-center justify-center px-8"
+        style={{ paddingTop: headerHeight }}
+        testID="chatsScreen"
+      >
         <TouchableOpacity
           className="flex-row items-center gap-4"
           onPress={() => router.push("/")}
@@ -89,6 +95,7 @@ export default function ChatsScreen() {
     <View className="flex-1 bg-background" testID="chatsScreen">
       <FlashList
         data={plants}
+        contentContainerStyle={{ paddingTop: headerHeight }}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ChatListItem
