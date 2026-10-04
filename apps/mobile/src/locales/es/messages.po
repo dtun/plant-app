@@ -31,6 +31,7 @@ msgstr "Configuración de IA no encontrada. Configura tu clave API y proveedor e
 
 #: app/(drawer)/_layout.tsx:42
 #: app/(drawer)/_layout.tsx:43
+#: app/(drawer)/ai-settings/_layout.tsx:7
 msgid "AI Settings"
 msgstr "Ajustes de IA"
 
@@ -62,7 +63,7 @@ msgstr "Cuota de API excedida. Revisa la facturación de tu cuenta."
 msgid "Are you sure you want to clear all messages with {name}?"
 msgstr "¿Estás seguro de que quieres borrar todos los mensajes con {name}?"
 
-#: app/(drawer)/chats.tsx:32
+#: app/(drawer)/chats/index.tsx:34
 msgid "Are you sure you want to delete {name}? This will also delete all chat messages."
 msgstr "¿Estás seguro de que quieres eliminar {name}? También se eliminarán todos los mensajes del chat."
 
@@ -74,7 +75,7 @@ msgstr "¿Estás seguro de que quieres eliminar este mensaje?"
 msgid "Camera"
 msgstr "Cámara"
 
-#: app/(drawer)/chats.tsx:34
+#: app/(drawer)/chats/index.tsx:36
 #: components/message-bubble.tsx:29
 #: components/plant-form.tsx:259
 #: contexts/chat-context.tsx:29
@@ -104,6 +105,7 @@ msgstr "Chatea con tus plantas cuando quieras"
 
 #: app/(drawer)/_layout.tsx:34
 #: app/(drawer)/_layout.tsx:35
+#: app/(drawer)/chats/_layout.tsx:7
 #: components/chat/chat-header.tsx:19
 msgid "Chats"
 msgstr "Chats"
@@ -153,7 +155,7 @@ msgstr "No se pudo cargar la suscripción. Revisa tu conexión e inténtalo de n
 msgid "Couldn't reach the store. Check your connection and try again."
 msgstr "No se pudo conectar con la tienda. Revisa tu conexión e inténtalo de nuevo."
 
-#: app/(drawer)/chats.tsx:36
+#: app/(drawer)/chats/index.tsx:38
 #: components/chat-list-item.tsx:92
 #: components/message-bubble.tsx:31
 #: components/message-bubble.tsx:74
@@ -164,7 +166,7 @@ msgstr "Eliminar"
 msgid "Delete Message"
 msgstr "Eliminar mensaje"
 
-#: app/(drawer)/chats.tsx:31
+#: app/(drawer)/chats/index.tsx:33
 msgid "Delete Plant"
 msgstr "Eliminar planta"
 
@@ -238,8 +240,8 @@ msgstr "Dale voz a tus plantas"
 msgid "Happy plants, happy home"
 msgstr ""
 
-#: app/(drawer)/_layout.tsx:24
-#: app/(drawer)/_layout.tsx:25
+#: app/(drawer)/_layout.tsx:22
+#: app/(drawer)/_layout.tsx:23
 msgid "Home"
 msgstr "Inicio"
 
@@ -255,11 +257,11 @@ msgstr "Clave API inválida. Revisa tus ajustes de IA."
 msgid "Loading"
 msgstr "Cargando"
 
-#: app/(drawer)/chats.tsx:72
+#: app/(drawer)/chats/index.tsx:78
 msgid "Name a plant to start chatting"
 msgstr "Nombra una planta para empezar a chatear"
 
-#: app/(drawer)/chats.tsx:76
+#: app/(drawer)/chats/index.tsx:82
 msgid "Name a plant to start chatting!"
 msgstr "¡Nombra una planta para empezar a chatear!"
 
@@ -267,7 +269,7 @@ msgstr "¡Nombra una planta para empezar a chatear!"
 msgid "Names and personalities grounded in what each plant is"
 msgstr "Nombres y personalidades basados en lo que es cada planta"
 
-#: app/(drawer)/chats.tsx:73
+#: app/(drawer)/chats/index.tsx:79
 msgid "Navigates to the plant naming screen"
 msgstr "Navega a la pantalla para nombrar plantas"
 
@@ -460,9 +462,14 @@ msgstr "Ajustes guardados"
 
 #: app/(drawer)/_layout.tsx:52
 #: app/(drawer)/_layout.tsx:53
+#: app/(drawer)/share/_layout.tsx:7
 #: components/chat/chat-header-menu.tsx:29
 msgid "Share"
 msgstr "Compartir"
+
+#: components/ui/drawer-stack.tsx:19
+msgid "Show navigation menu"
+msgstr "Mostrar menú de navegación"
 
 #: components/plant-form.tsx:44
 msgid "Small care, big growth"
@@ -517,7 +524,7 @@ msgstr "La tienda tiene problemas en este momento. Inténtalo más tarde."
 msgid "The subscription isn't available right now. Please try again later."
 msgstr "La suscripción no está disponible en este momento. Inténtalo más tarde."
 
-#: app/(drawer)/chats.tsx:29
+#: app/(drawer)/chats/index.tsx:31
 #: contexts/chat-context.tsx:27
 msgid "this plant"
 msgstr "esta planta"
@@ -547,11 +554,11 @@ msgstr "Reintentar"
 msgid "Type a message..."
 msgstr "Escribe un mensaje..."
 
-#: app/(drawer)/ai-settings.tsx:30
+#: app/(drawer)/ai-settings/index.tsx:32
 msgid "Using default key"
 msgstr "Usando clave predeterminada"
 
-#: app/(drawer)/ai-settings.tsx:30
+#: app/(drawer)/ai-settings/index.tsx:32
 msgid "Using your API key"
 msgstr "Usando tu clave API"
 
