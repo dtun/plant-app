@@ -1,4 +1,3 @@
-import { HeaderLeafImg } from "@/components/ui/header-leaf-img";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { useLingui } from "@lingui/react/macro";
 import { Drawer } from "expo-router/drawer";
@@ -12,9 +11,8 @@ export default function DrawerLayout() {
     <Drawer
       screenOptions={{
         drawerActiveTintColor: tintColor,
-        headerShown: true,
-        headerTintColor: tintColor,
-        headerTitle: HeaderLeafImg,
+        // Other screens bring their own native header via `DrawerStack`.
+        headerShown: false,
       }}
     >
       <Drawer.Screen
@@ -23,12 +21,14 @@ export default function DrawerLayout() {
           drawerIcon: ({ color }) => <IconSymbol size={28} name="leaf" color={color} />,
           drawerLabel: t`Home`,
           title: t`Home`,
+          headerShown: true,
+          headerTintColor: tintColor,
           headerTitle: () => null,
           headerTransparent: true,
         }}
       />
       <Drawer.Screen
-        name="chats/index"
+        name="chats"
         options={{
           drawerIcon: ({ color }) => <IconSymbol size={28} name="message.fill" color={color} />,
           drawerLabel: t`Chats`,
@@ -36,7 +36,7 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
-        name="ai-settings/index"
+        name="ai-settings"
         options={{
           drawerIcon: ({ color }) => <IconSymbol size={28} name="gearshape.fill" color={color} />,
           drawerLabel: t`AI Settings`,
@@ -44,7 +44,7 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
-        name="share/index"
+        name="share"
         options={{
           drawerIcon: ({ color }) => (
             <IconSymbol size={28} name="qrcode.viewfinder" color={color} />

@@ -1,7 +1,7 @@
+import { useHeaderHeight } from "@react-navigation/elements";
 import { useEffect, useRef } from "react";
 import { Animated, Easing, View } from "react-native";
 import QRCodeStyled from "react-native-qrcode-styled";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 let testFlightUrl = "https://testflight.apple.com/join/DQcdaT9a";
 
@@ -16,6 +16,7 @@ let rainbowColors = [
 ];
 
 export default function ShareScreen() {
+  let headerHeight = useHeaderHeight();
   let opacityAnimations = useRef(
     rainbowColors.map((_, i) => new Animated.Value(i === 0 ? 1 : 0))
   ).current;
@@ -46,27 +47,25 @@ export default function ShareScreen() {
   }, [opacityAnimations]);
 
   return (
-    <View className="flex-1 items-center bg-background">
-      <SafeAreaView>
-        <View className="relative w-80 h-80 justify-center items-center">
-          {rainbowColors.map((color, index) => (
-            <Animated.View
-              key={color}
-              className="absolute inset-0 justify-center items-center"
-              style={{ opacity: opacityAnimations[index] }}
-            >
-              <View className="bg-background p-4 rounded-2xl">
-                <QRCodeStyled
-                  color={color}
-                  data={testFlightUrl}
-                  pieceBorderRadius="50%"
-                  pieceScale={1.04}
-                />
-              </View>
-            </Animated.View>
-          ))}
-        </View>
-      </SafeAreaView>
+    <View className="flex-1 items-center bg-background" style={{ paddingTop: headerHeight }}>
+      <View className="relative w-80 h-80 justify-center items-center">
+        {rainbowColors.map((color, index) => (
+          <Animated.View
+            key={color}
+            className="absolute inset-0 justify-center items-center"
+            style={{ opacity: opacityAnimations[index] }}
+          >
+            <View className="bg-background p-4 rounded-2xl">
+              <QRCodeStyled
+                color={color}
+                data={testFlightUrl}
+                pieceBorderRadius="50%"
+                pieceScale={1.04}
+              />
+            </View>
+          </Animated.View>
+        ))}
+      </View>
     </View>
   );
 }

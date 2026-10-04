@@ -1,11 +1,13 @@
 import { AISetupForm } from "@/components/ai-setup-form";
 import { useLingui } from "@lingui/react/macro";
+import { useHeaderHeight } from "@react-navigation/elements";
 import "expo-sqlite/localStorage/install";
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 export default function AISettingsScreen() {
   let { t } = useLingui();
+  let headerHeight = useHeaderHeight();
   let [hasUserKey, setHasUserKey] = useState(false);
 
   let checkKeyStatus = useCallback(() => {
@@ -19,9 +21,9 @@ export default function AISettingsScreen() {
 
   return (
     <ScrollView
-      className="flex-1 bg-background px-5 pt-4"
+      className="flex-1 bg-background px-5"
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={{ paddingBottom: 40 }}
+      contentContainerStyle={{ paddingTop: headerHeight + 16, paddingBottom: 40 }}
       testID="aiSettingsScreen"
     >
       <View className="mb-6">
