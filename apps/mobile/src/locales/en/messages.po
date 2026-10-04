@@ -31,6 +31,7 @@ msgstr "AI configuration not found. Please set up your API key and provider in S
 
 #: app/(drawer)/_layout.tsx:42
 #: app/(drawer)/_layout.tsx:43
+#: app/(drawer)/ai-settings/_layout.tsx:7
 msgid "AI Settings"
 msgstr "AI Settings"
 
@@ -62,7 +63,7 @@ msgstr "API quota exceeded. Please check your account billing."
 msgid "Are you sure you want to clear all messages with {name}?"
 msgstr "Are you sure you want to clear all messages with {name}?"
 
-#: app/(drawer)/chats.tsx:32
+#: app/(drawer)/chats/index.tsx:34
 msgid "Are you sure you want to delete {name}? This will also delete all chat messages."
 msgstr "Are you sure you want to delete {name}? This will also delete all chat messages."
 
@@ -74,7 +75,7 @@ msgstr "Are you sure you want to delete this message?"
 msgid "Camera"
 msgstr "Camera"
 
-#: app/(drawer)/chats.tsx:34
+#: app/(drawer)/chats/index.tsx:36
 #: components/message-bubble.tsx:29
 #: components/plant-form.tsx:259
 #: contexts/chat-context.tsx:29
@@ -104,6 +105,7 @@ msgstr "Chat with your plants, any time"
 
 #: app/(drawer)/_layout.tsx:34
 #: app/(drawer)/_layout.tsx:35
+#: app/(drawer)/chats/_layout.tsx:7
 #: components/chat/chat-header.tsx:19
 msgid "Chats"
 msgstr "Chats"
@@ -153,7 +155,7 @@ msgstr "Couldn't load the subscription. Check your connection and try again."
 msgid "Couldn't reach the store. Check your connection and try again."
 msgstr "Couldn't reach the store. Check your connection and try again."
 
-#: app/(drawer)/chats.tsx:36
+#: app/(drawer)/chats/index.tsx:38
 #: components/chat-list-item.tsx:92
 #: components/message-bubble.tsx:31
 #: components/message-bubble.tsx:74
@@ -164,7 +166,7 @@ msgstr "Delete"
 msgid "Delete Message"
 msgstr "Delete Message"
 
-#: app/(drawer)/chats.tsx:31
+#: app/(drawer)/chats/index.tsx:33
 msgid "Delete Plant"
 msgstr "Delete Plant"
 
@@ -238,8 +240,8 @@ msgstr "Give your plants a voice"
 msgid "Happy plants, happy home"
 msgstr "Happy plants, happy home"
 
-#: app/(drawer)/_layout.tsx:24
-#: app/(drawer)/_layout.tsx:25
+#: app/(drawer)/_layout.tsx:22
+#: app/(drawer)/_layout.tsx:23
 msgid "Home"
 msgstr "Home"
 
@@ -255,11 +257,11 @@ msgstr "Invalid API key. Please check your AI settings."
 msgid "Loading"
 msgstr "Loading"
 
-#: app/(drawer)/chats.tsx:72
+#: app/(drawer)/chats/index.tsx:78
 msgid "Name a plant to start chatting"
 msgstr "Name a plant to start chatting"
 
-#: app/(drawer)/chats.tsx:76
+#: app/(drawer)/chats/index.tsx:82
 msgid "Name a plant to start chatting!"
 msgstr "Name a plant to start chatting!"
 
@@ -267,7 +269,7 @@ msgstr "Name a plant to start chatting!"
 msgid "Names and personalities grounded in what each plant is"
 msgstr "Names and personalities grounded in what each plant is"
 
-#: app/(drawer)/chats.tsx:73
+#: app/(drawer)/chats/index.tsx:79
 msgid "Navigates to the plant naming screen"
 msgstr "Navigates to the plant naming screen"
 
@@ -460,9 +462,14 @@ msgstr "Settings Saved"
 
 #: app/(drawer)/_layout.tsx:52
 #: app/(drawer)/_layout.tsx:53
+#: app/(drawer)/share/_layout.tsx:7
 #: components/chat/chat-header-menu.tsx:29
 msgid "Share"
 msgstr "Share"
+
+#: components/ui/drawer-stack.tsx:19
+msgid "Show navigation menu"
+msgstr "Show navigation menu"
 
 #: components/plant-form.tsx:44
 msgid "Small care, big growth"
@@ -517,7 +524,7 @@ msgstr "The store is having trouble right now. Please try again later."
 msgid "The subscription isn't available right now. Please try again later."
 msgstr "The subscription isn't available right now. Please try again later."
 
-#: app/(drawer)/chats.tsx:29
+#: app/(drawer)/chats/index.tsx:31
 #: contexts/chat-context.tsx:27
 msgid "this plant"
 msgstr "this plant"
@@ -547,11 +554,11 @@ msgstr "Try Again"
 msgid "Type a message..."
 msgstr "Type a message..."
 
-#: app/(drawer)/ai-settings.tsx:30
+#: app/(drawer)/ai-settings/index.tsx:32
 msgid "Using default key"
 msgstr "Using default key"
 
-#: app/(drawer)/ai-settings.tsx:30
+#: app/(drawer)/ai-settings/index.tsx:32
 msgid "Using your API key"
 msgstr "Using your API key"
 
