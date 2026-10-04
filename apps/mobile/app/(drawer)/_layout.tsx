@@ -28,7 +28,7 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
-        name="chats"
+        name="chats/index"
         options={{
           drawerIcon: ({ color }) => <IconSymbol size={28} name="message.fill" color={color} />,
           drawerLabel: t`Chats`,
@@ -36,7 +36,7 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
-        name="ai-settings"
+        name="ai-settings/index"
         options={{
           drawerIcon: ({ color }) => <IconSymbol size={28} name="gearshape.fill" color={color} />,
           drawerLabel: t`AI Settings`,
@@ -44,7 +44,7 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
-        name="share"
+        name="share/index"
         options={{
           drawerIcon: ({ color }) => (
             <IconSymbol size={28} name="qrcode.viewfinder" color={color} />
