@@ -136,6 +136,8 @@ npm run test        # Run all tests
 npm run vibecheck   # Run lint, typecheck, and tests
 ```
 
+**Faking the network:** adapter tests pass a fake `fetch` into the adapter factory. Tests above a seam use its fake adapter and never fake HTTP. Rationale in `docs/adr/0003-adapter-tests-inject-fetch.md`.
+
 **testIDs:** interactive elements and screen containers carry a `testID`; convention in `docs/testing/test-ids.md`.
 
 ### Code Formatting
