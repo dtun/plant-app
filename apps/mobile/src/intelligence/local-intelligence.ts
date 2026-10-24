@@ -2,7 +2,7 @@ import { msg } from "@lingui/core/macro";
 import { i18n } from "@/src/i18n";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createOpenAI } from "@ai-sdk/openai";
-import { APICallError, generateText } from "ai";
+import { APICallError, RetryError, generateText } from "ai";
 import { z } from "zod";
 
 import "expo-sqlite/localStorage/install";
@@ -140,6 +140,12 @@ function networkFailure(): AIFailure {
 }
 
 function mapErrorToFailure(error: unknown): AIFailure {
+  // The SDK retries retryable failures (429, 5xx, connection errors) and then throws a
+  // RetryError wrapping the last attempt's error.
+  if (RetryError.isInstance(error)) {
+    return mapErrorToFailure(error.lastError);
+  }
+
   if (APICallError.isInstance(error)) {
     // No status code means the request never reached the API — the SDK wraps
     // connection failures as APICallError with isRetryable set and statusCode unset.
