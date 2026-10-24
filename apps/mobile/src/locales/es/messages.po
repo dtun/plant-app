@@ -13,600 +13,600 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: components/plant-form.tsx:40
+#: components/plant-form.tsx
 msgid "A little care goes a long way"
 msgstr ""
 
-#: components/plant-form.tsx:240
+#: components/plant-form.tsx
 #~ msgid "About your plant"
 #~ msgstr "Sobre tu planta"
 
-#: components/ui/photo-upload.tsx:27
+#: components/ui/photo-upload.tsx
 msgid "Add plant photo"
 msgstr "Agregar foto de planta"
 
-#: src/intelligence/local-intelligence.ts:125
+#: src/intelligence/local-intelligence.ts
 msgid "AI configuration not found. Please set up your API key and provider in Settings."
 msgstr "Configuración de IA no encontrada. Configura tu clave API y proveedor en Ajustes."
 
-#: app/(drawer)/_layout.tsx:42
-#: app/(drawer)/_layout.tsx:43
-#: app/(drawer)/ai-settings/_layout.tsx:7
+#: app/(drawer)/_layout.tsx
+#: app/(drawer)/_layout.tsx
+#: app/(drawer)/ai-settings/_layout.tsx
 msgid "AI Settings"
 msgstr "Ajustes de IA"
 
-#: components/plant-form.tsx:239
+#: components/plant-form.tsx
 msgid "AI Setup Required"
 msgstr "Configuración de IA requerida"
 
-#: components/plant-form.tsx:312
+#: components/plant-form.tsx
 msgid "Analyzing photo..."
 msgstr "Analizando foto..."
 
-#: components/plant-form.tsx:342
+#: components/plant-form.tsx
 msgid "Anything else?"
 msgstr "¿Algo más?"
 
-#: components/ai-setup-form.tsx:99
+#: components/ai-setup-form.tsx
 msgid "API Key"
 msgstr "Clave API"
 
-#: components/ai-setup-form.tsx:24
+#: components/ai-setup-form.tsx
 msgid "API key is required"
 msgstr "La clave API es obligatoria"
 
-#: src/intelligence/local-intelligence.ts:153
+#: src/intelligence/local-intelligence.ts
 msgid "API quota exceeded. Please check your account billing."
 msgstr "Cuota de API excedida. Revisa la facturación de tu cuenta."
 
-#: contexts/chat-context.tsx:28
+#: contexts/chat-context.tsx
 msgid "Are you sure you want to clear all messages with {name}?"
 msgstr "¿Estás seguro de que quieres borrar todos los mensajes con {name}?"
 
-#: app/(drawer)/chats/index.tsx:34
+#: app/(drawer)/chats/index.tsx
 msgid "Are you sure you want to delete {name}? This will also delete all chat messages."
 msgstr "¿Estás seguro de que quieres eliminar {name}? También se eliminarán todos los mensajes del chat."
 
-#: components/message-bubble.tsx:28
+#: components/message-bubble.tsx
 msgid "Are you sure you want to delete this message?"
 msgstr "¿Estás seguro de que quieres eliminar este mensaje?"
 
-#: utils/photo-utils.ts:80
+#: utils/photo-utils.ts
 msgid "Camera"
 msgstr "Cámara"
 
-#: app/(drawer)/chats/index.tsx:36
-#: components/message-bubble.tsx:29
-#: components/plant-form.tsx:259
-#: contexts/chat-context.tsx:29
-#: utils/photo-utils.ts:82
+#: app/(drawer)/chats/index.tsx
+#: components/message-bubble.tsx
+#: components/plant-form.tsx
+#: contexts/chat-context.tsx
+#: utils/photo-utils.ts
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: app/paywall.tsx:164
+#: app/paywall.tsx
 msgid "Care notes read from a photo"
 msgstr "Notas de cuidado a partir de una foto"
 
-#: components/chat/chat-header.tsx:18
+#: components/chat/chat-header.tsx
 msgid "Chat"
 msgstr "Chat"
 
-#: components/chat/chat-header-menu.tsx:21
+#: components/chat/chat-header-menu.tsx
 msgid "Chat options"
 msgstr "Opciones de chat"
 
-#: components/chat-list-item.tsx:59
+#: components/chat-list-item.tsx
 msgid "Chat with {name}"
 msgstr "Chat con {name}"
 
-#: app/paywall.tsx:162
+#: app/paywall.tsx
 msgid "Chat with your plants, any time"
 msgstr "Chatea con tus plantas cuando quieras"
 
-#: app/(drawer)/_layout.tsx:34
-#: app/(drawer)/_layout.tsx:35
-#: app/(drawer)/chats/_layout.tsx:7
-#: components/chat/chat-header.tsx:19
+#: app/(drawer)/_layout.tsx
+#: app/(drawer)/_layout.tsx
+#: app/(drawer)/chats/_layout.tsx
+#: components/chat/chat-header.tsx
 msgid "Chats"
 msgstr "Chats"
 
-#: utils/photo-utils.ts:78
+#: utils/photo-utils.ts
 msgid "Choose how you'd like to add a photo of your plant"
 msgstr "Elige cómo quieres agregar una foto de tu planta"
 
-#: contexts/chat-context.tsx:31
+#: contexts/chat-context.tsx
 msgid "Clear"
 msgstr "Borrar"
 
-#: components/plant-form.tsx:281
+#: components/plant-form.tsx
 msgid "Clear all form fields and start over"
 msgstr "Borrar todos los campos y empezar de nuevo"
 
-#: components/chat/chat-header-menu.tsx:35
-#: contexts/chat-context.tsx:28
+#: components/chat/chat-header-menu.tsx
+#: contexts/chat-context.tsx
 msgid "Clear Chat"
 msgstr "Borrar chat"
 
-#: app/paywall.tsx:160
+#: app/paywall.tsx
 msgid "Closes this screen"
 msgstr "Cierra esta pantalla"
 
-#: app/paywall.tsx:160
+#: app/paywall.tsx
 msgid "Closes this screen without subscribing"
 msgstr "Cierra esta pantalla sin suscribirte"
 
-#: components/chat/chat-header-menu.tsx:30
+#: components/chat/chat-header-menu.tsx
 msgid "Coming soon"
 msgstr "Próximamente"
 
-#: components/message-bubble.tsx:70
+#: components/message-bubble.tsx
 msgid "Copy"
 msgstr "Copiar"
 
-#: app/paywall.tsx:206
+#: app/paywall.tsx
 msgid "Couldn't check your subscription right now."
 msgstr "No se pudo comprobar tu suscripción en este momento."
 
-#: app/paywall.tsx:43
+#: app/paywall.tsx
 msgid "Couldn't load the subscription. Check your connection and try again."
 msgstr "No se pudo cargar la suscripción. Revisa tu conexión e inténtalo de nuevo."
 
-#: app/paywall.tsx:105
+#: app/paywall.tsx
 msgid "Couldn't reach the store. Check your connection and try again."
 msgstr "No se pudo conectar con la tienda. Revisa tu conexión e inténtalo de nuevo."
 
-#: app/(drawer)/chats/index.tsx:38
-#: components/chat-list-item.tsx:92
-#: components/message-bubble.tsx:31
-#: components/message-bubble.tsx:74
+#: app/(drawer)/chats/index.tsx
+#: components/chat-list-item.tsx
+#: components/message-bubble.tsx
+#: components/message-bubble.tsx
 msgid "Delete"
 msgstr "Eliminar"
 
-#: components/message-bubble.tsx:28
+#: components/message-bubble.tsx
 msgid "Delete Message"
 msgstr "Eliminar mensaje"
 
-#: app/(drawer)/chats/index.tsx:33
+#: app/(drawer)/chats/index.tsx
 msgid "Delete Plant"
 msgstr "Eliminar planta"
 
-#: components/plant-form.tsx:342
+#: components/plant-form.tsx
 msgid "Describe your plant..."
 msgstr "Describe tu planta..."
 
-#: app/paywall.tsx:159
+#: app/paywall.tsx
 msgid "Done"
 msgstr "Listo"
 
-#: components/plant-form.tsx:252
+#: components/plant-form.tsx
 #~ msgid "e.g., Succulent, Fern, Flowering Plant..."
 #~ msgstr "ej., Suculenta, Helecho, Planta con flores..."
 
-#: components/ai-setup-form.tsx:109
+#: components/ai-setup-form.tsx
 msgid "Enter your API key"
 msgstr "Ingresa tu clave API"
 
-#: components/ai-setup-form.tsx:76
-#: components/ai-setup-form.tsx:89
-#: components/plant-form.tsx:150
-#: components/plant-form.tsx:246
-#: contexts/composer-context.tsx:59
+#: components/ai-setup-form.tsx
+#: components/ai-setup-form.tsx
+#: components/plant-form.tsx
+#: components/plant-form.tsx
+#: contexts/composer-context.tsx
 msgid "Error"
 msgstr "Error"
 
-#: components/plant-form.tsx:42
+#: components/plant-form.tsx
 msgid "Every leaf thanks you"
 msgstr ""
 
-#: utils/ai-service.ts:161
+#: utils/ai-service.ts
 #~ msgid "Failed to {operation}. Please try again."
 #~ msgstr "Error al {operation}. Inténtalo de nuevo."
 
-#: utils/ai-service.ts:229
+#: utils/ai-service.ts
 #~ msgid "Failed to analyze photo. Please try again."
 #~ msgstr "Error al analizar la foto. Inténtalo de nuevo."
 
-#: components/plant-form.tsx:189
+#: components/plant-form.tsx
 #~ msgid "Failed to generate plant name. Please try again."
 #~ msgstr "Error al generar el nombre de la planta. Inténtalo de nuevo."
 
-#: components/plant-form.tsx:153
-#: contexts/composer-context.tsx:62
+#: components/plant-form.tsx
+#: contexts/composer-context.tsx
 msgid "Failed to pick image. Please try again."
 msgstr "Error al seleccionar imagen. Inténtalo de nuevo."
 
-#: components/ai-setup-form.tsx:89
+#: components/ai-setup-form.tsx
 msgid "Failed to reset settings. Please try again."
 msgstr "Error al restablecer ajustes. Inténtalo de nuevo."
 
-#: components/plant-form.tsx:212
+#: components/plant-form.tsx
 msgid "Failed to save plant. Please try again."
 msgstr "Error al guardar la planta. Inténtalo de nuevo."
 
-#: components/ai-setup-form.tsx:76
+#: components/ai-setup-form.tsx
 msgid "Failed to save settings. Please try again."
 msgstr "Error al guardar ajustes. Inténtalo de nuevo."
 
-#: components/plant-form.tsx:152
-#: contexts/composer-context.tsx:61
+#: components/plant-form.tsx
+#: contexts/composer-context.tsx
 msgid "Failed to take photo. Please try again."
 msgstr "Error al tomar la foto. Inténtalo de nuevo."
 
-#: app/paywall.tsx:170
+#: app/paywall.tsx
 msgid "Give your plants a voice"
 msgstr "Dale voz a tus plantas"
 
-#: components/plant-form.tsx:41
+#: components/plant-form.tsx
 msgid "Happy plants, happy home"
 msgstr ""
 
-#: app/(drawer)/_layout.tsx:22
-#: app/(drawer)/_layout.tsx:23
+#: app/(drawer)/_layout.tsx
+#: app/(drawer)/_layout.tsx
 msgid "Home"
 msgstr "Inicio"
 
-#: contexts/composer-context.tsx:152
+#: contexts/composer-context.tsx
 msgid "I need to be set up first. Please configure your AI settings."
 msgstr ""
 
-#: src/intelligence/local-intelligence.ts:147
+#: src/intelligence/local-intelligence.ts
 msgid "Invalid API key. Please check your AI settings."
 msgstr "Clave API inválida. Revisa tus ajustes de IA."
 
-#: components/ui/submit-button.tsx:49
+#: components/ui/submit-button.tsx
 msgid "Loading"
 msgstr "Cargando"
 
-#: app/(drawer)/chats/index.tsx:78
+#: app/(drawer)/chats/index.tsx
 msgid "Name a plant to start chatting"
 msgstr "Nombra una planta para empezar a chatear"
 
-#: app/(drawer)/chats/index.tsx:82
+#: app/(drawer)/chats/index.tsx
 msgid "Name a plant to start chatting!"
 msgstr "¡Nombra una planta para empezar a chatear!"
 
-#: app/paywall.tsx:163
+#: app/paywall.tsx
 msgid "Names and personalities grounded in what each plant is"
 msgstr "Nombres y personalidades basados en lo que es cada planta"
 
-#: app/(drawer)/chats/index.tsx:79
+#: app/(drawer)/chats/index.tsx
 msgid "Navigates to the plant naming screen"
 msgstr "Navega a la pantalla para nombrar plantas"
 
-#: src/intelligence/local-intelligence.ts:133
+#: src/intelligence/local-intelligence.ts
 msgid "Network error. Please check your internet connection."
 msgstr "Error de red. Revisa tu conexión a internet."
 
-#: app/paywall.tsx:165
+#: app/paywall.tsx
 msgid "No API key or setup needed"
 msgstr "Sin clave API ni configuración"
 
-#: components/chat-list-item.tsx:81
+#: components/chat-list-item.tsx
 msgid "No messages yet"
 msgstr "Sin mensajes aún"
 
-#: app/paywall.tsx:142
+#: app/paywall.tsx
 msgid "No previous purchase was found for this account."
 msgstr "No se encontró ninguna compra anterior en esta cuenta."
 
-#: app/paywall.tsx:159
+#: app/paywall.tsx
 msgid "Not now"
 msgstr "Ahora no"
 
-#: components/plant-form.tsx:43
+#: components/plant-form.tsx
 msgid "Nurture today, bloom tomorrow"
 msgstr ""
 
-#: app/paywall.tsx:24
+#: app/paywall.tsx
 msgid "One-time purchase"
 msgstr "Pago único"
 
-#: components/chat-list-item.tsx:60
+#: components/chat-list-item.tsx
 msgid "Opens chat conversation with this plant"
 msgstr "Abre la conversación con esta planta"
 
-#: components/chat/chat-header-menu.tsx:22
+#: components/chat/chat-header-menu.tsx
 msgid "Opens chat options menu"
 msgstr "Abre el menú de opciones del chat"
 
-#: components/plant-form.tsx:142
-#: contexts/composer-context.tsx:51
+#: components/plant-form.tsx
+#: contexts/composer-context.tsx
 msgid "Permission Required"
 msgstr "Permiso requerido"
 
-#: components/plant-form.tsx:312
+#: components/plant-form.tsx
 msgid "Photo Analysis"
 msgstr "Análisis de foto"
 
-#: components/plant-form.tsx:129
+#: components/plant-form.tsx
 msgid "Photo Analysis Error"
 msgstr "Error en el análisis de foto"
 
-#: utils/photo-utils.ts:81
+#: utils/photo-utils.ts
 msgid "Photo Library"
 msgstr "Biblioteca de fotos"
 
 #. placeholder {0}: plant.name
-#: components/chat/chat-header.tsx:28
+#: components/chat/chat-header.tsx
 msgid "Photo of {0}"
 msgstr "Foto de {0}"
 
-#: components/chat-list-item.tsx:68
+#: components/chat-list-item.tsx
 msgid "Photo of {name}"
 msgstr "Foto de {name}"
 
-#: components/plant-form.tsx:144
-#: contexts/composer-context.tsx:53
+#: components/plant-form.tsx
+#: contexts/composer-context.tsx
 msgid "Please allow access to your camera to take plant photos."
 msgstr "Permite el acceso a tu cámara para tomar fotos de plantas."
 
-#: components/plant-form.tsx:145
-#: contexts/composer-context.tsx:54
+#: components/plant-form.tsx
+#: contexts/composer-context.tsx
 msgid "Please allow access to your photo library to select plant photos."
 msgstr "Permite el acceso a tu biblioteca de fotos para seleccionar fotos de plantas."
 
-#: components/plant-form.tsx:239
+#: components/plant-form.tsx
 msgid "Please configure your AI settings first."
 msgstr "Configura tus ajustes de IA primero."
 
-#: components/plant-form.tsx:91
+#: components/plant-form.tsx
 msgid "Please describe your plant or add a photo"
 msgstr "Describe tu planta o agrega una foto"
 
-#: components/ai-setup-form.tsx:119
+#: components/ai-setup-form.tsx
 msgid "Provider"
 msgstr "Proveedor"
 
-#: components/ai-setup-form.tsx:26
+#: components/ai-setup-form.tsx
 msgid "Provider is required"
 msgstr "El proveedor es obligatorio"
 
-#: app/paywall.tsx:107
+#: app/paywall.tsx
 msgid "Purchases aren't allowed on this device or account."
 msgstr "Las compras no están permitidas en este dispositivo o cuenta."
 
-#: app/paywall.tsx:258
+#: app/paywall.tsx
 msgid "Recovers a subscription you already bought"
 msgstr "Recupera una suscripción que ya compraste"
 
-#: components/plant-form.tsx:322
+#: components/plant-form.tsx
 msgid "Remove photo"
 msgstr "Eliminar foto"
 
-#: components/chat/composer.tsx:85
+#: components/chat/composer.tsx
 msgid "Remove selected photo"
 msgstr "Eliminar foto seleccionada"
 
-#: components/plant-form.tsx:323
+#: components/plant-form.tsx
 msgid "Remove the selected plant photo"
 msgstr "Eliminar la foto de planta seleccionada"
 
-#: app/paywall.tsx:20
+#: app/paywall.tsx
 msgid "Renews every 2 months"
 msgstr "Se renueva cada 2 meses"
 
-#: app/paywall.tsx:21
+#: app/paywall.tsx
 msgid "Renews every 3 months"
 msgstr "Se renueva cada 3 meses"
 
-#: app/paywall.tsx:22
+#: app/paywall.tsx
 msgid "Renews every 6 months"
 msgstr "Se renueva cada 6 meses"
 
-#: app/paywall.tsx:19
+#: app/paywall.tsx
 msgid "Renews monthly"
 msgstr "Se renueva cada mes"
 
-#: app/paywall.tsx:18
+#: app/paywall.tsx
 msgid "Renews weekly"
 msgstr "Se renueva cada semana"
 
-#: app/paywall.tsx:23
+#: app/paywall.tsx
 msgid "Renews yearly"
 msgstr "Se renueva cada año"
 
-#: components/plant-form.tsx:285
+#: components/plant-form.tsx
 msgid "Reset"
 msgstr "Restablecer"
 
-#: components/ai-setup-form.tsx:151
+#: components/ai-setup-form.tsx
 msgid "Reset All"
 msgstr "Restablecer todo"
 
-#: components/plant-form.tsx:280
+#: components/plant-form.tsx
 msgid "Reset form"
 msgstr "Restablecer formulario"
 
-#: app/paywall.tsx:257
-#: app/paywall.tsx:262
+#: app/paywall.tsx
+#: app/paywall.tsx
 msgid "Restore purchase"
 msgstr "Restaurar compra"
 
-#: components/plant-form.tsx:217
+#: components/plant-form.tsx
 msgid "Save Error"
 msgstr "Error al guardar"
 
-#: components/ai-setup-form.tsx:141
+#: components/ai-setup-form.tsx
 msgid "Save Settings"
 msgstr "Guardar ajustes"
 
 #. placeholder {0}: plant?.name ?? t`your plant`
-#: components/chat/message-list.tsx:44
+#: components/chat/message-list.tsx
 msgid "Say hello to {0}!"
 msgstr "¡Saluda a {0}!"
 
 #. placeholder {0}: option.toLowerCase()
-#: components/ui/size-selector.tsx:31
+#: components/ui/size-selector.tsx
 msgid "Select {0}"
 msgstr "Seleccionar {0}"
 
-#: components/ui/option-selector.tsx:35
+#: components/ui/option-selector.tsx
 msgid "Select {option}"
 msgstr "Seleccionar {option}"
 
-#: utils/photo-utils.ts:77
+#: utils/photo-utils.ts
 msgid "Select Plant Photo"
 msgstr "Seleccionar foto de planta"
 
-#: components/chat/composer.tsx:78
+#: components/chat/composer.tsx
 msgid "Selected photo preview"
 msgstr "Vista previa de la foto seleccionada"
 
-#: components/ai-setup-form.tsx:85
+#: components/ai-setup-form.tsx
 msgid "Settings Reset"
 msgstr "Ajustes restablecidos"
 
-#: components/ai-setup-form.tsx:72
+#: components/ai-setup-form.tsx
 msgid "Settings Saved"
 msgstr "Ajustes guardados"
 
-#: app/(drawer)/_layout.tsx:52
-#: app/(drawer)/_layout.tsx:53
-#: app/(drawer)/share/_layout.tsx:7
-#: components/chat/chat-header-menu.tsx:29
+#: app/(drawer)/_layout.tsx
+#: app/(drawer)/_layout.tsx
+#: app/(drawer)/share/_layout.tsx
+#: components/chat/chat-header-menu.tsx
 msgid "Share"
 msgstr "Compartir"
 
-#: components/ui/drawer-stack.tsx:19
+#: components/ui/drawer-stack.tsx
 msgid "Show navigation menu"
 msgstr "Mostrar menú de navegación"
 
-#: components/plant-form.tsx:44
+#: components/plant-form.tsx
 msgid "Small care, big growth"
 msgstr ""
 
-#: app/paywall.tsx:114
+#: app/paywall.tsx
 msgid "Something went wrong. Please try again."
 msgstr "Algo salió mal. Inténtalo de nuevo."
 
-#: contexts/composer-context.tsx:132
+#: contexts/composer-context.tsx
 #~ msgid "Sorry, I couldn't respond right now. Please try again."
 #~ msgstr "Lo siento, no pude responder ahora. Inténtalo de nuevo."
 
-#: components/plant-form.tsx:297
+#: components/plant-form.tsx
 #~ msgid "Start a conversation. Keep it thriving."
 #~ msgstr "Empieza una conversación. Mantenla próspera."
 
-#: components/plant-form.tsx:255
+#: components/plant-form.tsx
 msgid "Start Chat"
 msgstr "Iniciar chat"
 
-#: app/paywall.tsx:241
+#: app/paywall.tsx
 msgid "Starts your KeepTend Pro subscription"
 msgstr "Inicia tu suscripción a KeepTend Pro"
 
-#: components/ui/submit-button.tsx:49
+#: components/ui/submit-button.tsx
 msgid "Submit"
 msgstr "Enviar"
 
-#: app/paywall.tsx:240
-#: app/paywall.tsx:248
+#: app/paywall.tsx
+#: app/paywall.tsx
 msgid "Subscribe"
 msgstr "Suscribirse"
 
-#: app/paywall.tsx:200
+#: app/paywall.tsx
 msgid "Subscriptions aren't available in this build."
 msgstr "Las suscripciones no están disponibles en esta versión."
 
-#: components/ui/photo-upload.tsx:28
+#: components/ui/photo-upload.tsx
 msgid "Take a photo or select from library"
 msgstr "Toma una foto o selecciona de la biblioteca"
 
-#: components/plant-form.tsx:46
+#: components/plant-form.tsx
 msgid "Tend with a little love"
 msgstr ""
 
-#: app/paywall.tsx:109
+#: app/paywall.tsx
 msgid "The store is having trouble right now. Please try again later."
 msgstr "La tienda tiene problemas en este momento. Inténtalo más tarde."
 
-#: app/paywall.tsx:44
+#: app/paywall.tsx
 msgid "The subscription isn't available right now. Please try again later."
 msgstr "La suscripción no está disponible en este momento. Inténtalo más tarde."
 
-#: app/(drawer)/chats/index.tsx:31
-#: contexts/chat-context.tsx:27
+#: app/(drawer)/chats/index.tsx
+#: contexts/chat-context.tsx
 msgid "this plant"
 msgstr "esta planta"
 
-#: app/paywall.tsx:111
+#: app/paywall.tsx
 msgid "This subscription is no longer available."
 msgstr "Esta suscripción ya no está disponible."
 
-#: utils/date-helpers.ts:11
+#: utils/date-helpers.ts
 msgid "Today"
 msgstr "Hoy"
 
-#: app/paywall.tsx:218
+#: app/paywall.tsx
 msgid "Tries loading the subscription again"
 msgstr "Intenta cargar la suscripción de nuevo"
 
-#: app/paywall.tsx:217
-#: app/paywall.tsx:221
+#: app/paywall.tsx
+#: app/paywall.tsx
 msgid "Try again"
 msgstr "Intentar de nuevo"
 
-#: components/plant-form.tsx:240
+#: components/plant-form.tsx
 msgid "Try Again"
 msgstr "Reintentar"
 
-#: components/chat/chat-layout.tsx:26
+#: components/chat/chat-layout.tsx
 msgid "Type a message..."
 msgstr "Escribe un mensaje..."
 
-#: app/(drawer)/ai-settings/index.tsx:32
+#: app/(drawer)/ai-settings/index.tsx
 msgid "Using default key"
 msgstr "Usando clave predeterminada"
 
-#: app/(drawer)/ai-settings/index.tsx:32
+#: app/(drawer)/ai-settings/index.tsx
 msgid "Using your API key"
 msgstr "Usando tu clave API"
 
-#: contexts/composer-context.tsx:135
+#: contexts/composer-context.tsx
 msgid "What do you see in this photo?"
 msgstr "¿Qué ves en esta foto?"
 
-#: components/plant-form.tsx:242
+#: components/plant-form.tsx
 #~ msgid "What type of plant is it?"
 #~ msgstr "¿Qué tipo de planta es?"
 
-#: components/chat-list-item.tsx:30
-#: utils/date-helpers.ts:14
+#: components/chat-list-item.tsx
+#: utils/date-helpers.ts
 msgid "Yesterday"
 msgstr "Ayer"
 
-#: app/paywall.tsx:192
+#: app/paywall.tsx
 msgid "You're already subscribed to KeepTend Pro."
 msgstr "Ya estás suscrito a KeepTend Pro."
 
-#: app/paywall.tsx:169
+#: app/paywall.tsx
 msgid "You've used your free conversations"
 msgstr "Has usado tus conversaciones gratuitas"
 
-#: components/ai-setup-form.tsx:85
+#: components/ai-setup-form.tsx
 msgid "Your AI configuration has been reset."
 msgstr "Tu configuración de IA ha sido restablecida."
 
-#: components/ai-setup-form.tsx:72
+#: components/ai-setup-form.tsx
 msgid "Your AI configuration has been saved successfully."
 msgstr "Tu configuración de IA se ha guardado correctamente."
 
-#: components/plant-form.tsx:45
+#: components/plant-form.tsx
 msgid "Your green friends are thriving"
 msgstr ""
 
-#: components/chat/message-list.tsx:44
+#: components/chat/message-list.tsx
 msgid "your plant"
 msgstr "tu planta"
 
-#: components/plant-form.tsx:294
+#: components/plant-form.tsx
 #~ msgid "Your plant has a lot to say."
 #~ msgstr "Tu planta tiene mucho que decir."
 
-#: components/plant-form.tsx:253
+#: components/plant-form.tsx
 msgid "Your Plant's Name"
 msgstr "El nombre de tu planta"
 
-#: components/plant-form.tsx:39
+#: components/plant-form.tsx
 msgid "Your plants are lucky to have you"
 msgstr ""
