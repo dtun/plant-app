@@ -13,9 +13,13 @@
     "vibecheck": "npm run lint && npm run typecheck && npm run test"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^2.0.17",
+    "@ai-sdk/openai": "^2.0.32",
+    "ai": "^5.0.47",
     "next": "15.5.25",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
