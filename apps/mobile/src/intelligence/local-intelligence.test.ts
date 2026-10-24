@@ -1,32 +1,5 @@
-import { APICallError, generateText } from "ai";
-
 import { createLocalIntelligence } from "./local-intelligence";
 import type { PlantData } from "./types";
-
-jest.mock("ai", () => ({
-  ...jest.requireActual("ai"),
-  generateText: jest.fn(),
-}));
-
-function apiError(statusCode: number | undefined, isRetryable = false) {
-  return new APICallError({
-    message: "request failed",
-    url: "https://api.example.com",
-    requestBodyValues: {},
-    statusCode,
-    isRetryable,
-  });
-}
-
-jest.mock("@ai-sdk/openai", () => ({
-  createOpenAI: () => () => ({ provider: "openai-stub" }),
-}));
-
-jest.mock("@ai-sdk/anthropic", () => ({
-  createAnthropic: () => () => ({ provider: "anthropic-stub" }),
-}));
-
-let mockGenerateText = generateText as jest.Mock;
 
 let storage: Map<string, string>;
 
@@ -34,6 +7,62 @@ let plantData: PlantData = {
   plantType: "Succulent",
   description: "Small green plant",
 };
+
+interface RecordedRequest {
+  url: string;
+  headers: Record<string, string>;
+  body: unknown;
+}
+
+interface FakeNetwork {
+  fetch: typeof globalThis.fetch;
+  requests: RecordedRequest[];
+}
+
+interface FakeNetworkRoutes {
+  config?: () => Response;
+  provider?: () => Response | Promise<Response>;
+}
+
+function createFakeNetwork(routes: FakeNetworkRoutes = {}): FakeNetwork {
+  let requests: RecordedRequest[] = [];
+
+  async function fakeFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+    let url = String(input);
+    let body = typeof init?.body === "string" ? JSON.parse(init.body) : init?.body;
+    requests.push({ url, headers: Object.fromEntries(new Headers(init?.headers)), body });
+
+    if (url === "https://www.keeptend.com/api/config") {
+      return routes.config?.() ?? new Response("{}", { status: 404 });
+    }
+    if (url.startsWith("https://api.anthropic.com/")) {
+      if (!routes.provider) throw new Error("unexpected provider request");
+      return routes.provider();
+    }
+    throw new Error(`unexpected request to ${url}`);
+  }
+
+  return { fetch: fakeFetch, requests };
+}
+
+function providerText(text: string): Response {
+  return Response.json({
+    id: "msg_1",
+    type: "message",
+    role: "assistant",
+    content: [{ type: "text", text }],
+    usage: { input_tokens: 1, output_tokens: 1 },
+  });
+}
+
+function providerError(status: number, message: string): Response {
+  return Response.json({ type: "error", error: { type: "api_error", message } }, { status });
+}
+
+function setUserConfig() {
+  storage.set("ai_user_api_key", "test-key");
+  storage.set("ai_user_provider", "Anthropic");
+}
 
 beforeEach(() => {
   storage = new Map();
@@ -46,23 +75,13 @@ beforeEach(() => {
       storage.delete(key);
     },
   };
-  global.fetch = jest.fn().mockResolvedValue({
-    ok: false,
-    status: 404,
-    statusText: "Not Found",
-    json: async () => ({}),
-  }) as unknown as typeof fetch;
   delete process.env.EXPO_PUBLIC_DEFAULT_AI_API_KEY;
   delete process.env.EXPO_PUBLIC_DEFAULT_AI_PROVIDER;
 });
 
-function setUserConfig() {
-  storage.set("ai_user_api_key", "test-key");
-  storage.set("ai_user_provider", "OpenAI");
-}
-
 test("generatePlantName returns no-config failure when no AI config can be resolved", async () => {
-  let intel = createLocalIntelligence();
+  let network = createFakeNetwork();
+  let intel = createLocalIntelligence({ fetch: network.fetch });
 
   let result = await intel.generatePlantName(plantData);
 
@@ -72,22 +91,41 @@ test("generatePlantName returns no-config failure when no AI config can be resol
   expect(result.failure.message).toMatch(/AI configuration not found/);
 });
 
-test("generatePlantName maps 401/403 SDK errors to invalid-key failure", async () => {
-  setUserConfig();
-  mockGenerateText.mockRejectedValueOnce(apiError(401));
-  let intel = createLocalIntelligence();
+test("generatePlantName falls back to the config endpoint and signs the request with its key", async () => {
+  let network = createFakeNetwork({
+    config: () => Response.json({ apiKey: "endpoint-key", provider: "Anthropic" }),
+    provider: () => providerText("Leafy"),
+  });
+  let intel = createLocalIntelligence({ fetch: network.fetch });
 
   let result = await intel.generatePlantName(plantData);
 
-  expect(result.ok).toBe(false);
-  if (result.ok) return;
-  expect(result.failure.kind).toBe("invalid-key");
+  expect(result).toEqual({ ok: true, value: "Leafy" });
+  let providerRequest = network.requests.find((r) =>
+    r.url.startsWith("https://api.anthropic.com/")
+  );
+  expect(providerRequest?.headers["x-api-key"]).toBe("endpoint-key");
 });
 
-test("generatePlantName maps 402/429 SDK errors to quota failure", async () => {
+test.each([401, 403])(
+  "generatePlantName maps a %i response to invalid-key failure",
+  async (status) => {
+    setUserConfig();
+    let network = createFakeNetwork({ provider: () => providerError(status, "denied") });
+    let intel = createLocalIntelligence({ fetch: network.fetch });
+
+    let result = await intel.generatePlantName(plantData);
+
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.failure.kind).toBe("invalid-key");
+  }
+);
+
+test("generatePlantName maps a 402 response to quota failure", async () => {
   setUserConfig();
-  mockGenerateText.mockRejectedValueOnce(apiError(429));
-  let intel = createLocalIntelligence();
+  let network = createFakeNetwork({ provider: () => providerError(402, "payment required") });
+  let intel = createLocalIntelligence({ fetch: network.fetch });
 
   let result = await intel.generatePlantName(plantData);
 
@@ -96,10 +134,14 @@ test("generatePlantName maps 402/429 SDK errors to quota failure", async () => {
   expect(result.failure.kind).toBe("quota");
 });
 
-test("generatePlantName maps connection-level SDK errors to network failure", async () => {
+test("generatePlantName maps a connection failure to network failure", async () => {
   setUserConfig();
-  mockGenerateText.mockRejectedValueOnce(apiError(undefined, true));
-  let intel = createLocalIntelligence();
+  let network = createFakeNetwork({
+    provider: () => {
+      throw new TypeError("Network request failed");
+    },
+  });
+  let intel = createLocalIntelligence({ fetch: network.fetch });
 
   let result = await intel.generatePlantName(plantData);
 
@@ -108,22 +150,10 @@ test("generatePlantName maps connection-level SDK errors to network failure", as
   expect(result.failure.kind).toBe("network");
 });
 
-test("generatePlantName maps a bare fetch TypeError to network failure", async () => {
+test("generatePlantName maps an unrecognized provider error to unknown failure with its detail", async () => {
   setUserConfig();
-  mockGenerateText.mockRejectedValueOnce(new TypeError("fetch failed"));
-  let intel = createLocalIntelligence();
-
-  let result = await intel.generatePlantName(plantData);
-
-  expect(result.ok).toBe(false);
-  if (result.ok) return;
-  expect(result.failure.kind).toBe("network");
-});
-
-test("generatePlantName maps unrecognized SDK errors to unknown failure", async () => {
-  setUserConfig();
-  mockGenerateText.mockRejectedValueOnce(new Error("something exploded"));
-  let intel = createLocalIntelligence();
+  let network = createFakeNetwork({ provider: () => providerError(400, "something exploded") });
+  let intel = createLocalIntelligence({ fetch: network.fetch });
 
   let result = await intel.generatePlantName(plantData);
 
@@ -135,8 +165,8 @@ test("generatePlantName maps unrecognized SDK errors to unknown failure", async 
 
 test("generatePlantName returns ok result with trimmed text on success", async () => {
   setUserConfig();
-  mockGenerateText.mockResolvedValueOnce({ text: "  Leafy  " });
-  let intel = createLocalIntelligence();
+  let network = createFakeNetwork({ provider: () => providerText("  Leafy  ") });
+  let intel = createLocalIntelligence({ fetch: network.fetch });
 
   let result = await intel.generatePlantName(plantData);
 
@@ -145,19 +175,24 @@ test("generatePlantName returns ok result with trimmed text on success", async (
   expect(result.value).toBe("Leafy");
 });
 
-test("generateChatResponse sends image parts the vision model understands (mediaType)", async () => {
+test("generateChatResponse sends the image to the provider as a base64 jpeg", async () => {
   setUserConfig();
-  mockGenerateText.mockResolvedValueOnce({ text: "Hello!" });
-  let intel = createLocalIntelligence();
+  let network = createFakeNetwork({ provider: () => providerText("Hello!") });
+  let intel = createLocalIntelligence({ fetch: network.fetch });
 
-  await intel.generateChatResponse({
+  let result = await intel.generateChatResponse({
     plantContext: { name: "Fern" },
     messages: [
       { role: "user", content: "What am I?", imageUri: "file://x.jpg", imageBase64: "abc123" },
     ],
   });
 
-  let call = mockGenerateText.mock.calls[0][0];
-  let imagePart = call.messages[0].content.find((part: { type: string }) => part.type === "image");
-  expect(imagePart).toEqual({ type: "image", image: "abc123", mediaType: "image/jpeg" });
+  expect(result).toEqual({ ok: true, value: "Hello!" });
+  let sent = network.requests.find((r) => r.url.startsWith("https://api.anthropic.com/"))?.body as {
+    messages: { content: unknown[] }[];
+  };
+  expect(sent.messages[0].content).toContainEqual({
+    type: "image",
+    source: { type: "base64", media_type: "image/jpeg", data: "abc123" },
+  });
 });
