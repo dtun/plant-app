@@ -55,9 +55,14 @@ function providerText(text: string): Response {
   });
 }
 
-function providerError(status: number, message: string): Response {
-  return Response.json({ type: "error", error: { type: "api_error", message } }, { status });
+function providerError(status: number, message: string, headers?: HeadersInit): Response {
+  return Response.json(
+    { type: "error", error: { type: "api_error", message } },
+    { status, headers }
+  );
 }
+
+let retryNow = { "retry-after-ms": "0" };
 
 function setUserConfig() {
   storage.set("ai_user_api_key", "test-key");
@@ -195,4 +200,52 @@ test("generateChatResponse sends the image to the provider as a base64 jpeg", as
     type: "image",
     source: { type: "base64", media_type: "image/jpeg", data: "abc123" },
   });
+});
+
+test("generatePlantName maps a rate-limited response that exhausts retries to quota failure", async () => {
+  setUserConfig();
+  let network = createFakeNetwork({ provider: () => providerError(429, "slow down", retryNow) });
+  let intel = createLocalIntelligence({ fetch: network.fetch });
+
+  let result = await intel.generatePlantName(plantData);
+
+  expect(result.ok).toBe(false);
+  if (result.ok) return;
+  expect(result.failure.kind).toBe("quota");
+});
+
+test("generatePlantName maps a server error that exhausts retries to unknown failure with its detail", async () => {
+  setUserConfig();
+  let network = createFakeNetwork({ provider: () => providerError(500, "kaboom", retryNow) });
+  let intel = createLocalIntelligence({ fetch: network.fetch });
+
+  let result = await intel.generatePlantName(plantData);
+
+  expect(result.ok).toBe(false);
+  if (result.ok) return;
+  expect(result.failure.kind).toBe("unknown");
+  expect(result.failure.message).toContain("kaboom");
+});
+
+test("generatePlantName maps a connection failure that exhausts retries to network failure", async () => {
+  jest.useFakeTimers();
+  try {
+    setUserConfig();
+    let network = createFakeNetwork({
+      provider: () => {
+        throw new TypeError("fetch failed", { cause: new Error("ECONNREFUSED") });
+      },
+    });
+    let intel = createLocalIntelligence({ fetch: network.fetch });
+
+    let pending = intel.generatePlantName(plantData);
+    await jest.advanceTimersByTimeAsync(10_000);
+    let result = await pending;
+
+    expect(result.ok).toBe(false);
+    if (result.ok) return;
+    expect(result.failure.kind).toBe("network");
+  } finally {
+    jest.useRealTimers();
+  }
 });
