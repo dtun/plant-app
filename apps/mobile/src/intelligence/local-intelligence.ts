@@ -26,6 +26,11 @@ let aiConfigSchema = z.object({
 type AIConfig = z.infer<typeof aiConfigSchema>;
 type AIProvider = AIConfig["provider"];
 type ModelType = "vision" | "text";
+type FetchImpl = typeof globalThis.fetch;
+
+export interface LocalIntelligenceOptions {
+  fetch?: FetchImpl;
+}
 
 let modelMappings: Record<AIProvider, Record<ModelType, string>> = {
   OpenAI: {
@@ -38,9 +43,9 @@ let modelMappings: Record<AIProvider, Record<ModelType, string>> = {
   },
 };
 
-async function fetchAIConfigFromEndpoint(): Promise<AIConfig | null> {
+async function fetchAIConfigFromEndpoint(fetchImpl?: FetchImpl): Promise<AIConfig | null> {
   try {
-    let response = await fetch(CONFIG_ENDPOINT, {
+    let response = await (fetchImpl ?? globalThis.fetch)(CONFIG_ENDPOINT, {
       method: "GET",
       headers: { Accept: "application/json" },
     });
@@ -63,7 +68,7 @@ async function fetchAIConfigFromEndpoint(): Promise<AIConfig | null> {
   }
 }
 
-async function getAIConfig(): Promise<AIConfig | null> {
+async function getAIConfig(fetchImpl?: FetchImpl): Promise<AIConfig | null> {
   try {
     let userApiKey = globalThis.localStorage.getItem("ai_user_api_key");
     let userProvider = globalThis.localStorage.getItem("ai_user_provider");
@@ -78,7 +83,7 @@ async function getAIConfig(): Promise<AIConfig | null> {
       }
     }
 
-    let endpointConfig = await fetchAIConfigFromEndpoint();
+    let endpointConfig = await fetchAIConfigFromEndpoint(fetchImpl);
     if (endpointConfig) {
       return endpointConfig;
     }
@@ -106,8 +111,8 @@ async function getAIConfig(): Promise<AIConfig | null> {
   }
 }
 
-function createAIModel(config: AIConfig, modelType: ModelType) {
-  let options = { apiKey: config.apiKey };
+function createAIModel(config: AIConfig, modelType: ModelType, fetchImpl?: FetchImpl) {
+  let options = { apiKey: config.apiKey, fetch: fetchImpl };
 
   if (config.provider === "OpenAI") {
     let provider = createOpenAI(options);
@@ -168,12 +173,12 @@ function toImagePart(base64: string) {
   return { type: "image" as const, image: base64, mediaType: "image/jpeg" };
 }
 
-async function imageToBase64(input: PhotoInput): Promise<string> {
+async function imageToBase64(input: PhotoInput, fetchImpl?: FetchImpl): Promise<string> {
   if (input.base64) {
     return input.base64;
   }
 
-  let response = await fetch(input.imageUri);
+  let response = await (fetchImpl ?? globalThis.fetch)(input.imageUri);
   let blob = await response.blob();
   return new Promise((resolve, reject) => {
     let reader = new FileReader();
@@ -245,17 +250,18 @@ Your profile:
   return systemPrompt;
 }
 
-export function createLocalIntelligence(): PlantIntelligence {
+export function createLocalIntelligence(options: LocalIntelligenceOptions = {}): PlantIntelligence {
+  let { fetch: fetchImpl } = options;
   let generatedNames: string[] = [];
 
   async function generatePlantName(plantData: PlantData): Promise<Result<string, AIFailure>> {
-    let config = await getAIConfig();
+    let config = await getAIConfig(fetchImpl);
     if (!config) {
       return { ok: false, failure: noConfigFailure() };
     }
 
     try {
-      let model = createAIModel(config, "text");
+      let model = createAIModel(config, "text", fetchImpl);
       let prompt = buildPlantNamingPrompt(plantData, generatedNames);
       let result = await generateText({ model, prompt: prompt.trim() });
       let plantName = result.text.trim();
@@ -272,14 +278,14 @@ export function createLocalIntelligence(): PlantIntelligence {
   }
 
   async function generatePhotoDescription(input: PhotoInput): Promise<Result<string, AIFailure>> {
-    let config = await getAIConfig();
+    let config = await getAIConfig(fetchImpl);
     if (!config) {
       return { ok: false, failure: noConfigFailure() };
     }
 
     try {
-      let model = createAIModel(config, "vision");
-      let base64 = await imageToBase64(input);
+      let model = createAIModel(config, "vision", fetchImpl);
+      let base64 = await imageToBase64(input, fetchImpl);
 
       let result = await generateText({
         model,
@@ -308,14 +314,14 @@ export function createLocalIntelligence(): PlantIntelligence {
   }
 
   async function generateChatResponse(input: ChatInput): Promise<Result<string, AIFailure>> {
-    let config = await getAIConfig();
+    let config = await getAIConfig(fetchImpl);
     if (!config) {
       return { ok: false, failure: noConfigFailure() };
     }
 
     try {
       let hasImages = input.messages.some((m) => m.imageUri);
-      let model = createAIModel(config, hasImages ? "vision" : "text");
+      let model = createAIModel(config, hasImages ? "vision" : "text", fetchImpl);
       let systemPrompt = buildChatSystemPrompt(input.plantContext);
 
       let formattedMessages = await Promise.all(
@@ -325,7 +331,10 @@ export function createLocalIntelligence(): PlantIntelligence {
             if (m.content) {
               content.push({ type: "text", text: m.content });
             }
-            let base64 = await imageToBase64({ imageUri: m.imageUri, base64: m.imageBase64 });
+            let base64 = await imageToBase64(
+              { imageUri: m.imageUri, base64: m.imageBase64 },
+              fetchImpl
+            );
             content.push(toImagePart(base64));
             return { role: "user" as const, content };
           }
