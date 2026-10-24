@@ -25,7 +25,7 @@ msgstr ""
 msgid "Add plant photo"
 msgstr "Agregar foto de planta"
 
-#: src/intelligence/local-intelligence.ts:125
+#: src/intelligence/local-intelligence.ts:130
 msgid "AI configuration not found. Please set up your API key and provider in Settings."
 msgstr "Configuración de IA no encontrada. Configura tu clave API y proveedor en Ajustes."
 
@@ -55,7 +55,7 @@ msgstr "Clave API"
 msgid "API key is required"
 msgstr "La clave API es obligatoria"
 
-#: src/intelligence/local-intelligence.ts:153
+#: src/intelligence/local-intelligence.ts:164
 msgid "API quota exceeded. Please check your account billing."
 msgstr "Cuota de API excedida. Revisa la facturación de tu cuenta."
 
@@ -249,7 +249,7 @@ msgstr "Inicio"
 msgid "I need to be set up first. Please configure your AI settings."
 msgstr ""
 
-#: src/intelligence/local-intelligence.ts:147
+#: src/intelligence/local-intelligence.ts:158
 msgid "Invalid API key. Please check your AI settings."
 msgstr "Clave API inválida. Revisa tus ajustes de IA."
 
@@ -273,7 +273,7 @@ msgstr "Nombres y personalidades basados en lo que es cada planta"
 msgid "Navigates to the plant naming screen"
 msgstr "Navega a la pantalla para nombrar plantas"
 
-#: src/intelligence/local-intelligence.ts:133
+#: src/intelligence/local-intelligence.ts:138
 msgid "Network error. Please check your internet connection."
 msgstr "Error de red. Revisa tu conexión a internet."
 

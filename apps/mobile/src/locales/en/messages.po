@@ -25,7 +25,7 @@ msgstr "A little care goes a long way"
 msgid "Add plant photo"
 msgstr "Add plant photo"
 
-#: src/intelligence/local-intelligence.ts:125
+#: src/intelligence/local-intelligence.ts:130
 msgid "AI configuration not found. Please set up your API key and provider in Settings."
 msgstr "AI configuration not found. Please set up your API key and provider in Settings."
 
@@ -55,7 +55,7 @@ msgstr "API Key"
 msgid "API key is required"
 msgstr "API key is required"
 
-#: src/intelligence/local-intelligence.ts:153
+#: src/intelligence/local-intelligence.ts:164
 msgid "API quota exceeded. Please check your account billing."
 msgstr "API quota exceeded. Please check your account billing."
 
@@ -249,7 +249,7 @@ msgstr "Home"
 msgid "I need to be set up first. Please configure your AI settings."
 msgstr "I need to be set up first. Please configure your AI settings."
 
-#: src/intelligence/local-intelligence.ts:147
+#: src/intelligence/local-intelligence.ts:158
 msgid "Invalid API key. Please check your AI settings."
 msgstr "Invalid API key. Please check your AI settings."
 
@@ -273,7 +273,7 @@ msgstr "Names and personalities grounded in what each plant is"
 msgid "Navigates to the plant naming screen"
 msgstr "Navigates to the plant naming screen"
 
-#: src/intelligence/local-intelligence.ts:133
+#: src/intelligence/local-intelligence.ts:138
 msgid "Network error. Please check your internet connection."
 msgstr "Network error. Please check your internet connection."
 
